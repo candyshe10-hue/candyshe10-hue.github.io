@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>靈魂地圖引導包</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#C9938A; --soft-pink:#E8C4BC; --light-pink:#F5E6E3;
+  --blue:#7A9BAD; --soft-blue:#B8CFDA; --light-blue:#E3EDF3;
+  --sage:#9AAE9B; --light-sage:#E8F0E8;
+  --cream:#FAF3EE; --bg:#FAFAF8; --dark:#37352F; --medium:#5A5248; --gray:#9B9A97;
+  --gold:#B8934A; --light-gold:#F3E9D2;
+  --radius-lg:20px; --radius-md:14px; --radius-sm:9px;
+  --shadow-soft:0 2px 14px rgba(55,53,47,0.07);
+  --shadow-card:0 6px 24px rgba(55,53,47,0.09);
+  --shadow-lift:0 14px 36px rgba(55,53,47,0.16);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%, var(--light-pink) 0%, transparent 45%),
+    radial-gradient(circle at 90% 10%, var(--light-blue) 0%, transparent 40%),
+    var(--bg);
+  color:var(--dark);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;}
+input,select,textarea{font-family:inherit;}
+::selection{background:var(--soft-pink);}
+
+.shell{max-width:720px; margin:0 auto; padding:26px 20px 80px 20px;}
+
+.topbar{display:flex; align-items:center; justify-content:center; gap:8px; padding:6px 0 22px 0;}
+.topbar .mark{font-size:15px; font-weight:900; letter-spacing:1px; color:var(--dark);}
+.topbar .mark span{color:var(--pink);}
+
+/* Stepper */
+.stepper{display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:30px;}
+.step-dot{
+  width:26px; height:26px; border-radius:50%; background:#fff; border:1.5px solid rgba(55,53,47,0.15);
+  display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--gray);
+  transition:all .2s ease; flex-shrink:0;
+}
+.step-dot.active{background:var(--pink); border-color:var(--pink); color:#fff; box-shadow:var(--shadow-soft);}
+.step-dot.done{background:var(--sage); border-color:var(--sage); color:#fff;}
+.step-line{width:18px; height:1.5px; background:rgba(55,53,47,0.15);}
+.step-line.done{background:var(--sage);}
+.step-label{font-size:10px; color:var(--gray); text-align:center; margin-top:6px; width:56px;}
+
+/* Steps */
+.step{display:none;}
+.step.active{display:block; animation:fadeUp .35s ease;}
+@keyframes fadeUp{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+
+.hero-card{
+  background:#fff; border-radius:var(--radius-lg); padding:38px 30px; box-shadow:var(--shadow-card);
+  text-align:center; border:1px solid rgba(55,53,47,0.05);
+}
+.hero-emoji{font-size:38px; margin-bottom:14px;}
+.hero-title{font-size:22px; font-weight:900; line-height:1.5; margin:0 0 12px 0;}
+.hero-title .accent{color:var(--pink);}
+.hero-desc{font-size:14px; color:var(--medium); line-height:1.9; margin-bottom:26px;}
+.iceberg-diagram{margin:0 0 26px 0; text-align:left;}
+.iceberg-peak{width:56px; height:28px; margin:0 auto; background:linear-gradient(180deg,#ffffff,var(--light-blue)); clip-path:polygon(50% 0%, 100% 100%, 0% 100%);}
+.iceberg-above{background:var(--light-blue); border-radius:var(--radius-sm) var(--radius-sm) 0 0; padding:14px 18px; text-align:center;}
+.iceberg-above .ia-label{font-size:13px; font-weight:900; color:#3E5A68;}
+.iceberg-above .ia-desc{font-size:11.5px; color:#5A7887; margin-top:4px;}
+.iceberg-waterline{position:relative; text-align:center; padding:7px 0; background:var(--soft-blue);}
+.iceberg-waterline::before{content:""; position:absolute; left:14px; right:14px; top:50%; border-top:1.5px dashed rgba(46,74,94,0.4);}
+.iceberg-waterline span{position:relative; background:var(--soft-blue); padding:0 10px; font-size:10px; color:#2E4A5E; font-weight:700; letter-spacing:2px;}
+.iceberg-below{background:linear-gradient(180deg, var(--blue) 0%, #24404F 100%); border-radius:0 0 var(--radius-sm) var(--radius-sm); padding:4px 0 8px 0;}
+.iceberg-layer{padding:11px 18px; border-top:1px solid rgba(255,255,255,0.14);}
+.iceberg-layer:first-child{border-top:none;}
+.iceberg-layer .il-title{font-size:12.5px; font-weight:900; color:#fff;}
+.iceberg-layer .il-desc{font-size:11px; color:rgba(255,255,255,0.78); margin-top:3px; line-height:1.6;}
+
+.hero-features{text-align:left; background:var(--cream); border-radius:var(--radius-md); padding:18px 20px; margin-bottom:22px;}
+.hero-feature{display:flex; gap:10px; font-size:13.5px; color:var(--medium); padding:6px 0; line-height:1.6;}
+.hero-feature b{color:var(--dark); font-weight:700;}
+.hero-feature .ico{flex-shrink:0;}
+
+.unlock-mini{
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center;
+  background:var(--light-gold); border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:24px; font-size:12.5px; color:#7A5F27;
+}
+.unlock-mini input{
+  padding:7px 10px; border-radius:7px; border:1.5px solid rgba(184,147,74,0.35); font-size:12.5px; width:130px; background:#fff;
+}
+.unlock-mini .btn{padding:7px 14px; font-size:12px;}
+.unlock-status{width:100%; font-size:11.5px; margin-top:2px;}
+.unlock-status.ok{color:#5C7A5E; font-weight:700;}
+.unlock-status.err{color:#B5564A; font-weight:700;}
+
+.founder-card{
+  background:#fff; border-radius:var(--radius-lg); padding:28px 26px; box-shadow:var(--shadow-soft);
+  border:1px solid rgba(55,53,47,0.05); margin-bottom:18px; text-align:left;
+}
+.founder-card .f-eyebrow{font-size:11px; font-weight:700; color:var(--gray); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;}
+.founder-card .f-title{font-size:18px; font-weight:900; color:var(--dark); margin-bottom:14px; letter-spacing:.3px;}
+.founder-card .f-text{font-size:13.5px; color:var(--medium); line-height:2; white-space:pre-wrap;}
+
+.card{
+  background:#fff; border-radius:var(--radius-lg); padding:28px 26px; box-shadow:var(--shadow-card);
+  border:1px solid rgba(55,53,47,0.05); margin-bottom:20px;
+}
+.card-title{font-size:18px; font-weight:900; margin:0 0 6px 0;}
+.card-desc{font-size:13px; color:var(--gray); margin-bottom:22px; line-height:1.7;}
+
+/* Form */
+.field{margin-bottom:18px;}
+.field label{display:block; font-size:13px; font-weight:700; color:var(--medium); margin-bottom:7px;}
+.field .req{color:var(--pink);}
+.field input[type=text], .field input[type=date], .field input[type=time]{
+  width:100%; padding:12px 14px; border-radius:var(--radius-sm); border:1.5px solid rgba(55,53,47,0.14);
+  font-size:14.5px; background:var(--bg); color:var(--dark);
+}
+.field input:focus{outline:none; border-color:var(--pink); background:#fff; box-shadow:0 0 0 3px rgba(201,147,138,0.14);}
+.field-hint{font-size:11.5px; color:var(--gray); margin-top:6px; line-height:1.6;}
+
+/* Topic / system grid (shared) */
+.topic-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:8px;}
+.topic-card{
+  border:1.5px solid rgba(55,53,47,0.12); border-radius:var(--radius-md); padding:16px 14px;
+  cursor:pointer; transition:all .15s ease; background:var(--bg); position:relative;
+}
+.topic-card:hover{border-color:var(--soft-pink);}
+.topic-card.selected{border-color:var(--pink); background:var(--light-pink); box-shadow:var(--shadow-soft);}
+.topic-card.locked{opacity:.5; cursor:pointer;}
+.topic-card .t-icon{font-size:22px;}
+.topic-card .t-title{font-size:14px; font-weight:700; margin-top:8px;}
+.topic-card .t-desc{font-size:11.5px; color:var(--gray); margin-top:4px; line-height:1.5;}
+.topic-card .t-check{
+  position:absolute; top:12px; right:12px; width:18px; height:18px; border-radius:50%;
+  border:1.5px solid rgba(55,53,47,0.25); background:#fff; font-size:11px; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+}
+.topic-card.selected .t-check{background:var(--pink); border-color:var(--pink);}
+.topic-card .t-lock{position:absolute; top:12px; right:12px; font-size:13px;}
+.limit-note{font-size:11.5px; color:var(--gold); margin:-2px 0 16px 0; display:flex; align-items:center; gap:5px;}
+
+/* Instructions (get chart step) */
+.system-instruction{
+  border:1.5px solid rgba(55,53,47,0.1); border-radius:var(--radius-md); padding:18px 18px; margin-bottom:16px; background:var(--bg);
+}
+.system-instruction .si-head{display:flex; align-items:center; gap:8px; font-size:14.5px; font-weight:700; margin-bottom:10px;}
+.instruction-list{list-style:none; margin:0 0 14px 0; padding:0;}
+.instruction-list li{display:flex; gap:12px; padding:9px 0; border-bottom:1px dashed rgba(55,53,47,0.12);}
+.instruction-list li:last-child{border-bottom:none;}
+.instruction-num{
+  flex-shrink:0; width:22px; height:22px; border-radius:50%; background:var(--light-pink); color:var(--pink);
+  font-size:11px; font-weight:900; display:flex; align-items:center; justify-content:center;
+}
+.instruction-text{font-size:13px; color:var(--medium); line-height:1.7; padding-top:1px;}
+.instruction-text b{color:var(--dark); font-weight:700;}
+.note-box{
+  background:var(--light-sage); border-radius:var(--radius-md); padding:14px 16px; font-size:12.5px;
+  color:#4C6355; line-height:1.8; margin-bottom:22px;
+}
+
+/* Buttons */
+.btn{
+  border:none; border-radius:30px; padding:13px 26px; font-size:14.5px; font-weight:700;
+  cursor:pointer; transition:all .15s ease; display:inline-flex; align-items:center; gap:8px;
+}
+.btn-primary{background:var(--pink); color:#fff; box-shadow:var(--shadow-soft);}
+.btn-primary:hover{background:#bb7f75; transform:translateY(-1px); box-shadow:var(--shadow-card);}
+.btn-primary:disabled{background:#D9CFCB; cursor:not-allowed; transform:none; box-shadow:none;}
+.btn-secondary{background:#fff; color:var(--dark); border:1.5px solid rgba(55,53,47,0.16);}
+.btn-secondary:hover{border-color:var(--pink); color:var(--pink);}
+.btn-gold{background:var(--gold); color:#fff;}
+.btn-gold:hover{background:#a17f3f;}
+.btn-block{width:100%; justify-content:center;}
+.btn-sm{padding:8px 16px; font-size:12.5px;}
+.btn-row{display:flex; gap:10px; margin-top:24px;}
+.btn-row .btn{flex:1; justify-content:center;}
+.link-btn{background:none; border:none; color:var(--medium); font-size:12.5px; text-decoration:underline; cursor:pointer; padding:4px;}
+
+/* Result page */
+.result-top{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:18px; flex-wrap:wrap;}
+.result-top h2{font-size:20px; font-weight:900; margin:0;}
+.tip-box{
+  background:var(--light-blue); border-radius:var(--radius-md); padding:16px 18px; font-size:13px;
+  color:#3E5A68; line-height:1.8; margin-bottom:22px;
+}
+.tip-box b{font-weight:700;}
+
+.copy-all-row{display:flex; justify-content:flex-end; margin-bottom:14px;}
+.copy-all-btn{
+  border:1.5px solid var(--pink); background:var(--light-pink); color:#9C5D53; border-radius:24px;
+  padding:10px 18px; font-size:13px; font-weight:700; cursor:pointer; transition:all .15s ease;
+  display:inline-flex; align-items:center; gap:7px;
+}
+.copy-all-btn:hover{background:var(--pink); color:#fff;}
+.copy-all-btn.copied{background:var(--light-sage); border-color:var(--sage); color:#5C7A5E;}
+
+.prompt-card{
+  background:#fff; border-radius:var(--radius-md); border:1px solid rgba(55,53,47,0.08); margin-bottom:16px;
+  box-shadow:var(--shadow-soft); overflow:hidden;
+}
+.prompt-card.base{border:1.5px solid var(--pink);}
+.prompt-card.crystal{border:1.5px solid var(--sage);}
+.prompt-card.advanced{border:1.5px solid var(--gold);}
+.prompt-card-head{
+  display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 18px;
+  background:var(--cream); cursor:pointer; flex-wrap:wrap;
+}
+.prompt-card.base .prompt-card-head{background:var(--light-pink);}
+.prompt-card.crystal .prompt-card-head{background:var(--light-sage);}
+.prompt-card.advanced .prompt-card-head{background:var(--light-gold);}
+.prompt-card-head .h-left{display:flex; align-items:center; gap:10px; flex:1; min-width:0;}
+.prompt-card-head .h-icon{font-size:18px;}
+.prompt-card-head .h-title{font-size:14.5px; font-weight:700;}
+.prompt-card-head .h-sub{font-size:11px; color:var(--gray); margin-top:2px;}
+.chevron{transition:transform .2s ease; color:var(--gray); font-size:12px;}
+.chevron.open{transform:rotate(180deg);}
+.prompt-card-body{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+.prompt-card-body.open{max-height:3000px;}
+.prompt-item{padding:14px 18px; border-top:1px solid rgba(55,53,47,0.06);}
+.prompt-item-num{font-size:11px; font-weight:700; color:var(--pink); margin-bottom:6px;}
+.prompt-text{
+  font-size:13.5px; line-height:1.85; color:var(--dark); background:var(--bg); border-radius:var(--radius-sm);
+  padding:14px 16px; white-space:pre-wrap; border:1px solid rgba(55,53,47,0.06);
+}
+.copy-btn{
+  margin-top:9px; border:1.5px solid rgba(55,53,47,0.14); background:#fff; color:var(--medium);
+  border-radius:20px; padding:7px 16px; font-size:12px; font-weight:700; cursor:pointer; transition:all .15s ease;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.copy-btn:hover{border-color:var(--pink); color:var(--pink);}
+.copy-btn.copied{background:var(--light-sage); border-color:var(--sage); color:#5C7A5E;}
+.head-copy-btn{
+  flex-shrink:0; border:1.5px solid rgba(55,53,47,0.14); background:#fff; color:var(--medium);
+  border-radius:20px; padding:6px 13px; font-size:11.5px; font-weight:700; cursor:pointer; transition:all .15s ease;
+}
+.head-copy-btn:hover{border-color:var(--pink); color:var(--pink);}
+.head-copy-btn.copied{background:var(--light-sage); border-color:var(--sage); color:#5C7A5E;}
+
+.locked-item{padding:14px 18px; border-top:1px solid rgba(55,53,47,0.06); display:flex; align-items:center; gap:10px; color:var(--gray); font-size:12.5px;}
+
+.crystal-shop-box{
+  margin:0 18px 16px 18px; padding:14px 16px; background:var(--light-sage); border-radius:var(--radius-sm);
+  font-size:12.5px; color:#4C6355; line-height:1.8;
+}
+.crystal-shop-box a.btn{margin-top:10px;}
+
+.unlock-card{
+  background:linear-gradient(135deg, var(--light-gold) 0%, #fff 100%); border:1.5px solid var(--gold);
+  border-radius:var(--radius-lg); padding:30px 26px; margin:26px 0; box-shadow:var(--shadow-card);
+}
+.unlock-card .u-badge{display:inline-block; background:var(--gold); color:#fff; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:14px;}
+.unlock-card h3{font-size:18px; font-weight:900; margin:0 0 10px 0; color:var(--dark);}
+.unlock-card p{font-size:13px; color:var(--medium); line-height:1.85; margin-bottom:16px;}
+.unlock-feature-list{list-style:none; margin:0 0 20px 0; padding:0;}
+.unlock-feature-list li{font-size:13px; color:var(--dark); padding:5px 0; display:flex; gap:8px;}
+.unlock-price{font-size:22px; font-weight:900; color:var(--gold); margin-bottom:16px;}
+.unlock-form-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+.unlock-form-row input{
+  flex:1; min-width:140px; padding:11px 14px; border-radius:var(--radius-sm); border:1.5px solid rgba(184,147,74,0.4);
+  font-size:13.5px; background:#fff;
+}
+
+.preview-block{margin-bottom:22px;}
+.preview-headline{font-size:13.5px; color:var(--dark); line-height:1.85; margin-bottom:16px; font-weight:700;}
+.preview-list{list-style:none; margin:0 0 4px 0; padding:0;}
+.preview-item{display:flex; gap:12px; padding:12px 0; border-bottom:1px dashed rgba(184,147,74,0.28);}
+.preview-item:last-child{border-bottom:none;}
+.preview-num{
+  flex-shrink:0; width:24px; height:24px; border-radius:50%; background:var(--gold); color:#fff;
+  font-size:12px; font-weight:900; display:flex; align-items:center; justify-content:center; margin-top:1px;
+}
+.preview-title{font-size:13.5px; font-weight:700; color:var(--dark); margin-bottom:3px;}
+.preview-desc{font-size:12.5px; color:var(--medium); line-height:1.75;}
+
+.preview-locked{
+  margin-top:6px; padding:16px 16px 14px 16px; border-radius:var(--radius-md);
+  background:rgba(184,147,74,0.08); border:1.5px dashed rgba(184,147,74,0.4);
+}
+.preview-locked-head{font-size:13.5px; font-weight:900; color:var(--dark); margin-bottom:4px; display:flex; align-items:center; gap:6px;}
+.preview-locked-desc{font-size:12px; color:var(--medium); line-height:1.7; margin-bottom:12px;}
+.preview-locked-list{list-style:none; margin:0; padding:0;}
+.preview-locked-list li{
+  font-size:12.5px; color:var(--medium); padding:7px 0; border-top:1px solid rgba(184,147,74,0.2);
+  display:flex; align-items:center; gap:8px;
+}
+.preview-locked-list li:first-child{border-top:none;}
+.preview-locked-list .pl-icon{flex-shrink:0; font-size:11px; color:var(--gold);}
+.preview-locked-list .pl-text{color:var(--dark); font-weight:600;}
+
+.preview-divider{border:none; border-top:1px solid rgba(55,53,47,0.1); margin:20px 0;}
+
+.order-confirm-box{
+  background:var(--light-sage); border-radius:var(--radius-md); padding:16px 18px; margin-bottom:18px; text-align:center;
+}
+.order-confirm-box p{font-size:12.5px; color:#4C6355; line-height:1.8; margin:0 0 12px 0;}
+.btn-line{background:#06C755; color:#fff;}
+.btn-line:hover{background:#05a648;}
+
+.unlocked-banner{
+  background:var(--light-sage); border:1.5px solid var(--sage); border-radius:var(--radius-md); padding:14px 18px;
+  font-size:13px; color:#4C6355; font-weight:700; margin:20px 0; text-align:center;
+}
+
+.cta-card{
+  background:linear-gradient(135deg, var(--dark) 0%, #4a463d 100%); border-radius:var(--radius-lg);
+  padding:34px 28px; text-align:center; color:#fff; margin-top:20px; box-shadow:var(--shadow-lift);
+}
+.cta-card .cta-emoji{font-size:30px; margin-bottom:12px;}
+.cta-card h3{font-size:19px; font-weight:900; margin:0 0 12px 0;}
+.cta-card p{font-size:13.5px; line-height:1.9; color:rgba(255,255,255,0.82); margin-bottom:22px;}
+.cta-card .btn-primary{background:var(--soft-pink); color:var(--dark);}
+.cta-card .btn-primary:hover{background:#fff;}
+.cta-links{display:flex; gap:10px; justify-content:center; margin-top:14px; flex-wrap:wrap;}
+.cta-links a{color:rgba(255,255,255,0.75); font-size:12px; text-decoration:none; border-bottom:1px solid rgba(255,255,255,0.3);}
+.cta-links a:hover{color:#fff;}
+
+.bottom-actions{display:flex; justify-content:center; gap:16px; margin-top:26px;}
+
+.page-footer{
+  text-align:center; margin-top:36px; padding-top:20px; border-top:1px solid rgba(55,53,47,0.08);
+  font-size:12px; color:var(--gray);
+}
+.page-footer a{color:var(--pink); text-decoration:none; font-weight:700;}
+.page-footer a:hover{text-decoration:underline;}
+
+.toast{
+  position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--dark); color:#fff; padding:12px 22px; border-radius:30px; font-size:13.5px; font-weight:500;
+  box-shadow:var(--shadow-lift); z-index:200; opacity:0; pointer-events:none; transition:all .25s ease;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+@media (max-width:520px){
+  .topic-grid{grid-template-columns:1fr;}
+  .hero-card, .card{padding:24px 18px;}
+  .step-label{display:none;}
+  .btn-row{flex-direction:column;}
+  .result-top{flex-direction:column; align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="topbar"><div class="mark" id="brandMark">✦ 靈魂地圖</div></div>
+
+  <div class="stepper" id="stepper">
+    <div><div class="step-dot" data-step="1">1</div><div class="step-label">選命盤系統</div></div>
+    <div class="step-line" id="line1"></div>
+    <div><div class="step-dot" data-step="2">2</div><div class="step-label">取得命盤</div></div>
+    <div class="step-line" id="line2"></div>
+    <div><div class="step-dot" data-step="3">3</div><div class="step-label">選擇主題</div></div>
+    <div class="step-line" id="line3"></div>
+    <div><div class="step-dot" data-step="4">4</div><div class="step-label">我的指令</div></div>
+  </div>
+
+  <!-- Step 0: Welcome -->
+  <section class="step active" id="step-welcome">
+    <div class="founder-card" id="founderCard">
+      <div class="f-eyebrow">在開始之前</div>
+      <div class="f-title" id="founderTitle">在開始之前，我想跟你分享</div>
+      <div class="f-text" id="founderText"></div>
+    </div>
+
+    <div class="hero-card">
+      <div class="hero-emoji">🔮</div>
+      <div class="hero-title"><span class="accent">靈魂地圖引導包</span></div>
+      <div class="hero-desc">
+        AI 光靠文字推算命盤常常會算錯，我們先幫你拿到<b>準確的命盤圖</b>，
+        再搭配專屬的 AI 提問指令一起使用，讓 AI 讀圖回答，準確度更高，也更好玩。
+        <br><br>
+        這個指令包也加入了我自己學過的身心靈專業，以及親自運作、驗證過的許多方法——不只停留在<b>冰山上</b>看得見的事件與行為，更會帶你看見<b>冰山下的世界</b>（那些藏在行為背後、你自己也不一定意識到的感受、渴望與需求），讓你不只「知道發生了什麼」，更能「理解自己為什麼會這樣」。
+      </div>
+
+      <div class="iceberg-diagram">
+        <div class="iceberg-peak"></div>
+        <div class="iceberg-above">
+          <div class="ia-label">🌤️ 冰山上：看得見的</div>
+          <div class="ia-desc">事件、行為、你說的話、你的反應</div>
+        </div>
+        <div class="iceberg-waterline"><span>⋯⋯ 海平面 ⋯⋯</span></div>
+        <div class="iceberg-below">
+          <div class="iceberg-layer"><div class="il-title">感受</div><div class="il-desc">開心、生氣、難過、害怕……</div></div>
+          <div class="iceberg-layer"><div class="il-title">觀點／信念</div><div class="il-desc">我怎麼解讀這件事、我相信什麼才是對的</div></div>
+          <div class="iceberg-layer"><div class="il-title">期待</div><div class="il-desc">我期待自己、也期待別人怎麼做</div></div>
+          <div class="iceberg-layer"><div class="il-title">渴望</div><div class="il-desc">被愛、被認同、有價值、自由、有連結</div></div>
+          <div class="iceberg-layer"><div class="il-title">自我</div><div class="il-desc">最真實的你、屬於你的生命力</div></div>
+        </div>
+      </div>
+
+      <div class="hero-features">
+        <div class="hero-feature"><span class="ico">🧭</span><span><b>Step 1</b> 選擇你想探索的命盤系統（占星／人類圖／八字／紫微）</span></div>
+        <div class="hero-feature"><span class="ico">🌌</span><span><b>Step 2</b> 用免費網站產生命盤圖並截圖</span></div>
+        <div class="hero-feature"><span class="ico">🗂️</span><span><b>Step 3</b> 選擇你想了解的主題</span></div>
+        <div class="hero-feature"><span class="ico">💬</span><span><b>Step 4</b> 取得專屬 AI 提問指令，搭配截圖一起問</span></div>
+      </div>
+
+      <div class="unlock-mini">
+        <span>已經購買完整版了嗎？</span>
+        <input type="text" id="unlockInputWelcome" placeholder="輸入序號">
+        <button class="btn btn-secondary btn-sm" id="unlockBtnWelcome">解鎖</button>
+        <div class="unlock-status" id="unlockStatusWelcome"></div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="startBtn">開始生成我的專屬指令 →</button>
+    </div>
+  </section>
+
+  <!-- Step 1: choose systems -->
+  <section class="step" id="step-systems">
+    <div class="card">
+      <div class="card-title">你想探索哪些命盤系統？</div>
+      <div class="card-desc">每種系統會從不同角度描述你，選你有興趣的就好，之後也能回來加選。</div>
+      <div class="topic-grid" id="systemGrid"></div>
+      <div class="limit-note" id="systemLimitNote"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="backToWelcome">← 上一步</button>
+        <button class="btn btn-primary" id="toChartBtn" disabled>下一步：取得命盤 →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 2: get chart(s) -->
+  <section class="step" id="step-chart">
+    <div class="card">
+      <div class="card-title">取得你的命盤圖</div>
+      <div class="card-desc">直接叫 AI 用文字推算命盤常常會算錯。先用專業網站產生正確的命盤圖、截圖下來，再交給 AI 讀圖解說，準確度會高很多。</div>
+
+      <div id="systemInstructions"></div>
+
+      <div class="field">
+        <label>怎麼稱呼你？（選填）</label>
+        <input type="text" id="in_name" placeholder="例：小雨，AI 的指令裡會用這個稱呼你">
+      </div>
+
+      <div class="note-box">🌱 手邊如果已經有其他命理 App 或網站截圖的命盤，也可以直接使用，不一定要用我們推薦的網站。</div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="backToSystems">← 上一步</button>
+        <button class="btn btn-primary" id="toTopicsBtn">下一步：選擇主題 →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 3: Topics -->
+  <section class="step" id="step-topics">
+    <div class="card">
+      <div class="card-title">你想先了解哪些主題？</div>
+      <div class="card-desc">可以複選，之後也能回來加選其他主題。</div>
+      <div class="topic-grid" id="topicGrid"></div>
+      <div class="limit-note" id="topicLimitNote"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="backToChart">← 上一步</button>
+        <button class="btn btn-primary" id="toResultBtn" disabled>產生我的專屬指令 →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 4: Result -->
+  <section class="step" id="step-result">
+    <div class="result-top">
+      <h2>你的專屬 AI 提問指令</h2>
+      <button class="link-btn" id="editInfoBtn">✎ 修改選擇</button>
+    </div>
+
+    <div class="tip-box">
+      💡 <b>使用方式：</b>把「開場設定指令」複製貼到 AI 對話框裡（<b>建議使用 Claude</b>，效果最好，也可以用 ChatGPT／Gemini 等其他 AI），
+      同時<b>上傳你的命盤截圖</b>（一起送出），等 AI 回覆之後，再依序複製每個主題底下的提問，一句一句貼給它。
+      AI 也會反過來問你問題，像聊天一樣慢慢深入，效果最好。趕時間的話，也可以用下面的「複製全部」一次拿走。
+    </div>
+
+    <div id="unlockedBanner"></div>
+
+    <div class="copy-all-row">
+      <button class="copy-all-btn" id="copyAllBtn">📋 複製全部指令</button>
+    </div>
+
+    <div id="promptList"></div>
+
+    <div id="unlockCardWrap"></div>
+
+    <div class="cta-card" id="ctaCard">
+      <div class="cta-emoji">✨</div>
+      <h3 id="ctaHeadline">想更深入了解自己嗎？</h3>
+      <p id="ctaText">
+        AI 能給你一個方向，但無法真正取代懂命盤、也懂你人生階段的人。
+        如果這份指令包讓你對自己有更多好奇，歡迎預約一對一深度解讀，我們可以聊得更深、更貼近你現在的狀態。
+      </p>
+      <a class="btn btn-primary" id="ctaBookBtn" href="#" target="_blank" rel="noopener">預約一對一深度解讀 →</a>
+      <div class="cta-links" id="ctaExtraLinks"></div>
+    </div>
+
+    <div class="bottom-actions">
+      <button class="link-btn" id="restartBtn">重新開始，清空所有資料</button>
+    </div>
+  </section>
+
+  <div class="page-footer" id="pageFooter"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* =====================================================================
+   給占星師的設定區（把下面這些改成你自己的資訊即可，其他程式碼不需要動）
+   ===================================================================== */
+var CONFIG = {
+  // 品牌名稱（顯示在最上方）
+  brandName: "靈魂地圖",
+
+  // 關於我／品牌故事（顯示在歡迎頁最下方，用來建立信任感）
+  founderTitle: "在開始之前，我想跟你分享",
+  // 這段會出現在最前面，客人一打開就會先看到。
+  // 下面這版是根據你告訴我的內容寫的初稿，歡迎直接修改成你自己更順口的說法。
+  founderText: "我是巧敲，我從小就對玄學命理很著迷，對探索自己、探索這個宇宙一直有很強烈的好奇心。八字、星盤、紫微、人類圖、易經……各種命理系統我幾乎都接觸過，以前沒事就會去算塔羅，想問問感情、未來方向這些困惑。與其說是想「知道答案」，不如說我一直很好奇——這個世界、還有人，到底是怎麼一回事。\n\n我學占星學了很久，18歲就開始接觸，這幾年因為經營自媒體，才真正一頭栽進去深入鑽研。這些年下來，我幫上百人解過盤，慢慢發現大家會遇到的問題其實都很類似——多半離不開感情跟錢和工作。但我也發現一件事：一個人想要真正改變命運，從來不是靠算一次命就能解決的，還需要在生活裡不斷練習、調整自己。舉例來說，你可能透過解盤知道自己在感情裡常常跟伴侶吵架，是因為不擅長溝通，但知道這件事之後，你還是不知道具體該怎麼調整。所以我很確定：覺察，才會有體悟；有體悟，才會真正修正；有修正，人生才會真的改變。因為我們的人生，是透過每天不同的選擇累積形成的，不可能一直做一樣的選擇，卻期待自己擁有不一樣的人生。命盤說的是「命」——你天生帶著什麼樣的種子與土壤；但「運」要怎麼改，其實就是透過每天的覺察跟修正，一點一點形成後天的運，運氣就是這樣來的。行動方案跟每天的覺察，比知道「原因」重要得多。\n\n這也是我做這個工具的原因。我希望這個指令包能讓你先透過比較低成本的方式，好好認識自己、發現自己真正卡住的問題在哪裡，也拿到具體可以開始練習的行動方案。如果這段體驗讓你想要更深入、更貼近你現在人生階段地去調整跟修正，歡迎你來找我，我們可以聊得更深。",
+
+  // CTA 卡片文字（導向一對一深度解讀服務）
+  ctaHeadline: "想更深入了解自己嗎？",
+  ctaText: "AI 能給你一個方向，但無法真正取代懂命盤、也懂你人生階段的人。如果這份指令包讓你對自己有更多好奇，歡迎預約一對一深度解讀，我們可以聊得更深、更貼近你現在的狀態。",
+  ctaButtonText: "預約一對一深度解讀 →",
+  bookingLink: "https://lin.ee/z2S0q2g",
+  igLink: "https://instagram.com/chiao_ah",
+  igLabel: "@chiao_ah",
+  lineLink: "https://lin.ee/z2S0q2g",
+  lineLabel: "Line 加好友",
+
+  // 水晶選品推薦（結果頁會有一句 AI 提問，引導客人問水晶建議，
+  // crystalShopLink 留空字串 "" 就不會顯示購買按鈕；lineLink 留空就不會顯示 LINE 按鈕）
+  crystalShopEnabled: true,
+  crystalPromoTitle: "🔮 找到適合你的能量水晶",
+  crystalPromoText: "把 AI 幫你分析的水晶建議記下來，我也整理了對應各種需求與命盤的水晶選品，挑一顆陪你度過這段時間。",
+  crystalShopLink: "",
+  crystalShopButtonText: "逛逛水晶選品 →",
+  crystalLineText: "想更深入了解自己適合哪些水晶、怎麼搭配使用嗎？加我 LINE 聊聊 →",
+  crystalLineButtonText: "加 LINE 聊聊水晶 →",
+
+  // ===== 付費完整版設定 =====
+  // 客人輸入這組序號才能解鎖完整版。這只是前端簡易防護，不是完全防破解，
+  // 適合小型創作者使用；如果序號外流，改這裡換一組新的即可。
+  // 建議搭配下面的「付款後加 LINE 領取序號」流程：客人付款後要先截圖來加 LINE，
+  // 你確認訂單後再親自把這組序號傳給他——這樣你才能知道是誰買的、方便之後主動關心。
+  unlockCode: "SOULCODE688",
+  paidProductName: "命盤解讀完整版",
+  paidPriceText: "NT$ 688",
+  paidPurchaseLink: "https://pl.sl-pay.com/OGE8RydF",   // 購買連結（金流頁面、蝦皮、LINE Pay 等）
+
+  // 付款完成後的截圖領取提示（顯示在「前往購買」按鈕下方，引導客人加 LINE 才能拿到序號）
+  orderConfirmText: "付款完成後，請務必截圖訂單，加官方 LINE 告訴我，我會親自把「{product}」序號傳給你。",
+  orderConfirmButtonText: "加入官方 LINE 領取 →",
+
+  paidFeatureList: [
+    "可同時選擇多種命盤系統，跨系統交叉比對",
+    "全部 6 個主題完整解鎖（愛情、事業、財富、人際、成長、近期運勢）",
+    "每個主題的「延伸引導」深度追問一併解鎖",
+    "額外贈送「5個進階追問技巧」，讓 AI 回答更深入"
+  ],
+
+  // 完整版內容預覽（解鎖前先讓客人看到「完整版到底有什麼」，用來提高購買意願）
+  // 這段標語會顯示在預覽列表最上面
+  paidPreviewHeadline: "免費版讓你看見大方向，完整版讓你把自己從頭到尾讀透。",
+  // 每一項是一個吸引人的標題 + 說明，會用數字編號依序呈現
+  paidPreviewItems: [
+    { title: "你天生是什麼樣的人？", desc: "多系統交叉比對命盤，看見連你自己都說不清楚、別人卻一眼看不透的部分。" },
+    { title: "你在感情裡最容易踩的坑是什麼？", desc: "你的愛情模式、你容易吸引到的人，還有你在關係裡沒發現的慣性。" },
+    { title: "你天生是靠什麼賺錢的人？", desc: "你的財富模式和別人不一樣。你在哪裡賺錢最順？又在哪裡最容易漏財？" },
+    { title: "你這輩子真正的功課是什麼？", desc: "命盤裡藏著你這輩子要學會的課題，還有卡住你最久的盲點。" },
+    { title: "接下來這段時間，你該衝還是該守？", desc: "用「流年」的角度完整解鎖，幫你抓準行動與觀望的關鍵時間點。" }
+  ],
+  // 進階追問技巧的預覽標題（對應 ADVANCED_TIPS 五個問題，這裡只放簡短標籤當作「🔒 鎖住」的預告）
+  paidPreviewTechniques: [
+    "行動時機的精準提問",
+    "跨系統對照提問",
+    "挖掘沒說出口的盲點",
+    "把建議變成具體行動",
+    "五年後回頭看的視角"
+  ]
+};
+
+// 免費版限制：最多可選幾種命盤系統／幾個主題
+var FREE_SYSTEM_LIMIT = 1;
+var FREE_TOPIC_LIMIT = 1;
+/* ===================================================================== */
+
+var STORAGE_KEY = "chart_ai_prompt_kit_v1";
+
+/* ---------- systems ---------- */
+var SYSTEMS = [
+  {
+    id:"astrology", icon:"🌌", title:"西洋占星", desc:"太陽、月亮、上升與行星宮位",
+    toolName:"占星之門免費星盤", toolLink:"https://astrodoor.cc/horoscope.jsp",
+    steps:[
+      "依你的出生日期、時間、出生地產生你的本命星盤（時間不確定也可以先跳過，只是上升星座可能不準）",
+      "截圖整張星盤圖（含行星符號與宮位）"
+    ]
+  },
+  {
+    id:"humandesign", icon:"🧬", title:"人類圖", desc:"類型、內在權威與人生策略",
+    toolName:"Human Design Asia 免費人類圖", toolLink:"https://humandesignasia.org/get-your-chart/",
+    steps:[
+      "依你的姓名、出生日期、時間、出生地產生你的人類圖（時間不確定可以先填中午12:00）",
+      "截圖你的人體圖（含各能量中心顏色、閘門與通道）"
+    ]
+  },
+  {
+    id:"bazi", icon:"🀄", title:"八字", desc:"四柱、五行與日主特質",
+    toolName:"知命網免費八字排盤", toolLink:"https://www.astrology.tw/",
+    steps:[
+      "依你的出生日期、時間產生你的八字命盤",
+      "截圖四柱命盤（年柱、月柱、日柱、時柱）"
+    ]
+  },
+  {
+    id:"ziwei", icon:"🔯", title:"紫微斗數", desc:"命宮、十二宮與主星配置",
+    toolName:"Windada 免費紫微斗數", toolLink:"https://fate.windada.com/cgi-bin/fate",
+    steps:[
+      "依你的出生日期、時間、性別產生你的紫微命盤",
+      "截圖整張命盤（含十二宮與各主星）"
+    ]
+  }
+];
+
+var GUIDE_SUFFIX = "如果你想更了解我目前的實際狀況，請你反過來問我1-2個問題，我們可以接著聊下去。";
+var CRYSTAL_PROMPT = "根據我的命盤，有哪些水晶或能量石可能特別適合現在的我？可以說明這是根據命盤中的什麼特質或原因嗎？";
+
+var ADVANCED_TIPS = [
+  "如果要把你剛剛的建議，對應到接下來12個月的哪些時間點特別適合行動、哪些時間點該觀望，你會怎麼幫我分析？",
+  "我剛剛給你的命盤資訊如果不只一種，麻煩你特別指出這些系統之間彼此呼應、或互相補充的地方。",
+  "如果要更直接一點，你觀察到我沒有自己說出口、但命盤裡看得出來的盲點或恐懼是什麼？",
+  "根據以上的分析，如果你要給我三個這個月就可以開始做的具體行動，會是什麼？",
+  "如果我五年後回頭看現在的自己，命盤會希望我現在做出什麼樣的選擇？"
+];
+
+var TOPICS = [
+  {
+    id:"love", icon:"💗", title:"愛情感情", desc:"感情模式、對象緣分與相處課題",
+    prompts:[
+      "根據我的命盤，說明我在感情中的相處模式與需求是什麼？",
+      "我在感情裡最容易遇到的課題或盲點是什麼？可以舉一個具體的情境或例子嗎？",
+      "如果我想吸引到更適合我的對象、或讓現有的關係更穩定，我的命盤會給我什麼樣的建議？",
+      "在感情這個主題上，" + GUIDE_SUFFIX
+    ]
+  },
+  {
+    id:"career", icon:"💼", title:"事業工作", desc:"工作型態、發展方向與職場挑戰",
+    prompts:[
+      "根據我的命盤，說明我適合的工作型態與發展方向，例如適合團隊合作還是獨立作業、適合創意發想還是穩定執行？",
+      "我在職場上容易遇到的挑戰或阻礙是什麼？我通常會用什麼方式面對它？",
+      "接下來一段時間，我在事業上該把握的機會、或該特別留意的地方是什麼？",
+      "在事業這個主題上，" + GUIDE_SUFFIX
+    ]
+  },
+  {
+    id:"wealth", icon:"💰", title:"財富金錢", desc:"金錢價值觀、財富來源與理財傾向",
+    prompts:[
+      "根據我的命盤，說明我對金錢的價值觀和慣性模式，我是容易衝動消費、還是精打細算的類型？",
+      "我可能的財富來源，或比較適合我的理財、賺錢方式有哪些？",
+      "有沒有什麼跟金錢有關的課題，是我這個階段特別需要學習或留意的？",
+      "在財富這個主題上，" + GUIDE_SUFFIX
+    ]
+  },
+  {
+    id:"relationship", icon:"🤝", title:"人際關係", desc:"人際互動風格與相處之道",
+    prompts:[
+      "根據我的命盤，說明我在人際互動中的個性傾向，別人眼中的我可能是什麼樣子？",
+      "我通常適合什麼樣的朋友或夥伴？又容易跟什麼樣的人產生摩擦或誤解？",
+      "如果我想讓人際關係更順暢，我的命盤會建議我可以調整哪些互動方式？",
+      "在人際關係這個主題上，" + GUIDE_SUFFIX
+    ]
+  },
+  {
+    id:"growth", icon:"🌱", title:"自我成長與天賦", desc:"與生俱來的潛能與人生課題",
+    prompts:[
+      "從我的命盤整體來看，我與生俱來比較擅長、或容易被自己忽略的天賦是什麼？",
+      "我這輩子比較核心的功課，或需要面對的內在課題可能是什麼？",
+      "如果我想開始培養或發揮這些天賦，可以先從哪一件小事做起？",
+      "在自我成長這個主題上，" + GUIDE_SUFFIX
+    ]
+  },
+  {
+    id:"fortune", icon:"🔭", title:"近期運勢", desc:"近期到未來一段時間的整體走向",
+    prompts:[
+      "請幫我看看最近三個月的整體運勢重點，特別是感情、事業、金錢這幾個面向。",
+      "接下來這段時間，有沒有什麼需要特別留意的轉折點、或可能出現的挑戰？",
+      "我該怎麼把握這段時間的機會，讓自己過得更順一點？",
+      "接下來請你從「流年」的角度幫我分析：今年到明年這段時間，有哪些關鍵的月份或轉折點特別值得我留意？哪些時間適合主動出擊、哪些時間比較適合觀望沉潛？也請具體指出這段流年裡我最容易出現的機會和風險各是什麼，並給我1-2個現在就可以開始準備的具體行動。"
+    ]
+  }
+];
+
+/* ---------- state ---------- */
+var state = {
+  step: 0, // 0 welcome, 1 systems, 2 chart, 3 topics, 4 result
+  name:"",
+  selectedSystems: [],
+  selectedTopics: [],
+  unlocked: false
+};
+
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    var saved = JSON.parse(raw);
+    if(saved && typeof saved === "object"){
+      Object.assign(state, saved);
+    }
+  }catch(e){ console.error(e); }
+}
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+/* ---------- toast ---------- */
+var toastEl = document.getElementById("toast");
+var toastTimer = null;
+function showToast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 2200);
+}
+
+/* ---------- navigation ---------- */
+var STEP_IDS = ["step-welcome","step-systems","step-chart","step-topics","step-result"];
+function goToStep(n){
+  state.step = n;
+  saveState();
+  STEP_IDS.forEach(function(id, i){
+    document.getElementById(id).classList.toggle("active", i === n);
+  });
+  updateStepper(n);
+  if(n === 1) renderSystems();
+  if(n === 2) renderChartInstructions();
+  if(n === 3) renderTopics();
+  if(n === 4) renderResult();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function updateStepper(n){
+  var stepper = document.getElementById("stepper");
+  stepper.style.display = n === 0 ? "none" : "flex";
+  document.querySelectorAll(".step-dot").forEach(function(dot){
+    var s = Number(dot.dataset.step);
+    dot.classList.toggle("active", s === n);
+    dot.classList.toggle("done", s < n);
+    dot.textContent = s < n ? "✓" : s;
+  });
+  document.getElementById("line1").classList.toggle("done", n > 1);
+  document.getElementById("line2").classList.toggle("done", n > 2);
+  document.getElementById("line3").classList.toggle("done", n > 3);
+}
+
+document.getElementById("startBtn").addEventListener("click", function(){ goToStep(1); });
+document.getElementById("backToWelcome").addEventListener("click", function(){ goToStep(0); });
+document.getElementById("backToSystems").addEventListener("click", function(){ goToStep(1); });
+document.getElementById("backToChart").addEventListener("click", function(){ goToStep(2); });
+document.getElementById("editInfoBtn").addEventListener("click", function(){ goToStep(1); });
+
+document.getElementById("toChartBtn").addEventListener("click", function(){
+  if(state.selectedSystems.length === 0) return;
+  goToStep(2);
+});
+document.getElementById("toTopicsBtn").addEventListener("click", function(){
+  state.name = document.getElementById("in_name").value.trim();
+  saveState();
+  goToStep(3);
+});
+document.getElementById("toResultBtn").addEventListener("click", function(){
+  if(state.selectedTopics.length === 0) return;
+  goToStep(4);
+});
+
+document.getElementById("restartBtn").addEventListener("click", function(){
+  if(!confirm("確定要清空所有已填寫的資料，重新開始嗎？（完整版解鎖狀態也會一併清除）")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { step:0, name:"", selectedSystems:[], selectedTopics:[], unlocked:false };
+  document.getElementById("in_name").value = "";
+  goToStep(0);
+});
+
+/* ---------- unlock ---------- */
+function tryUnlock(code, statusEl){
+  if(!code || !code.trim()){
+    statusEl.textContent = "請先輸入序號";
+    statusEl.className = "unlock-status err";
+    return;
+  }
+  if(code.trim().toUpperCase() === (CONFIG.unlockCode || "").trim().toUpperCase()){
+    state.unlocked = true;
+    saveState();
+    statusEl.textContent = "🎉 解鎖成功！";
+    statusEl.className = "unlock-status ok";
+    showToast("完整版已解鎖！");
+    renderSystems();
+    renderTopics();
+    renderResult();
+  }else{
+    statusEl.textContent = "序號不正確，請確認後再試一次";
+    statusEl.className = "unlock-status err";
+  }
+}
+document.getElementById("unlockBtnWelcome").addEventListener("click", function(){
+  tryUnlock(document.getElementById("unlockInputWelcome").value, document.getElementById("unlockStatusWelcome"));
+});
+
+/* ---------- welcome extras ---------- */
+function renderWelcomeExtras(){
+  document.getElementById("brandMark").innerHTML = "✦ " + escapeHtml(CONFIG.brandName || "命盤引路");
+  var founderCard = document.getElementById("founderCard");
+  if(CONFIG.founderTitle || CONFIG.founderText){
+    document.getElementById("founderTitle").textContent = CONFIG.founderTitle || "先說說我的故事";
+    document.getElementById("founderText").textContent = CONFIG.founderText || "";
+    founderCard.style.display = "block";
+  }else{
+    founderCard.style.display = "none";
+  }
+  renderPageFooter();
+}
+
+function renderPageFooter(){
+  var footer = document.getElementById("pageFooter");
+  var parts = ["✦ " + escapeHtml(CONFIG.brandName || "")];
+  if(CONFIG.igLink){
+    parts.push('<a href="' + CONFIG.igLink + '" target="_blank" rel="noopener">IG ' + escapeHtml(CONFIG.igLabel || "Instagram") + '</a>');
+  }
+  if(CONFIG.lineLink){
+    parts.push('<a href="' + CONFIG.lineLink + '" target="_blank" rel="noopener">' + escapeHtml(CONFIG.lineLabel || "Line") + '</a>');
+  }
+  footer.innerHTML = parts.join("　·　");
+}
+
+/* ---------- systems step ---------- */
+function renderSystems(){
+  var grid = document.getElementById("systemGrid");
+  var atLimit = !state.unlocked && state.selectedSystems.length >= FREE_SYSTEM_LIMIT;
+  grid.innerHTML = SYSTEMS.map(function(s){
+    var sel = state.selectedSystems.indexOf(s.id) !== -1;
+    var locked = atLimit && !sel;
+    return '<div class="topic-card'+(sel?' selected':'')+(locked?' locked':'')+'" data-system="'+s.id+'">'+
+      (locked ? '<div class="t-lock">🔒</div>' : '<div class="t-check">'+(sel?'✓':'')+'</div>') +
+      '<div class="t-icon">'+s.icon+'</div>'+
+      '<div class="t-title">'+s.title+'</div>'+
+      '<div class="t-desc">'+s.desc+'</div>'+
+    '</div>';
+  }).join("");
+
+  var note = document.getElementById("systemLimitNote");
+  note.textContent = state.unlocked
+    ? "✓ 完整版已解鎖，可以自由複選、跨系統比對"
+    : "🔒 免費版最多可選 " + FREE_SYSTEM_LIMIT + " 種命盤系統，購買完整版解鎖跨系統比對";
+
+  grid.querySelectorAll(".topic-card").forEach(function(card){
+    card.addEventListener("click", function(){
+      var id = card.dataset.system;
+      var idx = state.selectedSystems.indexOf(id);
+      if(idx !== -1){
+        state.selectedSystems.splice(idx,1);
+      }else{
+        if(!state.unlocked && state.selectedSystems.length >= FREE_SYSTEM_LIMIT){
+          showToast("免費版最多可選 " + FREE_SYSTEM_LIMIT + " 種命盤系統，購買完整版解鎖跨系統比對");
+          return;
+        }
+        state.selectedSystems.push(id);
+      }
+      saveState();
+      renderSystems();
+      document.getElementById("toChartBtn").disabled = state.selectedSystems.length === 0;
+    });
+  });
+  document.getElementById("toChartBtn").disabled = state.selectedSystems.length === 0;
+}
+
+/* ---------- chart step ---------- */
+function renderChartInstructions(){
+  var wrap = document.getElementById("systemInstructions");
+  wrap.innerHTML = state.selectedSystems.map(function(sysId){
+    var s = SYSTEMS.find(function(x){ return x.id === sysId; });
+    if(!s) return "";
+    var stepsHtml = s.steps.map(function(st, i){
+      return '<li><div class="instruction-num">'+(i+1)+'</div><div class="instruction-text">'+st+'</div></li>';
+    }).join("");
+    return '<div class="system-instruction">'+
+      '<div class="si-head"><span>'+s.icon+'</span><span>'+s.title+'</span></div>'+
+      '<ul class="instruction-list">'+stepsHtml+'</ul>'+
+      '<a class="btn btn-secondary btn-block" href="'+s.toolLink+'" target="_blank" rel="noopener">前往「'+s.toolName+'」→</a>'+
+    '</div>';
+  }).join("");
+  document.getElementById("in_name").value = state.name || "";
+}
+
+/* ---------- topics step ---------- */
+function renderTopics(){
+  var grid = document.getElementById("topicGrid");
+  var atLimit = !state.unlocked && state.selectedTopics.length >= FREE_TOPIC_LIMIT;
+  grid.innerHTML = TOPICS.map(function(t){
+    var sel = state.selectedTopics.indexOf(t.id) !== -1;
+    var locked = atLimit && !sel;
+    return '<div class="topic-card'+(sel?' selected':'')+(locked?' locked':'')+'" data-topic="'+t.id+'">'+
+      (locked ? '<div class="t-lock">🔒</div>' : '<div class="t-check">'+(sel?'✓':'')+'</div>') +
+      '<div class="t-icon">'+t.icon+'</div>'+
+      '<div class="t-title">'+t.title+'</div>'+
+      '<div class="t-desc">'+t.desc+'</div>'+
+    '</div>';
+  }).join("");
+
+  var note = document.getElementById("topicLimitNote");
+  note.textContent = state.unlocked
+    ? "✓ 完整版已解鎖，6 個主題都能選"
+    : "🔒 免費版最多可選 " + FREE_TOPIC_LIMIT + " 個主題，購買完整版解鎖全部 6 個主題＋深度追問";
+
+  grid.querySelectorAll(".topic-card").forEach(function(card){
+    card.addEventListener("click", function(){
+      var id = card.dataset.topic;
+      var idx = state.selectedTopics.indexOf(id);
+      if(idx !== -1){
+        state.selectedTopics.splice(idx,1);
+      }else{
+        if(!state.unlocked && state.selectedTopics.length >= FREE_TOPIC_LIMIT){
+          showToast("免費版最多可選 " + FREE_TOPIC_LIMIT + " 個主題，購買完整版解鎖全部 6 個主題");
+          return;
+        }
+        state.selectedTopics.push(id);
+      }
+      saveState();
+      renderTopics();
+      document.getElementById("toResultBtn").disabled = state.selectedTopics.length === 0;
+    });
+  });
+  document.getElementById("toResultBtn").disabled = state.selectedTopics.length === 0;
+}
+
+/* ---------- build prompts ---------- */
+function buildBasePrompt(){
+  var systemNames = state.selectedSystems.map(function(id){
+    var s = SYSTEMS.find(function(x){ return x.id === id; });
+    return s ? s.title : "";
+  }).filter(Boolean);
+  var listText = systemNames.join("、") || "命盤";
+  var multi = systemNames.length > 1;
+
+  var lines = [];
+  lines.push("你現在要扮演一位專業、細膩且說話溫暖的命理引導師，同時熟悉" + listText + "。");
+  lines.push("");
+  lines.push("【你的核心理念，請貫穿整場對話】");
+  lines.push("一個人要真正改變自己的處境，不可能只靠「知道一次原因」就達成，而是要透過持續的「覺察 → 體悟 → 修正」，在生活裡不斷練習、調整自己；有修正，人生才會真的改變。因為人生是透過每天不同的選擇累積形成的，不可能一直做一樣的選擇，卻期待擁有不一樣的人生。命盤說的是「命」——我天生帶著什麼樣的種子與土壤；但「運」要怎麼改，其實就是透過每天的覺察與修正，一點一點形成後天的運，運氣就是這樣來的。命盤能幫我看清楚問題出在哪裡，但真正的改變，來自於我之後怎麼把你給的洞察落實到生活裡。所以請你不要只給我知識性的分析，更要陪我覺察、給我實際能練習的方法——這比單純告訴我「為什麼」更重要。");
+  lines.push("");
+  lines.push("等一下我會依序上傳我的" + listText + "命盤截圖給你，請你：");
+  lines.push("");
+  var n = 1;
+  lines.push(n++ + ". 仔細讀取每張截圖中的內容，一律以截圖中的資訊為準，不要另外用其他方式重新推算。如果截圖中有些地方看不清楚，請直接問我，不要用猜的。");
+  if(multi){
+    lines.push(n++ + ". 因為我提供了不只一種命盤，請你在解讀時，留意不同系統之間彼此呼應、或有趣對照的地方，讓我從不同角度更完整地認識自己。");
+  }
+  lines.push(n++ + ". 用大約500字，給我一段溫暖但專業、有深度的整體分析，多分析一些細節（例如個性特質、內在需求、可能的優勢與課題），讓我對自己有比較完整的認識，不要只是籠統帶過。");
+  lines.push(n++ + ". 說明完後，反過來問我1個引導式的小問題，幫助我更深入思考這段解讀跟我自己的關聯。");
+  lines.push(n++ + ". 之後我會針對不同主題再向你提問，請你之後的回答都延續同一份命盤解讀，並且在回答完後也可以視情況反問我一兩個小問題，像在跟我聊天一樣，而不是單方面輸出資訊。");
+  lines.push("");
+  lines.push("【解讀原則：種子法則＋原理＋行動方案】");
+  lines.push("請你依循以下這套「種子法則」的核心信念來解讀與給建議：");
+  lines.push("・這個世界上，只有「感受」是真的。人、事、物都可以拿來種種子——一個人給出什麼樣的感受，就是在種下什麼樣的種子。");
+  lines.push("・一個人想要的，往往不是「東西」本身，而是那個東西背後的「感受」。例如想要錢，很多時候要的其實是錢帶來的「安全感」；種子法則的重點是：想要什麼感受，就要先去給出那個感受，而不是被動等待別人給。");
+  lines.push("・覺察壞種子：提醒我去覺察，自己在生活中是不是在不知不覺間，給身邊的人相反的感受（例如嘴上說想要安全感，卻常常讓身邊的人感到不安、被批評、不被欣賞）——這種相反的感受就是「壞種子」，要先覺察、停止繼續種。");
+  lines.push("・種好種子，從最近的人開始：主動去創造我想要的那種感受，而且優先從父母跟伴侶開始種，因為他們是離我最近、最容易接觸到、也是「品質最好」的福田，在他們身上種下的種子最容易發芽、也最先影響我自己的生命狀態。");
+  lines.push("・也可以搭配「頻率共振（量子觀察者效應／吸引力法則）」的概念：一個人長期處在什麼樣的頻率，也會傾向吸引更多同樣頻率的人事物靠近，就像「觀察者會影響被觀察的事物」一樣，關注什麼，什麼就會被放大。");
+  lines.push("每次給建議時，請盡量做到以下三件事：");
+  lines.push("(1) 說明原理：簡短解釋這個建議「為什麼」有效，用種子法則／頻率共振這類語言，讓我不只知道「要做什麼」，還知道「為什麼有用」。例如：「感恩的原理是——當你持續給出感恩的感受，就是在為自己種下感恩的種子，種子會發芽、會被放大回到你身上，這是一種頻率共振，不只是心理安慰。」");
+  lines.push("(2) 引導覺察：視情況反問我，我想要的感受是什麼、我在生活中（尤其是對父母、伴侶這些最親近的人）有沒有不小心給出相反的感受，幫助我自己發現需要停止的「壞種子」。");
+  lines.push("(3) 給行動方案：具體列出1-3個我「這週就可以開始做」的小行動，並優先建議可以先從父母或伴侶身上開始練習（例如「這週主動跟伴侶說一句欣賞他的話」「打電話給爸媽，讓他們感受到你的安心與感謝」），越具體越好，不要空泛地說「要多感恩」。");
+  lines.push("");
+  lines.push("我的稱呼是：" + (state.name || "我") + "。我的命盤截圖如下（請稍等我依序上傳圖片，圖片都上傳後再開始解讀）：");
+  return lines.join("\n");
+}
+
+function renderResult(){
+  var listWrap = document.getElementById("promptList");
+  var html = "";
+
+  html += '<div class="prompt-card base" id="baseCard">' +
+    '<div class="prompt-card-head" data-toggle="base">' +
+      '<div class="h-left"><span class="h-icon">🪄</span><div><div class="h-title">開場設定指令（搭配命盤截圖一起送出）</div><div class="h-sub">先貼這段文字，同時上傳你的命盤截圖，之後的提問都會延續這份解讀</div></div></div>' +
+      '<span class="chevron open" id="chev-base">▾</span>' +
+    '</div>' +
+    '<div class="prompt-card-body open" id="body-base">' +
+      '<div class="prompt-item">' +
+        '<div class="prompt-text">' + escapeHtml(buildBasePrompt()) + '</div>' +
+        '<button class="copy-btn" data-copy-target="base-0">📋 複製這段指令</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  state.selectedTopics.forEach(function(topicId){
+    var t = TOPICS.find(function(x){ return x.id === topicId; });
+    if(!t) return;
+    html += '<div class="prompt-card">' +
+      '<div class="prompt-card-head" data-toggle="'+t.id+'">' +
+        '<div class="h-left"><span class="h-icon">'+t.icon+'</span><div><div class="h-title">'+t.title+'</div><div class="h-sub">'+t.desc+'</div></div></div>' +
+        '<button class="head-copy-btn" data-copy-topic="'+t.id+'">複製整個主題</button>' +
+        '<span class="chevron open" id="chev-'+t.id+'">▾</span>' +
+      '</div>' +
+      '<div class="prompt-card-body open" id="body-'+t.id+'">' +
+        t.prompts.map(function(p, i){
+          var isLast = i === t.prompts.length - 1;
+          if(isLast && !state.unlocked){
+            return '<div class="locked-item">🔒 延伸引導提問（完整版解鎖）</div>';
+          }
+          var label = isLast ? "延伸引導" : ("提問 " + (i+1));
+          return '<div class="prompt-item">' +
+            '<div class="prompt-item-num">' + label + '</div>' +
+            '<div class="prompt-text">' + escapeHtml(p) + '</div>' +
+            '<button class="copy-btn" data-copy-target="' + t.id + '-' + i + '">📋 複製這句提問</button>' +
+          '</div>';
+        }).join("") +
+      '</div>' +
+    '</div>';
+  });
+
+  html += '<div class="prompt-card crystal" id="crystalCard">' +
+    '<div class="prompt-card-head" data-toggle="crystal">' +
+      '<div class="h-left"><span class="h-icon">🔮</span><div><div class="h-title">水晶／能量石建議</div><div class="h-sub">順便問問 AI，有沒有適合現在的你的水晶</div></div></div>' +
+      '<span class="chevron open" id="chev-crystal">▾</span>' +
+    '</div>' +
+    '<div class="prompt-card-body open" id="body-crystal">' +
+      '<div class="prompt-item">' +
+        '<div class="prompt-text">' + escapeHtml(CRYSTAL_PROMPT) + '</div>' +
+        '<button class="copy-btn" data-copy-target="crystal-0">📋 複製這句提問</button>' +
+      '</div>' +
+      (CONFIG.crystalShopEnabled && CONFIG.crystalShopLink ?
+        '<div class="crystal-shop-box">' + escapeHtml(CONFIG.crystalPromoTitle) + '<br>' + escapeHtml(CONFIG.crystalPromoText) +
+        '<br><a class="btn btn-secondary btn-sm" href="' + CONFIG.crystalShopLink + '" target="_blank" rel="noopener">' + escapeHtml(CONFIG.crystalShopButtonText) + '</a>' +
+        '</div>' : '') +
+      (CONFIG.lineLink ?
+        '<div class="crystal-shop-box">' + escapeHtml(CONFIG.crystalLineText || "") +
+        '<br><a class="btn btn-secondary btn-sm" href="' + CONFIG.lineLink + '" target="_blank" rel="noopener">' + escapeHtml(CONFIG.crystalLineButtonText || "加 LINE 聊聊 →") + '</a>' +
+        '</div>' : '') +
+    '</div>' +
+  '</div>';
+
+  if(state.unlocked){
+    html += '<div class="prompt-card advanced" id="advancedCard">' +
+      '<div class="prompt-card-head" data-toggle="advanced">' +
+        '<div class="h-left"><span class="h-icon">🎓</span><div><div class="h-title">5 個進階追問技巧（完整版限定）</div><div class="h-sub">讓 AI 的回答更深入、更具體</div></div></div>' +
+        '<span class="chevron open" id="chev-advanced">▾</span>' +
+      '</div>' +
+      '<div class="prompt-card-body open" id="body-advanced">' +
+        ADVANCED_TIPS.map(function(p, i){
+          return '<div class="prompt-item">' +
+            '<div class="prompt-item-num">技巧 ' + (i+1) + '</div>' +
+            '<div class="prompt-text">' + escapeHtml(p) + '</div>' +
+            '<button class="copy-btn" data-copy-target="advanced-' + i + '">📋 複製這句提問</button>' +
+          '</div>';
+        }).join("") +
+      '</div>' +
+    '</div>';
+  }
+
+  listWrap.innerHTML = html;
+
+  // toggle accordions
+  listWrap.querySelectorAll(".prompt-card-head").forEach(function(head){
+    head.addEventListener("click", function(){
+      var key = head.dataset.toggle;
+      var body = document.getElementById("body-"+key);
+      var chev = document.getElementById("chev-"+key);
+      body.classList.toggle("open");
+      chev.classList.toggle("open");
+    });
+  });
+
+  // copy buttons
+  var promptMap = { "base-0": buildBasePrompt(), "crystal-0": CRYSTAL_PROMPT };
+  state.selectedTopics.forEach(function(topicId){
+    var t = TOPICS.find(function(x){ return x.id === topicId; });
+    if(!t) return;
+    t.prompts.forEach(function(p, i){ promptMap[topicId+"-"+i] = p; });
+  });
+  ADVANCED_TIPS.forEach(function(p, i){ promptMap["advanced-"+i] = p; });
+
+  listWrap.querySelectorAll(".copy-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var key = btn.dataset.copyTarget;
+      copyText(promptMap[key], btn);
+    });
+  });
+
+  // per-topic "copy whole topic" buttons
+  listWrap.querySelectorAll(".head-copy-btn").forEach(function(btn){
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      var topicId = btn.dataset.copyTopic;
+      var t = TOPICS.find(function(x){ return x.id === topicId; });
+      if(!t) return;
+      var usablePrompts = t.prompts.filter(function(p, i){
+        return !(i === t.prompts.length - 1 && !state.unlocked);
+      });
+      var text = "【" + t.title + "】\n\n" + usablePrompts.map(function(p, i){
+        var isLast = i === usablePrompts.length - 1 && state.unlocked;
+        var label = isLast ? "延伸引導" : ("提問" + (i+1));
+        return label + "：" + p;
+      }).join("\n\n");
+      copyText(text, btn);
+    });
+  });
+
+  renderUnlockedBanner();
+  renderUnlockCard();
+  renderCta();
+}
+
+function renderUnlockedBanner(){
+  var el = document.getElementById("unlockedBanner");
+  el.innerHTML = state.unlocked ? '<div class="unlocked-banner">✓ 完整版已解鎖，感謝你的支持！</div>' : "";
+}
+
+function renderUnlockCard(){
+  var wrap = document.getElementById("unlockCardWrap");
+  if(state.unlocked){
+    wrap.innerHTML = "";
+    return;
+  }
+  var features = (CONFIG.paidFeatureList || []).map(function(f){
+    return '<li>✓ ' + escapeHtml(f) + '</li>';
+  }).join("");
+  var previewItems = (CONFIG.paidPreviewItems || []).map(function(item, i){
+    return '<li class="preview-item">' +
+      '<div class="preview-num">' + (i+1) + '</div>' +
+      '<div>' +
+        '<div class="preview-title">' + escapeHtml(item.title) + '</div>' +
+        '<div class="preview-desc">' + escapeHtml(item.desc) + '</div>' +
+      '</div>' +
+    '</li>';
+  }).join("");
+  var previewTechniques = (CONFIG.paidPreviewTechniques || []).map(function(t, i){
+    return '<li><span class="pl-icon">🔒</span><span class="pl-text">追問技巧 ' + (i+1) + '．' + escapeHtml(t) + '</span></li>';
+  }).join("");
+  wrap.innerHTML =
+    '<div class="unlock-card">' +
+      '<span class="u-badge">完整版</span>' +
+      '<h3>解鎖「' + escapeHtml(CONFIG.paidProductName || "完整版") + '」</h3>' +
+      '<p>免費版只能小小體驗一下，完整版可以讓 AI 從更多角度、更深入地陪你聊完整個命盤。以下是完整版會帶你看見的內容：</p>' +
+      '<div class="preview-block">' +
+        (CONFIG.paidPreviewHeadline ? '<div class="preview-headline">' + escapeHtml(CONFIG.paidPreviewHeadline) + '</div>' : '') +
+        '<ul class="preview-list">' + previewItems + '</ul>' +
+        '<div class="preview-locked">' +
+          '<div class="preview-locked-head">🔒 讓 AI 說到你起雞皮疙瘩的進階追問技巧</div>' +
+          '<div class="preview-locked-desc">五種精準問法，把你自己都說不清楚的感覺，問出真正的答案。</div>' +
+          '<ul class="preview-locked-list">' + previewTechniques + '</ul>' +
+        '</div>' +
+      '</div>' +
+      '<hr class="preview-divider">' +
+      '<ul class="unlock-feature-list">' + features + '</ul>' +
+      '<div class="unlock-price">' + escapeHtml(CONFIG.paidPriceText || "") + '</div>' +
+      '<a class="btn btn-gold btn-block" href="' + (CONFIG.paidPurchaseLink || "#") + '" target="_blank" rel="noopener" style="margin-bottom:16px;">前往購買 →</a>' +
+      (CONFIG.orderConfirmText ?
+        '<div class="order-confirm-box">' +
+          '<p>📸 ' + escapeHtml((CONFIG.orderConfirmText || "").replace("{product}", CONFIG.paidProductName || "完整版")) + '</p>' +
+          '<a class="btn btn-line btn-block" href="' + (CONFIG.lineLink || "#") + '" target="_blank" rel="noopener">💬 ' + escapeHtml(CONFIG.orderConfirmButtonText || "加入官方 LINE 領取 →") + '</a>' +
+        '</div>'
+      : "") +
+      '<div class="unlock-form-row">' +
+        '<input type="text" id="unlockInputResult" placeholder="已經從 LINE 收到序號了？在這裡輸入">' +
+        '<button class="btn btn-secondary" id="unlockBtnResult">解鎖</button>' +
+      '</div>' +
+      '<div class="unlock-status" id="unlockStatusResult"></div>' +
+    '</div>';
+  document.getElementById("unlockBtnResult").addEventListener("click", function(){
+    tryUnlock(document.getElementById("unlockInputResult").value, document.getElementById("unlockStatusResult"));
+  });
+}
+
+function renderCta(){
+  document.getElementById("ctaHeadline").textContent = CONFIG.ctaHeadline;
+  document.getElementById("ctaText").textContent = CONFIG.ctaText;
+  var bookBtn = document.getElementById("ctaBookBtn");
+  bookBtn.textContent = CONFIG.ctaButtonText;
+  bookBtn.href = CONFIG.bookingLink || "#";
+
+  var extra = document.getElementById("ctaExtraLinks");
+  var links = [];
+  if(CONFIG.igLink) links.push('<a href="'+CONFIG.igLink+'" target="_blank" rel="noopener">'+escapeHtml(CONFIG.igLabel||"Instagram")+'</a>');
+  if(CONFIG.lineLink) links.push('<a href="'+CONFIG.lineLink+'" target="_blank" rel="noopener">'+escapeHtml(CONFIG.lineLabel||"Line")+'</a>');
+  extra.innerHTML = links.join("");
+}
+
+function buildFullCopyText(){
+  var parts = ["【開場設定指令】（請搭配命盤截圖一起貼給 AI）\n\n" + buildBasePrompt()];
+  state.selectedTopics.forEach(function(topicId){
+    var t = TOPICS.find(function(x){ return x.id === topicId; });
+    if(!t) return;
+    var usablePrompts = t.prompts.filter(function(p, i){
+      return !(i === t.prompts.length - 1 && !state.unlocked);
+    });
+    var body = usablePrompts.map(function(p, i){
+      var isLast = i === usablePrompts.length - 1 && state.unlocked;
+      var label = isLast ? "延伸引導" : ("提問" + (i+1));
+      return label + "：" + p;
+    }).join("\n\n");
+    parts.push("【" + t.title + "】\n\n" + body);
+  });
+  parts.push("【水晶／能量石建議】\n\n" + CRYSTAL_PROMPT);
+  if(state.unlocked){
+    var tipsBody = ADVANCED_TIPS.map(function(p, i){ return "技巧" + (i+1) + "：" + p; }).join("\n\n");
+    parts.push("【5個進階追問技巧】\n\n" + tipsBody);
+  }
+  return parts.join("\n\n－－－\n\n");
+}
+
+document.getElementById("copyAllBtn").addEventListener("click", function(){
+  copyText(buildFullCopyText(), document.getElementById("copyAllBtn"));
+});
+
+/* ---------- utils ---------- */
+function escapeHtml(str){
+  if(str === null || str === undefined) return "";
+  return String(str).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
+function copyText(text, btn){
+  function done(){
+    showToast("已複製到剪貼簿");
+    if(btn){
+      var original = btn.textContent;
+      btn.textContent = "✓ 已複製";
+      btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = original; btn.classList.remove("copied"); }, 1600);
+    }
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(function(){ legacyCopy(text, done); });
+  }else{
+    legacyCopy(text, done);
+  }
+}
+function legacyCopy(text, cb){
+  var ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.left = "-9999px";
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try{ document.execCommand("copy"); cb(); }catch(e){ showToast("複製失敗，請手動選取文字複製"); }
+  document.body.removeChild(ta);
+}
+
+/* ---------- init ---------- */
+loadState();
+renderWelcomeExtras();
+var initialStep = state.step || 0;
+if(initialStep >= 2 && state.selectedSystems.length === 0) initialStep = 1;
+if(initialStep >= 4 && state.selectedTopics.length === 0) initialStep = 3;
+goToStep(initialStep);
+
+})();
+</script>
+</body>
+</html>
