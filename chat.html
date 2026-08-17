@@ -200,7 +200,7 @@ function addBubble(role, text, imgUrl){
   avatar.textContent = role === "user" ? "🙂" : "🗺️";
   var bubble = document.createElement("div");
   bubble.className = "bubble";
-  bubble.innerHTML = linkify(escapeHtml(text || ""));
+  bubble.innerHTML = renderMarkdownLite(text || "");
   if(imgUrl){
     var img = document.createElement("img");
     img.className = "thumb";
@@ -217,10 +217,29 @@ function addBubble(role, text, imgUrl){
 function escapeHtml(str){
   return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
-function linkify(str){
-  return str.replace(/(https?:\/\/[^\s]+)/g, function(url){
-    return '<a href="'+url+'" target="_blank" rel="noopener">'+url+'</a>';
+
+/* 簡易 markdown 轉換：處理 AI 回覆裡常見的 **粗體**、[文字](網址) 連結格式，
+   以及沒有用 markdown 包起來的裸網址，全部轉成安全的 HTML。 */
+function renderMarkdownLite(str){
+  var html = escapeHtml(str);
+
+  // [文字](網址) 這種 markdown 連結格式
+  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s()]+)\)/g, function(_, label, url){
+    return '<a href="'+url+'" target="_blank" rel="noopener">'+label+'</a>';
   });
+
+  // **粗體**
+  html = html.replace(/\*\*([^\n*]+)\*\*/g, '<strong>$1</strong>');
+
+  // 剩下沒被處理過的裸網址，才自動加上連結（避免把已經轉好的 <a> 標籤裡的網址重複處理）
+  var segments = html.split(/(<a\b[^>]*>[\s\S]*?<\/a>)/g);
+  for(var i = 0; i < segments.length; i++){
+    if(segments[i].indexOf("<a ") === 0) continue;
+    segments[i] = segments[i].replace(/(https?:\/\/[^\s<]+)/g, function(url){
+      return '<a href="'+url+'" target="_blank" rel="noopener">'+url+'</a>';
+    });
+  }
+  return segments.join("");
 }
 
 function showTyping(){
