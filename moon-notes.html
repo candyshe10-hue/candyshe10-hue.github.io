@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>【內部用】序號產生器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#C9938A; --light-pink:#F5E6E3;
+  --blue:#7A9BAD; --light-blue:#E3EDF3;
+  --sage:#9AAE9B; --light-sage:#E8F0E8;
+  --cream:#FAF3EE; --bg:#FAFAF8; --dark:#37352F; --medium:#5A5248; --gray:#9B9A97;
+  --gold:#B8934A; --light-gold:#F3E9D2;
+  --red:#B8564A; --light-red:#F5E3E0;
+  --radius-lg:20px; --radius-md:14px;
+  --shadow-card:0 6px 24px rgba(55,53,47,0.09);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background:var(--bg); color:var(--dark); min-height:100vh; -webkit-font-smoothing:antialiased;
+  padding-bottom:60px;
+}
+.shell{max-width:640px; margin:0 auto; padding:36px 20px 20px 20px;}
+.notice{
+  background:var(--light-gold); border:1.5px dashed var(--gold); border-radius:var(--radius-md);
+  padding:16px 18px; font-size:13px; color:#6B5424; line-height:1.9; margin-bottom:24px;
+}
+.hero-title{font-size:20px; font-weight:900; margin:0 0 8px 0;}
+.hero-sub{font-size:13.5px; color:var(--medium); line-height:1.8; margin-bottom:24px;}
+
+.card{
+  background:#fff; border-radius:var(--radius-lg); padding:24px 24px; box-shadow:var(--shadow-card);
+  border:1px solid rgba(55,53,47,0.05); margin-bottom:20px;
+}
+.card-label{font-size:13px; font-weight:900; color:var(--gold); margin-bottom:12px; display:flex; align-items:center; gap:6px;}
+
+.field{margin-bottom:14px;}
+.field label{display:block; font-size:12px; color:var(--medium); margin-bottom:6px; font-weight:700;}
+.pw-input, .max-input{
+  width:100%; border:1.5px solid rgba(55,53,47,0.16); border-radius:10px;
+  padding:12px 14px; font-size:15px; background:var(--bg); color:var(--dark); font-weight:700;
+}
+.pw-input:focus, .max-input:focus{outline:none; border-color:var(--gold); background:#fff;}
+.field-hint{font-size:11.5px; color:var(--gray); margin-top:6px;}
+
+.row-2{display:flex; gap:12px;}
+.row-2 .field{flex:1;}
+
+.btn{
+  border:none; border-radius:24px; padding:13px 24px; font-size:14px; font-weight:700;
+  cursor:pointer; background:var(--gold); color:#fff; width:100%;
+}
+.btn:disabled{opacity:0.55; cursor:not-allowed;}
+.btn.secondary{background:var(--blue);}
+.btn.copied{background:var(--sage);}
+
+.result-box{
+  margin-top:16px; background:var(--cream); border-radius:10px; padding:18px; display:none;
+}
+.result-box.show{display:block;}
+.result-code{font-size:24px; font-weight:900; letter-spacing:1px; color:var(--dark); text-align:center; margin-bottom:6px;}
+.result-meta{font-size:12.5px; color:var(--medium); text-align:center; margin-bottom:14px;}
+.error-box{
+  margin-top:14px; background:var(--light-red); border:1px solid var(--red); border-radius:10px;
+  padding:12px 14px; font-size:13px; color:#7A3229; display:none;
+}
+.error-box.show{display:block;}
+
+table{width:100%; border-collapse:collapse; font-size:13px; margin-top:8px;}
+th{text-align:left; font-size:11.5px; color:var(--gray); font-weight:700; padding:6px 8px; border-bottom:1.5px solid rgba(55,53,47,0.1);}
+td{padding:9px 8px; border-bottom:1px solid rgba(55,53,47,0.06);}
+td.code-cell{font-weight:700; font-family:monospace; font-size:13px;}
+.tag{display:inline-block; font-size:11px; font-weight:700; padding:3px 9px; border-radius:12px;}
+.tag.avail{background:var(--light-sage); color:#4B6B4C;}
+.tag.using{background:var(--light-gold); color:#6B5424;}
+.tag.done{background:var(--light-red); color:#7A3229;}
+.copy-mini{
+  border:none; background:none; color:var(--gold); font-size:12px; font-weight:700; cursor:pointer;
+  padding:2px 6px;
+}
+.list-empty{font-size:13px; color:var(--gray); text-align:center; padding:20px 0;}
+.loading{font-size:13px; color:var(--gray); text-align:center; padding:12px 0;}
+.summary-bar{display:flex; gap:16px; font-size:12px; color:var(--medium); margin-bottom:10px; flex-wrap:wrap;}
+.summary-bar b{color:var(--dark);}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="hero-title">🔑 靈魂地圖・序號產生器（內部用）</div>
+  <div class="hero-sub">給有客人購買完整版時，快速產生一組新序號用，不用再跑去 Cloudflare KV 頁面手動新增，也不用擔心手滑改到其他設定。</div>
+
+  <div class="notice">
+    <b>使用方式：</b>① 輸入下面的管理密碼（不會被存起來，每次重新整理都要重新輸入）→ ② 按「產生新序號」拿到一組新的 SOUL- 開頭序號 → ③ 複製後貼進出貨歡迎訊息裡傳給客人。密碼只有你自己知道，這個網址也沒有連結到任何地方，別人猜不到、就算猜到也進不去。
+  </div>
+
+  <div class="card">
+    <div class="card-label">① 管理密碼</div>
+    <div class="field">
+      <input type="password" class="pw-input" id="pwInput" placeholder="輸入管理密碼" autocomplete="off">
+      <div class="field-hint">這組密碼只存在 Cloudflare 後台，離開這一頁就不會留下紀錄。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">② 產生新序號</div>
+    <div class="row-2">
+      <div class="field">
+        <label>額度上限（則）</label>
+        <input type="number" class="max-input" id="maxInput" value="60" min="1">
+      </div>
+    </div>
+    <button class="btn" id="genBtn">✨ 產生新序號</button>
+    <div class="result-box" id="resultBox">
+      <div class="result-code" id="resultCode"></div>
+      <div class="result-meta" id="resultMeta"></div>
+      <button class="btn copy-mini-full" id="copyResultBtn" style="background:var(--sage);">📋 複製這組序號</button>
+    </div>
+    <div class="error-box" id="genError"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">③ 目前所有序號使用狀況</div>
+    <button class="btn secondary" id="listBtn">📋 列出所有序號</button>
+    <div id="listArea"></div>
+    <div class="error-box" id="listError"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var WORKER_URL = "https://soulmap-gemini-proxy.candyshe10.workers.dev/";
+
+var pwInput = document.getElementById("pwInput");
+var maxInput = document.getElementById("maxInput");
+var genBtn = document.getElementById("genBtn");
+var resultBox = document.getElementById("resultBox");
+var resultCode = document.getElementById("resultCode");
+var resultMeta = document.getElementById("resultMeta");
+var copyResultBtn = document.getElementById("copyResultBtn");
+var genError = document.getElementById("genError");
+var listBtn = document.getElementById("listBtn");
+var listArea = document.getElementById("listArea");
+var listError = document.getElementById("listError");
+
+function showError(box, msg){
+  box.textContent = msg;
+  box.classList.add("show");
+}
+function hideError(box){
+  box.classList.remove("show");
+  box.textContent = "";
+}
+
+async function callAdmin(action, extra){
+  var pw = pwInput.value.trim();
+  if (!pw) {
+    throw new Error("請先輸入管理密碼");
+  }
+  var body = Object.assign({ admin_action: action, admin_secret: pw }, extra || {});
+  var res;
+  try {
+    res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+  } catch (e) {
+    throw new Error("連不到伺服器，請檢查網路連線");
+  }
+  var json = await res.json().catch(function(){ return null; });
+  if (!res.ok) {
+    if (res.status === 401) throw new Error("密碼錯誤，請確認管理密碼");
+    throw new Error((json && json.error) ? json.error : ("發生錯誤（狀態碼 " + res.status + "）"));
+  }
+  return json;
+}
+
+genBtn.addEventListener("click", async function(){
+  hideError(genError);
+  resultBox.classList.remove("show");
+  genBtn.disabled = true;
+  genBtn.textContent = "產生中…";
+  try {
+    var max = parseInt(maxInput.value, 10);
+    if (!max || max < 1) max = 60;
+    var data = await callAdmin("generate_code", { max: max });
+    resultCode.textContent = data.code;
+    resultMeta.textContent = "額度上限：" + data.max + " 則（目前已用 " + data.used + " 則）";
+    resultBox.classList.add("show");
+  } catch (e) {
+    showError(genError, e.message);
+  } finally {
+    genBtn.disabled = false;
+    genBtn.textContent = "✨ 產生新序號";
+  }
+});
+
+copyResultBtn.addEventListener("click", function(){
+  var code = resultCode.textContent;
+  if (!code) return;
+  navigator.clipboard.writeText(code).then(function(){
+    var orig = copyResultBtn.textContent;
+    copyResultBtn.textContent = "✓ 已複製";
+    setTimeout(function(){ copyResultBtn.textContent = orig; }, 1500);
+  });
+});
+
+function tagFor(used, max){
+  if (used === null || max === null) return '<span class="tag using">資料異常</span>';
+  if (used >= max) return '<span class="tag done">已用完</span>';
+  if (used === 0) return '<span class="tag avail">可用</span>';
+  return '<span class="tag using">使用中</span>';
+}
+
+listBtn.addEventListener("click", async function(){
+  hideError(listError);
+  listBtn.disabled = true;
+  listBtn.textContent = "載入中…";
+  listArea.innerHTML = '<div class="loading">載入中…</div>';
+  try {
+    var data = await callAdmin("list_codes", {});
+    var codes = data.codes || [];
+    if (codes.length === 0) {
+      listArea.innerHTML = '<div class="list-empty">目前還沒有任何序號</div>';
+      listBtn.disabled = false;
+      listBtn.textContent = "📋 列出所有序號";
+      return;
+    }
+    var availCount = codes.filter(function(c){ return c.used === 0; }).length;
+    var usingCount = codes.filter(function(c){ return c.used !== null && c.max !== null && c.used > 0 && c.used < c.max; }).length;
+    var doneCount = codes.filter(function(c){ return c.used !== null && c.max !== null && c.used >= c.max; }).length;
+
+    var html = '<div class="summary-bar">' +
+      '<span>共 <b>' + codes.length + '</b> 組</span>' +
+      '<span>可用 <b>' + availCount + '</b></span>' +
+      '<span>使用中 <b>' + usingCount + '</b></span>' +
+      '<span>已用完 <b>' + doneCount + '</b></span>' +
+      '</div>';
+    html += '<table><thead><tr><th>序號</th><th>使用狀況</th><th>狀態</th><th></th></tr></thead><tbody>';
+    codes.forEach(function(c){
+      html += '<tr>' +
+        '<td class="code-cell">' + escapeHtml(c.code) + '</td>' +
+        '<td>' + (c.used === null ? "—" : c.used) + ' / ' + (c.max === null ? "—" : c.max) + '</td>' +
+        '<td>' + tagFor(c.used, c.max) + '</td>' +
+        '<td><button class="copy-mini" data-code="' + escapeHtml(c.code) + '">複製</button></td>' +
+        '</tr>';
+    });
+    html += '</tbody></table>';
+    listArea.innerHTML = html;
+
+    listArea.querySelectorAll(".copy-mini").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var code = btn.getAttribute("data-code");
+        navigator.clipboard.writeText(code).then(function(){
+          var orig = btn.textContent;
+          btn.textContent = "✓";
+          setTimeout(function(){ btn.textContent = orig; }, 1200);
+        });
+      });
+    });
+  } catch (e) {
+    showError(listError, e.message);
+    listArea.innerHTML = "";
+  } finally {
+    listBtn.disabled = false;
+    listBtn.textContent = "📋 列出所有序號";
+  }
+});
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+  });
+}
+
+})();
+</script>
+</body>
+</html>
