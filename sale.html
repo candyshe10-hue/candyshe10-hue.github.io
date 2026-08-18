@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>巧敲的靈魂地圖・完整版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#C9938A; --soft-pink:#E8C4BC; --light-pink:#F5E6E3;
+  --blue:#7A9BAD; --soft-blue:#B8CFDA; --light-blue:#E3EDF3;
+  --sage:#9AAE9B; --light-sage:#E8F0E8;
+  --cream:#FAF3EE; --bg:#FAFAF8; --dark:#37352F; --medium:#5A5248; --gray:#9B9A97;
+  --gold:#B8934A; --light-gold:#F3E9D2;
+  --radius-lg:20px; --radius-md:14px; --radius-sm:9px;
+  --shadow-soft:0 2px 14px rgba(55,53,47,0.07);
+  --shadow-card:0 6px 24px rgba(55,53,47,0.09);
+  --shadow-lift:0 14px 36px rgba(55,53,47,0.16);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%, var(--light-pink) 0%, transparent 45%),
+    radial-gradient(circle at 90% 10%, var(--light-blue) 0%, transparent 40%),
+    var(--bg);
+  color:var(--dark);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:86px;
+}
+::selection{background:var(--soft-pink);}
+a{color:inherit;}
+
+.shell{max-width:680px; margin:0 auto; padding:40px 20px 20px 20px;}
+
+.hero{text-align:center; margin-bottom:32px;}
+.hero-emoji{font-size:44px; margin-bottom:14px;}
+.hero-title{font-size:23px; font-weight:900; line-height:1.5; margin:0 0 10px 0;}
+.hero-title .accent{color:var(--pink);}
+.hero-sub{font-size:14.5px; color:var(--medium); line-height:1.8;}
+
+.card{
+  background:#fff; border-radius:var(--radius-lg); padding:30px 26px; box-shadow:var(--shadow-card);
+  border:1px solid rgba(55,53,47,0.05); margin-bottom:20px;
+}
+.section-title{font-size:19px; font-weight:900; margin:0 0 16px 0; line-height:1.5;}
+.body-text{font-size:14px; color:var(--medium); line-height:2; white-space:pre-wrap;}
+.body-text b{color:var(--dark); font-weight:700;}
+
+.quote-block{
+  background:var(--light-sage); border-radius:var(--radius-md); padding:22px 24px; margin:22px 0;
+  border-left:3px solid var(--sage);
+}
+.quote-block p{font-size:15px; font-weight:700; color:#3F5641; line-height:1.9; margin:0;}
+.quote-block .qmark{color:var(--sage); font-size:13px; font-weight:700; margin-top:8px;}
+
+.trial-card{
+  background:linear-gradient(135deg, var(--light-blue) 0%, #fff 100%); border:1.5px solid var(--blue);
+  text-align:center;
+}
+.trial-card .t-eyebrow{font-size:12px; font-weight:700; color:var(--blue); letter-spacing:1px; margin-bottom:8px;}
+.trial-card h2{font-size:18px; font-weight:900; margin:0 0 12px 0;}
+.trial-card p{font-size:13.5px; color:var(--medium); line-height:1.9; margin-bottom:20px;}
+
+.btn{
+  border:none; border-radius:30px; padding:14px 26px; font-size:14.5px; font-weight:700;
+  cursor:pointer; transition:all .15s ease; display:inline-flex; align-items:center; gap:8px; text-decoration:none;
+}
+.btn-primary{background:var(--pink); color:#fff; box-shadow:var(--shadow-soft);}
+.btn-primary:hover{background:#bb7f75;}
+.btn-blue{background:var(--blue); color:#fff;}
+.btn-blue:hover{background:#688a9c;}
+.btn-gold{background:var(--gold); color:#fff;}
+.btn-gold:hover{background:#a17f3f;}
+.btn-line{background:#06C755; color:#fff;}
+.btn-line:hover{background:#05a648;}
+.btn-block{width:100%; justify-content:center;}
+
+.preview-list{list-style:none; margin:0 0 4px 0; padding:0;}
+.preview-item{display:flex; gap:12px; padding:14px 0; border-bottom:1px dashed rgba(184,147,74,0.28);}
+.preview-item:last-child{border-bottom:none;}
+.preview-num{
+  flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--gold); color:#fff;
+  font-size:12.5px; font-weight:900; display:flex; align-items:center; justify-content:center; margin-top:1px;
+}
+.preview-title{font-size:14px; font-weight:700; color:var(--dark); margin-bottom:4px;}
+.preview-desc{font-size:12.5px; color:var(--medium); line-height:1.75;}
+
+.preview-locked{
+  margin-top:14px; padding:18px 18px 16px 18px; border-radius:var(--radius-md);
+  background:rgba(184,147,74,0.08); border:1.5px dashed rgba(184,147,74,0.4);
+}
+.preview-locked-head{font-size:14px; font-weight:900; color:var(--dark); margin-bottom:5px; display:flex; align-items:center; gap:6px;}
+.preview-locked-desc{font-size:12.5px; color:var(--medium); line-height:1.7; margin-bottom:12px;}
+.preview-locked-list{list-style:none; margin:0; padding:0;}
+.preview-locked-list li{
+  font-size:12.5px; color:var(--medium); padding:8px 0; border-top:1px solid rgba(184,147,74,0.2);
+  display:flex; align-items:center; gap:8px;
+}
+.preview-locked-list li:first-child{border-top:none;}
+.preview-locked-list .pl-icon{flex-shrink:0; font-size:11px; color:var(--gold);}
+.preview-locked-list .pl-text{color:var(--dark); font-weight:600;}
+
+.bridge-card{background:var(--light-pink); text-align:left;}
+.bridge-card .b-lines{font-size:14px; color:#7A4F47; line-height:2.1; font-style:italic; margin-bottom:6px;}
+.bridge-card .b-close{font-size:14px; font-weight:700; color:var(--dark); margin-top:10px;}
+
+.pill-row{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:20px;}
+.pill{padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:700;}
+.pill.sys{background:var(--light-pink); color:#9C5D53;}
+.pill.topic{background:var(--light-blue); color:#3E5A68;}
+
+.how-list{list-style:none; margin:0; padding:0;}
+.how-list li{display:flex; gap:12px; padding:10px 0; font-size:13.5px; color:var(--medium); line-height:1.8;}
+.how-list .h-num{flex-shrink:0; color:var(--pink); font-weight:900;}
+
+.unlock-card{
+  background:linear-gradient(135deg, var(--light-gold) 0%, #fff 100%); border:1.5px solid var(--gold);
+}
+.unlock-card .u-badge{display:inline-block; background:var(--gold); color:#fff; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:14px;}
+.unlock-card h2{font-size:19px; font-weight:900; margin:0 0 10px 0;}
+.unlock-feature-list{list-style:none; margin:0 0 20px 0; padding:0;}
+.unlock-feature-list li{font-size:13.5px; color:var(--dark); padding:6px 0; display:flex; gap:8px; line-height:1.7;}
+.unlock-price{font-size:26px; font-weight:900; color:var(--gold); margin-bottom:6px;}
+.unlock-price-note{font-size:12px; color:var(--medium); margin-bottom:18px;}
+
+.order-confirm-box{
+  background:var(--light-sage); border-radius:var(--radius-md); padding:16px 18px; margin-top:16px; text-align:center;
+}
+.order-confirm-box p{font-size:12.5px; color:#4C6355; line-height:1.8; margin:0 0 12px 0;}
+
+.faq-item{border-top:1px solid rgba(55,53,47,0.08); padding:16px 0;}
+.faq-item:first-child{border-top:none;}
+.faq-q{display:flex; justify-content:space-between; align-items:center; gap:10px; cursor:pointer; font-size:14px; font-weight:700; color:var(--dark);}
+.faq-q .arrow{transition:transform .2s ease; color:var(--gray); font-size:12px; flex-shrink:0;}
+.faq-q .arrow.open{transform:rotate(90deg);}
+.faq-a{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+.faq-a.open{max-height:400px; margin-top:10px;}
+.faq-a p{font-size:13px; color:var(--medium); line-height:1.9; margin:0;}
+
+.page-footer{
+  text-align:center; margin-top:10px; padding-top:20px;
+  font-size:12px; color:var(--gray);
+}
+.page-footer a{color:var(--pink); text-decoration:none; font-weight:700;}
+.disclaimer{text-align:center; font-size:11.5px; color:var(--gray); margin-top:14px; line-height:1.7;}
+
+.sticky-bar{
+  position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:1px solid rgba(55,53,47,0.1);
+  box-shadow:0 -4px 20px rgba(55,53,47,0.08); padding:12px 18px; display:flex; align-items:center; justify-content:space-between;
+  gap:14px; z-index:100;
+}
+.sticky-bar .sb-label{font-size:12px; color:var(--gray); font-weight:700;}
+.sticky-bar .sb-price{font-size:15px; color:var(--dark); font-weight:900;}
+.sticky-bar .btn{padding:11px 22px; font-size:13.5px; flex-shrink:0;}
+
+@media (max-width:480px){
+  .card{padding:24px 20px;}
+  .hero-title{font-size:20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <div class="hero">
+    <div class="hero-emoji">🗺️</div>
+    <div class="hero-title">巧敲的<span class="accent">靈魂地圖・完整版</span></div>
+    <div class="hero-sub">你的命盤裡，藏著你自己都還沒看懂的答案——<br>我陪你一起把它看懂，也陪你搞懂「運」怎麼來。</div>
+  </div>
+
+  <div class="card" id="storyCard">
+    <div class="section-title">在你決定之前，先聽我說一件事</div>
+    <div class="body-text" id="storyText"></div>
+    <div class="quote-block">
+      <p>「覺察，才會有體悟；有體悟，才會真正修正；有修正，人生才會真的改變。」</p>
+      <div class="qmark">—— 巧敲</div>
+    </div>
+  </div>
+
+  <div class="card trial-card">
+    <div class="t-eyebrow">還沒體驗過嗎</div>
+    <h2>先免費聊一次看看</h2>
+    <p>不用先付費，直接上傳你的命盤截圖，就可以體驗一次「靈魂地圖」的解讀方式——很多人聊完的第一句話都是「原來是這樣」。</p>
+    <a class="btn btn-blue btn-block" href="https://candyshe10-hue.github.io/chat.html" target="_blank" rel="noopener">免費體驗一次解讀 →</a>
+  </div>
+
+  <div class="card">
+    <div class="section-title">完整版可以陪你聊懂什麼</div>
+    <div class="body-text" style="margin-bottom:6px;">免費版只能小小體驗一下——選 1 種命盤系統、聊 1 個主題。完整版可以讓 AI 從更多角度、更深入地陪你把整個命盤聊透，包括：</div>
+    <ul class="preview-list">
+      <li class="preview-item">
+        <div class="preview-num">1</div>
+        <div><div class="preview-title">你天生是什麼樣的人？</div><div class="preview-desc">多系統交叉比對命盤，看見連你自己都說不清楚、別人卻一眼看不透的部分。</div></div>
+      </li>
+      <li class="preview-item">
+        <div class="preview-num">2</div>
+        <div><div class="preview-title">你在感情裡最容易踩的坑是什麼？</div><div class="preview-desc">你的愛情模式、你容易吸引到的人，還有你在關係裡沒發現的慣性。</div></div>
+      </li>
+      <li class="preview-item">
+        <div class="preview-num">3</div>
+        <div><div class="preview-title">你天生是靠什麼賺錢的人？</div><div class="preview-desc">你的財富模式和別人不一樣。你在哪裡賺錢最順？又在哪裡最容易漏財？</div></div>
+      </li>
+      <li class="preview-item">
+        <div class="preview-num">4</div>
+        <div><div class="preview-title">你這輩子真正的功課是什麼？</div><div class="preview-desc">命盤裡藏著你這輩子要學會的課題，還有卡住你最久的盲點。</div></div>
+      </li>
+      <li class="preview-item">
+        <div class="preview-num">5</div>
+        <div><div class="preview-title">接下來這段時間，你該衝還是該守？</div><div class="preview-desc">用「流年」的角度完整解鎖，幫你抓準行動與觀望的關鍵時間點。</div></div>
+      </li>
+    </ul>
+    <div class="preview-locked">
+      <div class="preview-locked-head">🔒 加碼贈送：5 組讓 AI 問到你起雞皮疙瘩的追問文字</div>
+      <div class="preview-locked-desc">解鎖完整版之後，我會額外傳給你 5 組「進階追問文字」——當你聊完覺得還想再挖深一點，直接貼給 AI 引導員，就能把你自己都說不清楚的感覺，問出真正的答案。</div>
+      <ul class="preview-locked-list">
+        <li><span class="pl-icon">🔒</span><span class="pl-text">行動時機的精準提問</span></li>
+        <li><span class="pl-icon">🔒</span><span class="pl-text">跨系統對照提問</span></li>
+        <li><span class="pl-icon">🔒</span><span class="pl-text">挖掘沒說出口的盲點</span></li>
+        <li><span class="pl-icon">🔒</span><span class="pl-text">把建議變成具體行動</span></li>
+        <li><span class="pl-icon">🔒</span><span class="pl-text">五年後回頭看的視角</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card bridge-card">
+    <div class="b-lines">
+      那我的財富模式是什麼<br>
+      我在感情裡到底在等什麼<br>
+      接下來這段時間我該衝還是該守
+    </div>
+    <div class="b-close">很多人免費體驗完之後，都會開始想這些——這些，完整版裡都有 ✦</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="text-align:center;">一次對話，把自己從頭到尾聊透</div>
+    <div class="pill-row">
+      <span class="pill sys">🌌 西洋占星</span>
+      <span class="pill sys">🧬 人類圖</span>
+      <span class="pill sys">🀄 八字</span>
+      <span class="pill sys">🔯 紫微斗數</span>
+    </div>
+    <div class="pill-row">
+      <span class="pill topic">愛情感情</span>
+      <span class="pill topic">事業工作</span>
+      <span class="pill topic">財富金錢</span>
+      <span class="pill topic">人際關係</span>
+      <span class="pill topic">自我成長與天賦</span>
+      <span class="pill topic">近期運勢</span>
+    </div>
+    <ul class="how-list">
+      <li><span class="h-num">1.</span><span>用免費網站產生你的命盤截圖（我會告訴你去哪裡產生），不用自己會算命</span></li>
+      <li><span class="h-num">2.</span><span>把截圖傳給 AI 引導員，可以一次傳不只一種系統，直接做跨系統比對</span></li>
+      <li><span class="h-num">3.</span><span>6 個主題想聊哪個聊哪個，AI 會像我親自陪你解盤一樣，一段一段慢慢聊、中間反問你問題</span></li>
+    </ul>
+  </div>
+
+  <div class="card unlock-card" id="priceCard">
+    <span class="u-badge">完整版</span>
+    <h2>解鎖「靈魂地圖・完整版」</h2>
+    <ul class="unlock-feature-list">
+      <li>✓ 可同時選擇多種命盤系統，跨系統交叉比對</li>
+      <li>✓ 全部 6 個主題完整解鎖（愛情、事業、財富、人際、成長、近期運勢）</li>
+      <li>✓ 解鎖後加碼傳送「5 組進階追問文字」，聊到意猶未盡時貼給 AI，問出更深一層的答案</li>
+      <li>✓ 這組序號可以陪你來回深聊到 60 則，足夠把一次探索聊透，不會聊到一半被打斷</li>
+    </ul>
+    <div class="unlock-price">NT$ 688</div>
+    <div class="unlock-price-note">一組專屬序號，供你這次深度對話使用</div>
+    <a class="btn btn-gold btn-block" href="https://pl.sl-pay.com/OGE8RydF" target="_blank" rel="noopener">前往購買 →</a>
+    <div class="order-confirm-box">
+      <p>📸 付款完成後，請務必截圖訂單，加官方 LINE 告訴我，我會親自把「完整版」序號傳給你，之後就可以拿序號到靈魂地圖網站解鎖繼續使用。</p>
+      <a class="btn btn-line btn-block" href="https://lin.ee/OyVrggK" target="_blank" rel="noopener">💬 加入官方 LINE 領取 →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">常見問題</div>
+    <div id="faqList"></div>
+  </div>
+
+  <div class="page-footer" id="pageFooter"></div>
+  <div class="disclaimer">解盤內容僅供參考，最終決定在你自己手上。不取代專業醫療／法律／財務諮詢。</div>
+
+</div>
+
+<div class="sticky-bar">
+  <div>
+    <div class="sb-label">✦ 靈魂地圖・完整版</div>
+    <div class="sb-price">NT$ 688</div>
+  </div>
+  <a class="btn btn-gold" href="#priceCard">前往購買 →</a>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var STORY_TEXT = "我是巧敲，我從小就對玄學命理很著迷，對探索自己、探索這個宇宙一直有很強烈的好奇心。八字、星盤、紫微、人類圖、易經……各種命理系統我幾乎都接觸過，以前沒事就會去算塔羅，想問問感情、未來方向這些困惑。與其說是想「知道答案」，不如說我一直很好奇——這個世界、還有人，到底是怎麼一回事。\n\n我學占星學了很久，18歲就開始接觸，這幾年因為經營自媒體，才真正一頭栽進去深入鑽研。這些年下來，我幫上百人解過盤，慢慢發現大家會遇到的問題其實都很類似——多半離不開感情跟錢和工作。但我也發現一件事：一個人想要真正改變命運，從來不是靠算一次命就能解決的，還需要在生活裡不斷練習、調整自己。舉例來說，你可能透過解盤知道自己在感情裡常常跟伴侶吵架，是因為不擅長溝通，但知道這件事之後，你還是不知道具體該怎麼調整。所以我很確定：覺察，才會有體悟；有體悟，才會真正修正；有修正，人生才會真的改變。\n\n這也是我做「靈魂地圖」的原因。我把這幾年解盤累積的心法，一句一句設定進了這位 AI 引導員裡——你不用自己準備 AI 帳號、也不用複製貼上任何指令，直接上傳命盤截圖、開始聊就好。免費版可以先讓你體驗一下方向，完整版能陪你把整個命盤、六個主題都聊透，也搭配「5個進階追問技巧」，讓你問出連自己都說不清楚的答案。";
+
+var FAQS = [
+  { q: "我不懂命理也可以用嗎？", a: "完全可以，不需要你自己會算命。你只要照著提示到免費網站產生命盤截圖，上傳給 AI 引導員，剩下的交給它讀圖、跟你聊就好。" },
+  { q: "完整版要先準備什麼嗎？", a: "不用準備任何 AI 帳號，也不用自己複製貼上指令。只要先產生你的命盤截圖（我會告訴你去哪個免費網站產生），付款拿到序號之後就可以直接開始聊。" },
+  { q: "完整版可以聊多久／多少則？", a: "這組序號可以支援你進行一段完整的深度對話，最多 60 則，足夠你把想聊的主題、想跨系統比對的地方都聊透，不會聊到一半突然被打斷。如果聊完覺得意猶未盡，也歡迎加 LINE 找我聊聊一對一或流年更新。" },
+  { q: "付款後怎麼拿到序號？", a: "付款完成後，請截圖訂單，加官方 LINE 告訴「靈魂地圖」，我會親自確認訂單、把專屬序號傳給你，你就可以拿序號到網站解鎖完整版。" },
+  { q: "準嗎？", a: "這裡用的解讀方式，是我這幾年親自幫上百人解盤之後歸納整理出來的心法，不是通用的算命公式，也不是 AI 憑空生成的答案。不過命盤解讀終究是參考，能幫你看懂自己卡在哪裡、可以怎麼練習調整，最終的決定還是在你自己手上。" }
+];
+
+var CONFIG = {
+  brandName: "靈魂地圖",
+  igLink: "https://instagram.com/chiao_ah",
+  igLabel: "@chiao_ah",
+  lineLink: "https://lin.ee/OyVrggK",
+  lineLabel: "Line 加好友"
+};
+
+function escapeHtml(str){
+  if(str === null || str === undefined) return "";
+  return String(str).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
+
+document.getElementById("storyText").textContent = STORY_TEXT;
+
+var faqList = document.getElementById("faqList");
+faqList.innerHTML = FAQS.map(function(f, i){
+  return '<div class="faq-item">' +
+    '<div class="faq-q" data-faq="' + i + '"><span>' + escapeHtml(f.q) + '</span><span class="arrow" id="arrow-' + i + '">▶</span></div>' +
+    '<div class="faq-a" id="faq-' + i + '"><p>' + escapeHtml(f.a) + '</p></div>' +
+  '</div>';
+}).join("");
+faqList.querySelectorAll(".faq-q").forEach(function(q){
+  q.addEventListener("click", function(){
+    var i = q.dataset.faq;
+    document.getElementById("faq-" + i).classList.toggle("open");
+    document.getElementById("arrow-" + i).classList.toggle("open");
+  });
+});
+
+var footer = document.getElementById("pageFooter");
+var parts = ["✦ " + escapeHtml(CONFIG.brandName || "")];
+if(CONFIG.igLink){
+  parts.push('<a href="' + CONFIG.igLink + '" target="_blank" rel="noopener">IG ' + escapeHtml(CONFIG.igLabel || "Instagram") + '</a>');
+}
+if(CONFIG.lineLink){
+  parts.push('<a href="' + CONFIG.lineLink + '" target="_blank" rel="noopener">' + escapeHtml(CONFIG.lineLabel || "Line") + '</a>');
+}
+footer.innerHTML = parts.join("　·　");
+
+})();
+</script>
+</body>
+</html>
