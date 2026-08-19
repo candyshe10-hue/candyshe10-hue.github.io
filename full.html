@@ -51,6 +51,19 @@ input,textarea{font-family:inherit;}
 }
 .sample-btn-inline:hover{background:var(--light-gold);}
 
+/* ---------- App 內建瀏覽器提醒 ---------- */
+.inapp-banner{
+  display:none; align-items:flex-start; gap:8px;
+  background:var(--light-gold); color:#7A5F27; font-size:11.5px; font-weight:600; line-height:1.6;
+  padding:10px 14px;
+}
+.inapp-banner.show{display:flex;}
+.inapp-banner span{flex:1;}
+.inapp-banner button{
+  background:none; border:none; color:#7A5F27; font-size:15px; cursor:pointer; flex-shrink:0; padding:0 2px; line-height:1; opacity:0.7;
+}
+.inapp-banner button:hover{opacity:1;}
+
 /* ---------- 範例截圖 Modal ---------- */
 .sample-overlay{
   display:none; position:fixed; inset:0; background:rgba(55,53,47,0.55); z-index:200;
@@ -175,6 +188,11 @@ input,textarea{font-family:inherit;}
 </head>
 <body>
 
+<div class="inapp-banner" id="inappBanner">
+  <span>📌 偵測到你正在 App 內建瀏覽器中開啟，畫面右上角點「⋯」或分享圖示，選「用瀏覽器開啟」（Safari／Chrome），體驗會更順暢喔！</span>
+  <button type="button" id="inappBannerClose" aria-label="關閉提示">✕</button>
+</div>
+
 <div class="topbar" id="topbar" style="display:none;">
   <div>
     <div class="mark">靈魂<span>地圖</span>・完整版</div>
@@ -248,6 +266,25 @@ input,textarea{font-family:inherit;}
 </div>
 
 <script>
+/* 偵測 Instagram／Facebook／LINE 等 App 內建瀏覽器，提醒使用者改用一般瀏覽器開啟，
+   避免在內建瀏覽器裡切換頁面或跳出時，對話畫面被中斷或跳掉。 */
+(function(){
+  var ua = navigator.userAgent || "";
+  var isInApp = /Instagram|FBAN|FBAV|FB_IAB|FBIOS|Line\//i.test(ua);
+  if(!isInApp) return;
+  if(sessionStorage.getItem("inappBannerDismissed") === "1") return;
+  var banner = document.getElementById("inappBanner");
+  if(!banner) return;
+  banner.classList.add("show");
+  var closeBtn = document.getElementById("inappBannerClose");
+  if(closeBtn){
+    closeBtn.addEventListener("click", function(){
+      banner.classList.remove("show");
+      sessionStorage.setItem("inappBannerDismissed", "1");
+    });
+  }
+})();
+
 /* =========================================================================
    設定區——這裡不再放 API 金鑰！
    ========================================================================= */
