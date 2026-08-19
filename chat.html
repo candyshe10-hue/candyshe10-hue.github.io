@@ -259,6 +259,13 @@ function scrollToBottom(){
   chatWrap.scrollTop = chatWrap.scrollHeight;
 }
 
+/* AI 回覆通常比較長，如果直接捲到最下面，使用者會看到回覆的「結尾」，
+   反而不會好好看完整段內容。這裡改成把這則新訊息的「最上面」捲到聊天室
+   可視範圍的頂端，讓使用者從頭開始看，看完再自己往下捲。 */
+function scrollToMessageTop(el){
+  el.scrollIntoView({ block: "start", behavior: "smooth" });
+}
+
 function addBubble(role, text, imgUrl){
   var msg = document.createElement("div");
   msg.className = "msg " + (role === "user" ? "user" : "ai");
@@ -277,7 +284,11 @@ function addBubble(role, text, imgUrl){
   msg.appendChild(avatar);
   msg.appendChild(bubble);
   chatInner.appendChild(msg);
-  scrollToBottom();
+  if(role === "user"){
+    scrollToBottom();
+  } else {
+    scrollToMessageTop(msg);
+  }
   return bubble;
 }
 
