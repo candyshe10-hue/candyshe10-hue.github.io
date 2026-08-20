@@ -145,6 +145,18 @@ a{color:inherit;}
 .unlock-price{font-size:26px; font-weight:900; color:var(--gold); margin-bottom:6px;}
 .unlock-price-note{font-size:12px; color:var(--medium); margin-bottom:18px;}
 
+.testimonial-card{
+  background:#fff; border:1px solid rgba(55,53,47,0.08); border-radius:var(--radius-md);
+  padding:18px 20px; margin:0 0 14px 0;
+}
+.testimonial-card .t-tag{
+  display:inline-block; font-size:11px; font-weight:700; color:var(--pink);
+  background:rgba(214,124,110,0.1); padding:3px 10px; border-radius:20px; margin-bottom:10px;
+}
+.testimonial-card .t-quote{font-size:13.5px; color:var(--dark); line-height:1.9; margin:0;}
+.testimonial-card .t-quote::before{content:"“"; color:var(--gold); font-weight:900;}
+.testimonial-card .t-quote::after{content:"”"; color:var(--gold); font-weight:900;}
+
 .order-confirm-box{
   background:var(--light-sage); border-radius:var(--radius-md); padding:16px 18px; margin-top:16px; text-align:center;
 }
@@ -276,6 +288,11 @@ a{color:inherit;}
       <li><span class="h-num">2.</span><span>把截圖傳給 AI 引導員，先聊你現在最卡的那個狀態</span></li>
       <li><span class="h-num">3.</span><span>兩種卡住的地方都能深入聊，AI 會像我親自陪你解盤一樣，一段一段慢慢聊、中間反問你問題，最後還會幫你看懂這兩者是不是同一顆種子</span></li>
     </ul>
+  </div>
+
+  <div class="testimonial-card">
+    <span class="t-tag">💬 事業卡關・真實客人回饋</span>
+    <p class="t-quote">謝謝巧敲設計這個系統，讓我可以更認識自己，也知道怎麼運用在生活上。尤其是現在事業卡關的部分，看完不只引導我怎麼做，也給了我一個不同的觀點，讓我能夠真的去執行。</p>
   </div>
 
   <div class="card unlock-card" id="priceCard">
