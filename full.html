@@ -363,16 +363,21 @@ var usageMax = 60;
 var isCapped = false;
 
 /* ---------- localStorage 存讀（讓使用者關掉頁面後回來還能接續） ---------- */
+function collectMessagesFromDOM(){
+  var messages = [];
+  var bubbles = chatInner.querySelectorAll(".msg");
+  bubbles.forEach(function(m){
+    var role = m.classList.contains("user") ? "user" : "ai";
+    var bubbleEl = m.querySelector(".bubble");
+    var text = bubbleEl ? bubbleEl.getAttribute("data-raw") || "" : "";
+    messages.push({ role: role, text: text });
+  });
+  return messages;
+}
+
 function saveSession(){
+  var messages = collectMessagesFromDOM();
   try{
-    var messages = [];
-    var bubbles = chatInner.querySelectorAll(".msg");
-    bubbles.forEach(function(m){
-      var role = m.classList.contains("user") ? "user" : "ai";
-      var bubbleEl = m.querySelector(".bubble");
-      var text = bubbleEl ? bubbleEl.getAttribute("data-raw") || "" : "";
-      messages.push({ role: role, text: text });
-    });
     var session = {
       code: unlockCode,
       previousInteractionId: previousInteractionId,
@@ -383,6 +388,27 @@ function saveSession(){
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
   }catch(e){ /* 存不進去也沒關係，不影響對話 */ }
+  syncMessagesToServer(messages);
+}
+
+/* 把目前的對話紀錄同步存回伺服器（跟序號綁在一起），這樣即使使用者換
+   裝置、換瀏覽器，重新輸入同一組序號時也能接續之前聊過的內容，不會
+   因為只存在單一瀏覽器的 localStorage 裡而不見。同步失敗就默默略過，
+   不影響使用者當下的對話體驗。 */
+function syncMessagesToServer(messages){
+  if(!unlockCode) return;
+  try{
+    fetch(CONFIG.workerUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code: unlockCode,
+        action: "save_messages",
+        messages: messages,
+        previousInteractionId: previousInteractionId
+      })
+    }).catch(function(){ /* 同步失敗就算了 */ });
+  }catch(e){ /* ignore */ }
 }
 function loadSession(){
   try{
@@ -554,9 +580,16 @@ function tryUnlock(){
       usageUsed = data.used || 0;
       usageMax = data.max || 60;
       isCapped = usageUsed >= usageMax;
+      previousInteractionId = data.previousInteractionId || null;
       showChatScreen();
       updateUsageUI();
-      insertSampleButtonAfterSystems(addBubble("ai", GREETING));
+      if(data.messages && data.messages.length){
+        // 這組序號在其他裝置／瀏覽器已經聊過，接續顯示之前的對話紀錄
+        data.messages.forEach(function(m){ addBubble(m.role, m.text); });
+        scrollToBottom();
+      } else {
+        insertSampleButtonAfterSystems(addBubble("ai", GREETING));
+      }
       if(isCapped) lockInputForCap();
       saveSession();
     } else {
@@ -805,11 +838,39 @@ function callGemini(inputParts){
         usageMax = data.max;
         updateUsageUI();
         if(usageUsed >= usageMax) lockInputForCap();
+
+        // 如果伺服器上的對話紀錄比目前畫面上看到的還多（例如剛剛在別的
+        // 裝置／瀏覽器用同一組序號續聊過），就用伺服器的版本補齊，
+        // 避免這個裝置看到的還是舊的、比較短的對話。
+        var localCount = chatInner.querySelectorAll(".msg").length;
+        if(data.messages && data.messages.length > localCount){
+          chatInner.innerHTML = "";
+          data.messages.forEach(function(m){ addBubble(m.role, m.text); });
+          scrollToBottom();
+        }
+        if(typeof data.previousInteractionId === "string" && data.previousInteractionId){
+          previousInteractionId = data.previousInteractionId;
+        }
         saveSession();
       }
     })
     .catch(function(){ /* 背景確認失敗就算了，不打斷使用者 */ });
   }
+})();
+
+/* 如果網址帶了 ?code=XXXXX（例如剛付款完成、從自動產生序號的頁面
+   點過來），而且這個瀏覽器還沒有本地對話紀錄，就自動帶入序號並直接
+   幫使用者解鎖，省去他自己複製貼上、按按鈕的步驟。 */
+(function autoUnlockFromUrl(){
+  if(unlockCode) return; // 已經有本地存的對話紀錄，直接接續用那個就好
+  try{
+    var params = new URLSearchParams(window.location.search);
+    var urlCode = params.get("code");
+    if(urlCode){
+      codeInput.value = urlCode.trim();
+      tryUnlock();
+    }
+  }catch(e){ /* ignore */ }
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "e7210588e220453c8231539d3471f334"}'></script><!-- End Cloudflare Web Analytics -->
