@@ -115,6 +115,10 @@ td.code-cell{font-weight:700; font-family:monospace; font-size:13px;}
         <input type="number" class="max-input" id="maxInput" value="60" min="1">
       </div>
     </div>
+    <div class="field">
+      <label>客人 Email（選填，之後她忘記序號時方便查）</label>
+      <input type="email" class="max-input" id="emailInput" placeholder="沒有的話可以留空">
+    </div>
     <button class="btn" id="genBtn">✨ 產生新序號</button>
     <div class="result-box" id="resultBox">
       <div class="result-code" id="resultCode"></div>
@@ -127,6 +131,10 @@ td.code-cell{font-weight:700; font-family:monospace; font-size:13px;}
   <div class="card">
     <div class="card-label">③ 目前所有序號使用狀況</div>
     <button class="btn secondary" id="listBtn">📋 列出所有序號</button>
+    <div class="field" id="searchField" style="display:none; margin-top:14px;">
+      <label>依 Email 或序號搜尋（客人問「我忘記序號了」時用這個查）</label>
+      <input type="text" class="max-input" id="searchInput" placeholder="輸入客人的 email 或序號片段">
+    </div>
     <div id="listArea"></div>
     <div class="error-box" id="listError"></div>
   </div>
@@ -140,6 +148,7 @@ var WORKER_URL = "https://soulmap-gemini-proxy.candyshe10.workers.dev/";
 
 var pwInput = document.getElementById("pwInput");
 var maxInput = document.getElementById("maxInput");
+var emailInput = document.getElementById("emailInput");
 var genBtn = document.getElementById("genBtn");
 var resultBox = document.getElementById("resultBox");
 var resultCode = document.getElementById("resultCode");
@@ -149,6 +158,9 @@ var genError = document.getElementById("genError");
 var listBtn = document.getElementById("listBtn");
 var listArea = document.getElementById("listArea");
 var listError = document.getElementById("listError");
+var searchField = document.getElementById("searchField");
+var searchInput = document.getElementById("searchInput");
+var allCodes = []; // 記住最後一次「列出所有序號」的結果，讓搜尋不用重打一次 API
 
 function showError(box, msg){
   box.textContent = msg;
@@ -191,9 +203,11 @@ genBtn.addEventListener("click", async function(){
   try {
     var max = parseInt(maxInput.value, 10);
     if (!max || max < 1) max = 60;
-    var data = await callAdmin("generate_code", { max: max });
+    var email = emailInput.value.trim();
+    var data = await callAdmin("generate_code", { max: max, email: email || undefined });
     resultCode.textContent = data.code;
-    resultMeta.textContent = "額度上限：" + data.max + " 則（目前已用 " + data.used + " 則）";
+    resultMeta.textContent = "額度上限：" + data.max + " 則（目前已用 " + data.used + " 則）" +
+      (data.email ? "　·　" + data.email : "");
     resultBox.classList.add("show");
   } catch (e) {
     showError(genError, e.message);
@@ -225,47 +239,13 @@ listBtn.addEventListener("click", async function(){
   listBtn.disabled = true;
   listBtn.textContent = "載入中…";
   listArea.innerHTML = '<div class="loading">載入中…</div>';
+  searchField.style.display = "none";
   try {
     var data = await callAdmin("list_codes", {});
-    var codes = data.codes || [];
-    if (codes.length === 0) {
-      listArea.innerHTML = '<div class="list-empty">目前還沒有任何序號</div>';
-      listBtn.disabled = false;
-      listBtn.textContent = "📋 列出所有序號";
-      return;
-    }
-    var availCount = codes.filter(function(c){ return c.used === 0; }).length;
-    var usingCount = codes.filter(function(c){ return c.used !== null && c.max !== null && c.used > 0 && c.used < c.max; }).length;
-    var doneCount = codes.filter(function(c){ return c.used !== null && c.max !== null && c.used >= c.max; }).length;
-
-    var html = '<div class="summary-bar">' +
-      '<span>共 <b>' + codes.length + '</b> 組</span>' +
-      '<span>可用 <b>' + availCount + '</b></span>' +
-      '<span>使用中 <b>' + usingCount + '</b></span>' +
-      '<span>已用完 <b>' + doneCount + '</b></span>' +
-      '</div>';
-    html += '<table><thead><tr><th>序號</th><th>使用狀況</th><th>狀態</th><th></th></tr></thead><tbody>';
-    codes.forEach(function(c){
-      html += '<tr>' +
-        '<td class="code-cell">' + escapeHtml(c.code) + '</td>' +
-        '<td>' + (c.used === null ? "—" : c.used) + ' / ' + (c.max === null ? "—" : c.max) + '</td>' +
-        '<td>' + tagFor(c.used, c.max) + '</td>' +
-        '<td><button class="copy-mini" data-code="' + escapeHtml(c.code) + '">複製</button></td>' +
-        '</tr>';
-    });
-    html += '</tbody></table>';
-    listArea.innerHTML = html;
-
-    listArea.querySelectorAll(".copy-mini").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        var code = btn.getAttribute("data-code");
-        navigator.clipboard.writeText(code).then(function(){
-          var orig = btn.textContent;
-          btn.textContent = "✓";
-          setTimeout(function(){ btn.textContent = orig; }, 1200);
-        });
-      });
-    });
+    allCodes = data.codes || [];
+    searchInput.value = "";
+    if (allCodes.length > 0) searchField.style.display = "block";
+    renderCodesTable(allCodes);
   } catch (e) {
     showError(listError, e.message);
     listArea.innerHTML = "";
@@ -274,6 +254,61 @@ listBtn.addEventListener("click", async function(){
     listBtn.textContent = "📋 列出所有序號";
   }
 });
+
+searchInput.addEventListener("input", function(){
+  var q = searchInput.value.trim().toLowerCase();
+  if (!q) {
+    renderCodesTable(allCodes);
+    return;
+  }
+  var filtered = allCodes.filter(function(c){
+    return (c.code && c.code.toLowerCase().indexOf(q) !== -1) ||
+      (c.email && c.email.toLowerCase().indexOf(q) !== -1);
+  });
+  renderCodesTable(filtered, q);
+});
+
+function renderCodesTable(codes, searchedFor){
+  if (codes.length === 0) {
+    listArea.innerHTML = '<div class="list-empty">' +
+      (searchedFor ? "找不到符合「" + escapeHtml(searchedFor) + "」的序號" : "目前還沒有任何序號") +
+      '</div>';
+    return;
+  }
+  var availCount = codes.filter(function(c){ return c.used === 0; }).length;
+  var usingCount = codes.filter(function(c){ return c.used !== null && c.max !== null && c.used > 0 && c.used < c.max; }).length;
+  var doneCount = codes.filter(function(c){ return c.used !== null && c.max !== null && c.used >= c.max; }).length;
+
+  var html = '<div class="summary-bar">' +
+    '<span>共 <b>' + codes.length + '</b> 組</span>' +
+    '<span>可用 <b>' + availCount + '</b></span>' +
+    '<span>使用中 <b>' + usingCount + '</b></span>' +
+    '<span>已用完 <b>' + doneCount + '</b></span>' +
+    '</div>';
+  html += '<table><thead><tr><th>序號</th><th>Email</th><th>使用狀況</th><th>狀態</th><th></th></tr></thead><tbody>';
+  codes.forEach(function(c){
+    html += '<tr>' +
+      '<td class="code-cell">' + escapeHtml(c.code) + '</td>' +
+      '<td>' + (c.email ? escapeHtml(c.email) : '<span style="color:var(--gray);">—</span>') + '</td>' +
+      '<td>' + (c.used === null ? "—" : c.used) + ' / ' + (c.max === null ? "—" : c.max) + '</td>' +
+      '<td>' + tagFor(c.used, c.max) + '</td>' +
+      '<td><button class="copy-mini" data-code="' + escapeHtml(c.code) + '">複製</button></td>' +
+      '</tr>';
+  });
+  html += '</tbody></table>';
+  listArea.innerHTML = html;
+
+  listArea.querySelectorAll(".copy-mini").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var code = btn.getAttribute("data-code");
+      navigator.clipboard.writeText(code).then(function(){
+        var orig = btn.textContent;
+        btn.textContent = "✓";
+        setTimeout(function(){ btn.textContent = orig; }, 1200);
+      });
+    });
+  });
+}
 
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, function(c){
