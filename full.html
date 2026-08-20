@@ -859,17 +859,31 @@ function callGemini(inputParts){
 })();
 
 /* 如果網址帶了 ?code=XXXXX（例如剛付款完成、從自動產生序號的頁面
-   點過來），而且這個瀏覽器還沒有本地對話紀錄，就自動帶入序號並直接
-   幫使用者解鎖，省去他自己複製貼上、按按鈕的步驟。 */
+   點過來），就自動帶入序號並直接幫使用者解鎖，省去他自己複製貼上、
+   按按鈕的步驟。就算這個瀏覽器已經有本地存的對話紀錄（例如同一台裝置
+   之前用別組序號聊過，或買過第二次），只要網址帶的序號跟本機記住的
+   不一樣，就要以網址這組「剛剛才拿到的新序號」為準，並清掉舊序號留下
+   的畫面狀態（對話內容、額度用完的鎖定），避免客人看到的是舊序號的
+   東西，或被舊序號「額度用完」的鎖定畫面卡住，明明新序號都還沒用過。 */
 (function autoUnlockFromUrl(){
-  if(unlockCode) return; // 已經有本地存的對話紀錄，直接接續用那個就好
   try{
     var params = new URLSearchParams(window.location.search);
     var urlCode = params.get("code");
-    if(urlCode){
-      codeInput.value = urlCode.trim();
-      tryUnlock();
-    }
+    if(!urlCode) return;
+    urlCode = urlCode.trim();
+    if(!urlCode || urlCode === unlockCode) return; // 跟目前用的序號一樣，不用重新解鎖
+
+    // 切換到網址帶的新序號：清掉舊序號可能留下的對話畫面跟鎖定狀態
+    chatInner.innerHTML = "";
+    isCapped = false;
+    textInput.disabled = false;
+    sendBtn.disabled = false;
+    uploadBtn.disabled = false;
+    textInput.placeholder = "輸入文字，或點📷上傳命盤截圖…";
+    ctaStrip.style.display = "none";
+
+    codeInput.value = urlCode;
+    tryUnlock();
   }catch(e){ /* ignore */ }
 })();
 </script>
