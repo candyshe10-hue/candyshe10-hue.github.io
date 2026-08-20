@@ -123,6 +123,7 @@ a{color:inherit;}
 .bridge-card .b-close{font-size:14px; font-weight:700; color:var(--dark); margin-top:10px;}
 
 .pill-row{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:20px;}
+.pill-caption{font-size:12px; color:var(--gray); text-align:center; margin:-12px 0 20px 0; line-height:1.7;}
 .pill{padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:700;}
 .pill.sys{background:var(--light-pink); color:#9C5D53;}
 .pill.topic{background:var(--light-blue); color:#3E5A68;}
@@ -208,6 +209,14 @@ a{color:inherit;}
     <div class="hero-sub">同樣的傷、同樣的猶豫，是不是已經重複太多次了？<br>你的命盤裡藏著答案——這次，真的把它看懂，真的走出不一樣的結果。</div>
   </div>
 
+  <div class="card">
+    <div class="body-text">如果你是那個很想往前衝的人——那個猶豫了很久的決定，你已經在心裡演練過無數次，卻還是遲遲沒有真的踏出去，好像每次靠近那一步，又會被自己拉回來。
+
+如果你是那個常常卡在關係裡的人——明明知道自己又用了一樣的方式在回應，吵完冷靜下來也懊悔，可是下一次遇到同樣的情況，還是忍不住做出一樣的反應。
+
+這些反覆，不是因為你不夠努力，也不是運氣不好。</div>
+  </div>
+
   <div class="card" id="storyCard">
     <div class="section-title">在你決定之前，先聽我說一件事</div>
     <div class="body-text" id="storyText"></div>
@@ -217,7 +226,7 @@ a{color:inherit;}
     </div>
   </div>
 
-  <div class="card trial-card">
+  <div class="card trial-card" id="trialCard">
     <div class="t-eyebrow">還沒體驗過嗎</div>
     <h2>先免費聊一次看看</h2>
     <p>不用先付費，直接上傳你的命盤截圖，就可以體驗一次「靈魂地圖」的解讀方式——很多人聊完的第一句話都是「原來是這樣」。</p>
@@ -246,7 +255,7 @@ a{color:inherit;}
       </li>
       <li class="preview-item">
         <div class="preview-num">5</div>
-        <div><div class="preview-title">接下來這段時間，你該衝還是該守？</div><div class="preview-desc">用「流年」的角度完整解鎖，幫你抓準行動與觀望的關鍵時間點。</div></div>
+        <div><div class="preview-title">接下來這段時間，你該衝還是該守？</div><div class="preview-desc">看懂你現在正處在人生的哪個階段，幫你抓準什麼時候該衝、什麼時候該先觀望的關鍵時間點。</div></div>
       </li>
     </ul>
     <div class="preview-locked">
@@ -279,6 +288,7 @@ a{color:inherit;}
       <span class="pill sys">🀄 八字</span>
       <span class="pill sys">🔯 紫微斗數</span>
     </div>
+    <div class="pill-caption">主要會用你最熟悉的星座命盤深入分析，其他幾套命盤系統則用來交叉對照——不需要你自己會算，AI 會幫你讀。</div>
     <div class="pill-row">
       <span class="pill topic">渴望突破的人</span>
       <span class="pill topic">卡在關係裡的人</span>
@@ -355,7 +365,7 @@ a{color:inherit;}
   }
 })();
 
-var STORY_TEXT = "我是巧敲。我18歲開始接觸占星，這幾年因為經營自媒體，一頭栽進去深入鑽研，這些年下來也幫上百人解過盤。但真正讓我的人生開始不一樣的，是這五年我很認真在學、也很認真在自己生活裡實踐的一套「種子理論」——原理很簡單：我們每一個念頭、每一句話、每一個行動，都像是在心裡種下一顆種子，這顆種子時間到了，就會發芽，長成我們生命裡真正發生的事情。\n\n我自己就是透過真的去實踐這套方法，一步一步走出我原本一直在重複的模式，這幾年也陪很多身邊的朋友、個案，用這個方式看懂自己卡住的地方、真的走出不一樣的結果。我發現不管是感情裡一直重複的傷，還是很想往前衝卻一直卡住的猶豫，背後往往是同一件事——你種了什麼種子，就會一直長出什麼結果，命盤能幫你很快找到，你現在卡住的地方，種的到底是哪一顆種子。\n\n這也是我做「靈魂地圖」的原因。我把這幾年解盤累積的心法跟種子理論的原理，一句一句設定進了這位 AI 引導員裡——你不用自己準備 AI 帳號、也不用複製貼上任何指令，直接上傳命盤截圖、開始聊就好。免費版可以先讓你體驗一下方向，完整版能陪你把兩種卡住的地方一次聊透，看懂它們會不會其實是同一顆種子，也搭配「5組進階追問文字」，讓你問出連自己都說不清楚的答案。";
+var STORY_TEXT = "我是巧敲，這幾年一直在鑽研占星、也累積了不少解盤經驗。但真正讓我的人生開始不一樣的，是這五年我很認真在學、也認真在自己生活裡實踐的一套「種子理論」——原理很簡單：我們每一個念頭、每一句話、每一個行動，都像是在心裡種下一顆種子，時間到了就會發芽，長成我們生命裡真正發生的事。\n\n我自己就是這樣走出原本一直在重複的模式，這幾年也陪很多朋友、個案，用這個方式看懂自己卡住的地方、真的走出不一樣的結果。不管是感情裡一直重複的傷，還是很想往前衝卻一直卡住的猶豫，背後往往是同一件事——你種了什麼種子，就會一直長出什麼結果。這也是我做「靈魂地圖」的原因：把這套心法設定進了這位 AI 引導員裡，你不用自己準備帳號、不用複製貼上指令，直接上傳命盤截圖、開始聊就好。";
 
 var FAQS = [
   { q: "我不懂命理也可以用嗎？", a: "完全可以，不需要你自己會算命。你只要照著提示到免費網站產生命盤截圖，上傳給 AI 引導員，剩下的交給它讀圖、跟你聊就好。" },
@@ -382,6 +392,18 @@ function escapeHtml(str){
 }
 
 document.getElementById("storyText").textContent = STORY_TEXT;
+
+/* 如果是從免費版聊完點過來的（網址帶 ?from=trial），代表已經體驗過了，
+   隱藏「先免費聊一次看看」卡片；其他來源（IG／LINE／朋友分享直接開這頁）維持顯示。 */
+(function(){
+  try{
+    var params = new URLSearchParams(window.location.search);
+    if(params.get("from") === "trial"){
+      var trialCard = document.getElementById("trialCard");
+      if(trialCard) trialCard.style.display = "none";
+    }
+  }catch(e){}
+})();
 
 var faqList = document.getElementById("faqList");
 faqList.innerHTML = FAQS.map(function(f, i){
