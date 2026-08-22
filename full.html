@@ -443,7 +443,7 @@ function scrollToMessageTop(el){
   el.scrollIntoView({ block: "start", behavior: "smooth" });
 }
 
-function addBubble(role, text, imgUrls){
+function addBubble(role, text, imgUrls, skipScroll){
   var msg = document.createElement("div");
   msg.className = "msg " + (role === "user" ? "user" : "ai");
   var avatar = document.createElement("div");
@@ -464,16 +464,20 @@ function addBubble(role, text, imgUrls){
   msg.appendChild(avatar);
   msg.appendChild(bubble);
   chatInner.appendChild(msg);
-  if(role === "user"){
-    scrollToBottom();
-  } else {
-    scrollToMessageTop(msg);
+  if(!skipScroll){
+    if(role === "user"){
+      scrollToBottom();
+    } else {
+      scrollToMessageTop(msg);
+    }
   }
   return bubble;
 }
 
 /* AI 回覆裡如果用 [[BREAK]] 標記把內容分成好幾段，這裡會依序、
-   帶著打字動畫的節奏把它們拆成好幾則訊息顯示，而不是一次全部塞在同一個泡泡裡。 */
+   帶著打字動畫的節奏把它們拆成好幾則訊息顯示，而不是一次全部塞在同一個泡泡裡。
+   只有第一則會捲動畫面（讓使用者從頭開始看這次回覆），後面接續跳出來的訊息
+   不會再搶走捲動位置，避免使用者上一則還沒看完，畫面就被硬拉到下一則去。 */
 function displaySequentialAiBubbles(text){
   var parts = String(text == null ? "" : text).split(/\n*\[\[BREAK\]\]\n*/).map(function(p){
     return p.trim();
@@ -484,7 +488,7 @@ function displaySequentialAiBubbles(text){
   }
   var i = 0;
   function next(){
-    addBubble("ai", parts[i]);
+    addBubble("ai", parts[i], null, i > 0);
     i++;
     if(i < parts.length){
       showTyping();
