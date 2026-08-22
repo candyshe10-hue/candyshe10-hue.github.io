@@ -491,7 +491,7 @@ function displaySequentialAiBubbles(text){
     addBubble("ai", parts[i], null, i > 0);
     i++;
     if(i < parts.length){
-      showTyping();
+      showTyping(true);
       setTimeout(function(){
         hideTyping();
         next();
@@ -537,7 +537,7 @@ function renderMarkdownLite(str){
   return segments.join("");
 }
 
-function showTyping(){
+function showTyping(skipScroll){
   var msg = document.createElement("div");
   msg.className = "msg ai";
   msg.id = "typingMsg";
@@ -550,7 +550,9 @@ function showTyping(){
   msg.appendChild(avatar);
   msg.appendChild(bubble);
   chatInner.appendChild(msg);
-  scrollToBottom();
+  if(!skipScroll){
+    scrollToBottom();
+  }
 }
 function hideTyping(){
   var el = document.getElementById("typingMsg");
