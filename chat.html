@@ -336,6 +336,7 @@ function collectMessagesFromDOM(){
   var messages = [];
   var bubbles = chatInner.querySelectorAll(".msg");
   bubbles.forEach(function(m){
+    if(m.id === "typingMsg") return;
     var role = m.classList.contains("user") ? "user" : "ai";
     var bubbleEl = m.querySelector(".bubble");
     var text = bubbleEl ? bubbleEl.getAttribute("data-raw") || "" : "";
@@ -416,12 +417,13 @@ function addBubble(role, text, imgUrl, skipScroll){
    帶著打字動畫的節奏把它們拆成好幾則訊息顯示，而不是一次全部塞在同一個泡泡裡。
    只有第一則會捲動畫面（讓使用者從頭開始看這次回覆），後面接續跳出來的訊息
    不會再搶走捲動位置，避免使用者上一則還沒看完，畫面就被硬拉到下一則去。 */
-function displaySequentialAiBubbles(text){
+function displaySequentialAiBubbles(text, onDone){
   var parts = String(text == null ? "" : text).split(/\n*\[\[BREAK\]\]\n*/).map(function(p){
     return p.trim();
   }).filter(function(p){ return p.length > 0; });
   if(parts.length <= 1){
     addBubble("ai", text);
+    if(onDone) onDone();
     return;
   }
   var i = 0;
@@ -434,6 +436,8 @@ function displaySequentialAiBubbles(text){
         hideTyping();
         next();
       }, 700 + Math.random() * 500);
+    } else if(onDone){
+      onDone();
     }
   }
   next();
@@ -642,8 +646,6 @@ function callGemini(inputParts){
       replyText = replyText.replace(/\[\[FREE_TRIAL_DONE\]\]\n*/g, "").trim();
     }
 
-    displaySequentialAiBubbles(replyText);
-
     turnCount++;
     if(turnCount >= 4){
       ctaStrip.style.display = "block";
@@ -651,7 +653,7 @@ function callGemini(inputParts){
     if(reachedQuota){
       lockInputForQuota();
     }
-    saveSession();
+    displaySequentialAiBubbles(replyText, function(){ saveSession(); });
   })
   .catch(function(err){
     hideTyping();
