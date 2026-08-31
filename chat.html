@@ -127,6 +127,16 @@ input,textarea{font-family:inherit;}
   padding:9px 10px; border-radius:var(--radius-sm) var(--radius-sm) 0 0; text-decoration:none; margin-top:8px;
 }
 
+/* ---------- 想聊聊別的困擾（免費體驗用完後，重新開始新一輪） ---------- */
+.reset-strip{
+  flex-shrink:0; max-width:640px; margin:0 auto; width:100%; padding:0 14px; text-align:center;
+}
+.reset-strip button{
+  background:none; border:none; color:var(--gray); font-size:11.5px; font-weight:700;
+  text-decoration:underline; cursor:pointer; padding:8px 10px; margin-top:4px;
+}
+.reset-strip button:hover{color:var(--pink);}
+
 /* ---------- Input bar ---------- */
 .input-bar{
   flex-shrink:0; border-top:1px solid rgba(55,53,47,0.08); background:#fff;
@@ -214,6 +224,10 @@ input,textarea{font-family:inherit;}
 
 <div class="cta-strip" id="ctaStrip" style="display:none;">
   <a href="https://candyshe10-hue.github.io/sale.html?from=trial" target="_blank" rel="noopener">✨ 想要更完整的解讀？點這裡看完整版（NT$688）→</a>
+</div>
+
+<div class="reset-strip" id="resetStrip" style="display:none;">
+  <button type="button" id="resetBtn">🔄 想聊聊別的困擾？點這裡重新開始一輪體驗</button>
 </div>
 
 <div class="input-bar">
@@ -319,6 +333,8 @@ var imgPreviewName = document.getElementById("imgPreviewName");
 var imgRemoveBtn = document.getElementById("imgRemoveBtn");
 var errBanner = document.getElementById("errBanner");
 var ctaStrip = document.getElementById("ctaStrip");
+var resetStrip = document.getElementById("resetStrip");
+var resetBtn = document.getElementById("resetBtn");
 
 var previousInteractionId = null; // Interactions API 用來接續對話的 id
 var pendingImage = null; // {mimeType, data(base64), previewUrl, name}
@@ -371,6 +387,33 @@ function lockInputForQuota(){
   uploadBtn.disabled = true;
   textInput.placeholder = "這次免費體驗已經結束囉，歡迎解鎖完整版繼續深入～";
   ctaStrip.style.display = "block";
+  resetStrip.style.display = "block";
+}
+
+/* 免費體驗用完之後，讓使用者可以自己選擇重新開始新的一輪（例如想換一個困擾主題），
+   不用靠清瀏覽器快取或開無痕視窗才能再聊一次。清掉這個瀏覽器存的對話紀錄跟鎖定
+   狀態，回到最一開始的歡迎訊息，讓她可以乾淨地重新走一輪體驗。 */
+function resetTrialSession(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){ /* 清不掉也沒關係 */ }
+  previousInteractionId = null;
+  pendingImage = null;
+  isSending = false;
+  turnCount = 0;
+  quotaLocked = false;
+  chatInner.innerHTML = "";
+  textInput.disabled = false;
+  sendBtn.disabled = false;
+  uploadBtn.disabled = false;
+  textInput.placeholder = "輸入文字，或點📷上傳命盤截圖…";
+  imgPreview.classList.remove("show");
+  ctaStrip.style.display = "none";
+  resetStrip.style.display = "none";
+  clearError();
+  insertSampleButtonAfterSystems(addBubble("ai", GREETING));
+  scrollToBottom();
+}
+if(resetBtn){
+  resetBtn.addEventListener("click", resetTrialSession);
 }
 
 function scrollToBottom(){
