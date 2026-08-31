@@ -9,24 +9,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --pink:#C9938A; --soft-pink:#E8C4BC; --light-pink:#F5E6E3;
-  --blue:#7A9BAD; --soft-blue:#B8CFDA; --light-blue:#E3EDF3;
-  --sage:#9AAE9B; --light-sage:#E8F0E8;
-  --cream:#FAF3EE; --bg:#FAFAF8; --dark:#37352F; --medium:#5A5248; --gray:#9B9A97;
-  --gold:#B8934A; --light-gold:#F3E9D2;
-  --radius-lg:20px; --radius-md:14px; --radius-sm:9px;
-  --shadow-soft:0 2px 14px rgba(55,53,47,0.07);
-  --shadow-card:0 6px 24px rgba(55,53,47,0.09);
-  --shadow-lift:0 14px 36px rgba(55,53,47,0.16);
+  --dark:#1C1F2E; --medium:#5A5F76; --gray:#8A8FA0;
+  --gold:#A87B2E; --gold-hover:#8F661F; --pink:#A87B2E; --blue:#A87B2E; --sage:#A87B2E;
+  --cream:#F7F5F0; --bg:#F7F5F0;
+  --dark-block:#141826; --dark-block-text:#F2EFE8; --dark-block-medium:#9DA1B5;
+  --divider:rgba(28,31,46,0.12);
+  --light-pink:rgba(168,123,46,0.08); --light-blue:rgba(168,123,46,0.08); --light-sage:rgba(168,123,46,0.08); --light-gold:rgba(168,123,46,0.14);
+  --soft-pink:rgba(168,123,46,0.35); --soft-blue:rgba(168,123,46,0.35);
+  --radius-lg:8px; --radius-md:8px; --radius-sm:8px;
+  --shadow-soft:0 2px 10px rgba(28,31,46,0.06);
+  --shadow-card:0 4px 16px rgba(28,31,46,0.08);
+  --shadow-lift:0 10px 26px rgba(28,31,46,0.16);
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
 body{
   font-family:'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
-  background:
-    radial-gradient(circle at 15% 0%, var(--light-pink) 0%, transparent 45%),
-    radial-gradient(circle at 90% 10%, var(--light-blue) 0%, transparent 40%),
-    var(--bg);
+  background:var(--bg);
   color:var(--dark);
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
@@ -35,89 +34,88 @@ body{
 ::selection{background:var(--soft-pink);}
 a{color:inherit;}
 
-.shell{max-width:680px; margin:0 auto; padding:40px 20px 20px 20px;}
+.shell{max-width:680px; margin:0 auto; padding:16px 16px 8px 16px;}
 
 /* ---------- App 內建瀏覽器提醒 ---------- */
 .inapp-banner{
   display:none; align-items:flex-start; gap:8px;
-  background:var(--light-gold); color:#7A5F27; font-size:11.5px; font-weight:600; line-height:1.6;
-  padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:16px;
+  background:var(--light-gold); color:var(--dark); font-size:11.5px; font-weight:600; line-height:1.6;
+  padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:14px;
 }
 .inapp-banner.show{display:flex;}
 .inapp-banner span{flex:1;}
 .inapp-banner button{
-  background:none; border:none; color:#7A5F27; font-size:15px; cursor:pointer; flex-shrink:0; padding:0 2px; line-height:1; opacity:0.7;
+  background:none; border:none; color:var(--dark); font-size:15px; cursor:pointer; flex-shrink:0; padding:0 2px; line-height:1; opacity:0.7;
 }
 .inapp-banner button:hover{opacity:1;}
 
-.hero{text-align:center; margin-bottom:32px;}
-.hero-emoji{font-size:44px; margin-bottom:14px;}
+.hero{text-align:center; margin-bottom:12px;}
 .hero-title{font-size:23px; font-weight:900; line-height:1.5; margin:0 0 10px 0;}
-.hero-title .accent{color:var(--pink);}
-.hero-sub{font-size:14.5px; color:var(--medium); line-height:1.8;}
-.hero-cta{margin-top:20px;}
+.hero-title .accent{color:var(--gold);}
+.hero-sub{font-size:15px; color:var(--medium); line-height:1.8;}
+.hero-cta{margin-top:16px;}
 
-.big-points{display:flex; flex-direction:column; gap:24px;}
+.big-points{display:flex; flex-direction:column; gap:10px;}
 .big-point{display:flex; gap:14px; align-items:flex-start;}
-.big-point .bp-num{flex-shrink:0; font-size:24px; font-weight:900; color:var(--pink); line-height:1.5; font-style:italic;}
-.big-point .bp-text{font-size:17px; font-weight:700; color:var(--dark); line-height:1.7;}
+.big-point .bp-num{flex-shrink:0; font-size:24px; font-weight:900; color:var(--gold); line-height:1.5; font-style:italic;}
+.big-point .bp-text{font-size:16px; font-weight:700; color:var(--dark); line-height:1.7;}
 
 .card{
-  background:#fff; border-radius:var(--radius-lg); padding:30px 26px; box-shadow:var(--shadow-card);
-  border:1px solid rgba(55,53,47,0.05); margin-bottom:20px;
+  background:#fff; border-radius:var(--radius-lg); padding:14px 14px; box-shadow:var(--shadow-card);
+  border:1px solid var(--divider); margin-bottom:8px;
 }
-.section-title{font-size:19px; font-weight:900; margin:0 0 16px 0; line-height:1.5;}
-.body-text{font-size:14px; color:var(--medium); line-height:2; white-space:pre-wrap;}
+.section-title{font-size:18px; font-weight:900; margin:0 0 8px 0; line-height:1.4;}
+.body-text{font-size:16px; color:var(--medium); line-height:1.8; white-space:pre-wrap;}
 .body-text b{color:var(--dark); font-weight:700;}
 
 .quote-block{
-  background:var(--light-sage); border-radius:var(--radius-md); padding:22px 24px; margin:22px 0;
+  background:var(--light-sage); border-radius:var(--radius-md); padding:10px 12px; margin:10px 0;
   border-left:3px solid var(--sage);
 }
-.quote-block p{font-size:15px; font-weight:700; color:#3F5641; line-height:1.9; margin:0;}
-.quote-block .qmark{color:var(--sage); font-size:13px; font-weight:700; margin-top:8px;}
+.quote-block p{font-size:16px; font-weight:700; color:var(--dark); line-height:1.8; margin:0;}
+.quote-block .qmark{color:var(--sage); font-size:13px; font-weight:700; margin-top:6px;}
 
 .trial-card{
   background:linear-gradient(135deg, var(--light-blue) 0%, #fff 100%); border:1.5px solid var(--blue);
   text-align:center;
 }
-.trial-card .t-eyebrow{font-size:12px; font-weight:700; color:var(--blue); letter-spacing:1px; margin-bottom:8px;}
-.trial-card h2{font-size:18px; font-weight:900; margin:0 0 12px 0;}
-.trial-card p{font-size:13.5px; color:var(--medium); line-height:1.9; margin-bottom:20px;}
+.trial-card .t-eyebrow{font-size:12px; font-weight:700; color:var(--blue); letter-spacing:1px; margin-bottom:6px;}
+.trial-card h2{font-size:18px; font-weight:900; margin:0 0 10px 0;}
+.trial-card p{font-size:13.5px; color:var(--medium); line-height:1.8; margin-bottom:10px;}
 
 .btn{
-  border:none; border-radius:30px; padding:14px 26px; font-size:14.5px; font-weight:700;
+  border:none; border-radius:8px; padding:14px 26px; font-size:14.5px; font-weight:700;
   cursor:pointer; transition:all .15s ease; display:inline-flex; align-items:center; gap:8px; text-decoration:none;
 }
-.btn-primary{background:var(--pink); color:#fff; box-shadow:var(--shadow-soft);}
-.btn-primary:hover{background:#bb7f75;}
+.btn-primary{background:var(--gold); color:#fff; box-shadow:var(--shadow-soft);}
+.btn-primary:hover{background:var(--gold-hover);}
 .btn-blue{background:var(--blue); color:#fff;}
-.btn-blue:hover{background:#688a9c;}
+.btn-blue:hover{background:var(--gold-hover);}
 .btn-gold{background:var(--gold); color:#fff;}
-.btn-gold:hover{background:#a17f3f;}
+.btn-gold:hover{background:var(--gold-hover);}
 .btn-line{background:#06C755; color:#fff;}
 .btn-line:hover{background:#05a648;}
 .btn-block{width:100%; justify-content:center;}
 
 .preview-list{list-style:none; margin:0 0 4px 0; padding:0;}
-.preview-item{display:flex; gap:12px; padding:14px 0; border-bottom:1px dashed rgba(184,147,74,0.28);}
+.preview-item{display:flex; gap:12px; padding:6px 0; border-bottom:1px dashed rgba(168,123,46,0.28);}
 .preview-item:last-child{border-bottom:none;}
 .preview-num{
   flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--gold); color:#fff;
   font-size:12.5px; font-weight:900; display:flex; align-items:center; justify-content:center; margin-top:1px;
 }
 .preview-title{font-size:14px; font-weight:700; color:var(--dark); margin-bottom:4px;}
-.preview-desc{font-size:12.5px; color:var(--medium); line-height:1.75;}
+.preview-desc{font-size:13.5px; color:var(--medium); line-height:1.7;}
 
 .preview-locked{
-  margin-top:14px; padding:18px 18px 16px 18px; border-radius:var(--radius-md);
-  background:rgba(184,147,74,0.08); border:1.5px dashed rgba(184,147,74,0.4);
+  margin-top:8px; padding:10px 10px 9px 10px; border-radius:var(--radius-md);
+  background:rgba(168,123,46,0.08); border:1.5px dashed rgba(168,123,46,0.4);
 }
-.preview-locked-head{font-size:14px; font-weight:900; color:var(--dark); margin-bottom:5px; display:flex; align-items:center; gap:6px;}
-.preview-locked-desc{font-size:12.5px; color:var(--medium); line-height:1.7; margin-bottom:12px;}
+.preview-locked-head{font-size:14px; font-weight:900; color:var(--dark); margin-bottom:4px; display:flex; align-items:center; gap:6px;}
+.preview-locked-desc{font-size:13.5px; color:var(--medium); line-height:1.7; margin-bottom:8px;}
 .preview-locked-list{list-style:none; margin:0; padding:0;}
 .preview-locked-list li{
-  font-size:12.5px; color:var(--medium); padding:8px 0; border-top:1px solid rgba(184,147,74,0.2);
+  font-size:13.5px; color:var(--medium); padding:6px 0; border-top:1px solid rgba(168,123,46,0.2);
   display:flex; align-items:center; gap:8px;
 }
 .preview-locked-list li:first-child{border-top:none;}
@@ -125,79 +123,98 @@ a{color:inherit;}
 .preview-locked-list .pl-text{color:var(--dark); font-weight:600;}
 
 .bridge-card{background:var(--light-pink); text-align:left;}
-.bridge-card .b-lines{font-size:14px; color:#7A4F47; line-height:2.1; font-style:italic; margin-bottom:6px;}
-.bridge-card .b-close{font-size:14px; font-weight:700; color:var(--dark); margin-top:10px;}
+.bridge-card .b-lines{font-size:14px; color:var(--medium); line-height:1.8; font-style:italic; margin-bottom:5px;}
+.bridge-card .b-close{font-size:14px; font-weight:700; color:var(--dark); margin-top:8px;}
 
-.pill-row{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:20px;}
-.pill-caption{font-size:12px; color:var(--gray); text-align:center; margin:-12px 0 20px 0; line-height:1.7;}
+.pill-row{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:8px;}
+.pill-caption{font-size:12px; color:var(--gray); text-align:center; margin:-6px 0 10px 0; line-height:1.7;}
 .pill{padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:700;}
-.pill.sys{background:var(--light-pink); color:#9C5D53;}
-.pill.topic{background:var(--light-blue); color:#3E5A68;}
+.pill.sys{background:var(--light-pink); color:var(--dark);}
+.pill.topic{background:var(--light-blue); color:var(--dark);}
 
 .how-list{list-style:none; margin:0; padding:0;}
-.how-list li{display:flex; gap:12px; padding:10px 0; font-size:13.5px; color:var(--medium); line-height:1.8;}
-.how-list .h-num{flex-shrink:0; color:var(--pink); font-weight:900;}
+.how-list li{display:flex; gap:12px; padding:7px 0; font-size:13.5px; color:var(--medium); line-height:1.7;}
+.how-list .h-num{flex-shrink:0; color:var(--gold); font-weight:900;}
 
 .unlock-card{
-  background:linear-gradient(135deg, var(--light-gold) 0%, #fff 100%); border:1.5px solid var(--gold);
+  background:var(--dark-block); border:1px solid rgba(255,255,255,0.08);
 }
-.unlock-card .u-badge{display:inline-block; background:var(--gold); color:#fff; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:14px;}
-.unlock-card h2{font-size:19px; font-weight:900; margin:0 0 10px 0;}
-.unlock-feature-list{list-style:none; margin:0 0 20px 0; padding:0;}
-.unlock-feature-list li{font-size:13.5px; color:var(--dark); padding:6px 0; display:flex; gap:8px; line-height:1.7;}
+.unlock-card .u-badge{display:inline-block; background:var(--gold); color:var(--dark-block); font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:10px;}
+.unlock-card h2{font-size:19px; font-weight:900; margin:0 0 10px 0; color:var(--dark-block-text);}
+.unlock-feature-list{list-style:none; margin:0 0 10px 0; padding:0;}
+.unlock-feature-list li{font-size:13.5px; color:var(--dark-block-text); padding:3px 0; display:flex; gap:8px; line-height:1.55;}
 .unlock-urgency{
-  display:inline-flex; align-items:center; gap:6px; background:rgba(181,86,74,0.1); color:#B5564A;
-  font-size:12px; font-weight:700; padding:6px 12px; border-radius:20px; margin-bottom:14px;
+  display:inline-flex; align-items:center; gap:6px; background:rgba(168,123,46,0.2); color:#D9B876;
+  font-size:12px; font-weight:700; padding:6px 12px; border-radius:20px; margin-bottom:10px;
 }
-.unlock-price{font-size:26px; font-weight:900; color:var(--gold); margin-bottom:6px;}
-.unlock-price-note{font-size:12px; color:var(--medium); margin-bottom:18px;}
+.unlock-price{font-size:26px; font-weight:900; color:var(--gold); margin-bottom:4px;}
+.unlock-price-note{font-size:12px; color:var(--dark-block-medium); margin-bottom:12px;}
+
+.testimonial-section{display:flex; gap:14px; align-items:flex-start; margin-bottom:8px;}
+.testimonial-section .testimonial-photo{width:92px; height:92px; flex-shrink:0; border-radius:50%; font-size:10px; text-align:center; padding:4px;}
+.testimonial-section .testimonial-photo .ip-icon{font-size:18px;}
+.testimonial-list{flex:1; min-width:0;}
+.testimonial-list .testimonial-card{margin-bottom:6px;}
+.testimonial-list .testimonial-card:last-child{margin-bottom:0;}
+@media (max-width:480px){
+  .testimonial-section{flex-direction:column; align-items:center;}
+  .testimonial-section .testimonial-photo{width:76px; height:76px;}
+}
 
 .testimonial-card{
-  background:linear-gradient(135deg, var(--light-blue) 0%, #fff 65%);
-  border:1px solid rgba(122,155,173,0.3); border-left:4px solid var(--blue); border-radius:var(--radius-md);
-  padding:18px 20px; margin:0 0 14px 0;
+  background:var(--dark-block);
+  border:1px solid rgba(255,255,255,0.08); border-left:4px solid var(--gold); border-radius:var(--radius-md);
+  padding:10px 12px; margin:0 0 6px 0;
 }
-.testimonial-card .t-stars{font-size:12.5px; letter-spacing:2px; color:#D9A441; margin-bottom:8px;}
+.testimonial-card .t-stars{font-size:12.5px; letter-spacing:2px; color:var(--gold); margin-bottom:6px;}
 .testimonial-card .t-tag{
-  display:inline-block; font-size:11px; font-weight:700; color:var(--pink);
-  background:rgba(214,124,110,0.12); padding:3px 10px; border-radius:20px; margin-bottom:10px;
+  display:inline-block; font-size:11px; font-weight:700; color:var(--dark-block);
+  background:var(--gold); padding:3px 10px; border-radius:20px; margin-bottom:8px;
 }
-.testimonial-card .t-quote{font-size:13.5px; color:var(--dark); line-height:1.9; margin:0;}
+.testimonial-card .t-quote{font-size:13.5px; color:var(--dark-block-text); line-height:1.8; margin:0;}
 .testimonial-card .t-quote::before{content:"“"; color:var(--gold); font-weight:900;}
 .testimonial-card .t-quote::after{content:"”"; color:var(--gold); font-weight:900;}
 
 .order-confirm-box{
-  background:var(--light-sage); border-radius:var(--radius-md); padding:16px 18px; margin-top:16px; text-align:center;
+  background:rgba(255,255,255,0.06); border-radius:var(--radius-md); padding:7px 8px; margin-top:6px; text-align:center;
 }
-.order-confirm-box p{font-size:12.5px; color:#4C6355; line-height:1.8; margin:0 0 12px 0;}
+.order-confirm-box p{font-size:12.5px; color:var(--dark-block-medium); line-height:1.6; margin:0 0 7px 0;}
 
-.faq-item{border-top:1px solid rgba(55,53,47,0.08); padding:16px 0;}
+.faq-item{border-top:1px solid var(--divider); padding:7px 0;}
 .faq-item:first-child{border-top:none;}
 .faq-q{display:flex; justify-content:space-between; align-items:center; gap:10px; cursor:pointer; font-size:14px; font-weight:700; color:var(--dark);}
 .faq-q .arrow{transition:transform .2s ease; color:var(--gray); font-size:12px; flex-shrink:0;}
 .faq-q .arrow.open{transform:rotate(90deg);}
 .faq-a{max-height:0; overflow:hidden; transition:max-height .25s ease;}
-.faq-a.open{max-height:400px; margin-top:10px;}
-.faq-a p{font-size:13px; color:var(--medium); line-height:1.9; margin:0;}
+.faq-a.open{max-height:400px; margin-top:8px;}
+.faq-a p{font-size:13px; color:var(--medium); line-height:1.8; margin:0;}
 
 .page-footer{
-  text-align:center; margin-top:10px; padding-top:20px;
+  text-align:center; margin-top:4px; padding-top:10px;
   font-size:12px; color:var(--gray);
 }
-.page-footer a{color:var(--pink); text-decoration:none; font-weight:700;}
-.disclaimer{text-align:center; font-size:11.5px; color:var(--gray); margin-top:14px; line-height:1.7;}
+.page-footer a{color:var(--gold); text-decoration:none; font-weight:700;}
+.disclaimer{text-align:center; font-size:11.5px; color:var(--gray); margin-top:6px; line-height:1.7;}
 
 .sticky-bar{
-  position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:1px solid rgba(55,53,47,0.1);
-  box-shadow:0 -4px 20px rgba(55,53,47,0.08); padding:12px 18px; display:flex; align-items:center; justify-content:space-between;
+  position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:1px solid var(--divider);
+  box-shadow:0 -4px 20px rgba(28,31,46,0.08); padding:10px 16px; display:flex; align-items:center; justify-content:space-between;
   gap:14px; z-index:100;
 }
 .sticky-bar .sb-label{font-size:12px; color:var(--gray); font-weight:700;}
 .sticky-bar .sb-price{font-size:15px; color:var(--dark); font-weight:900;}
 .sticky-bar .btn{padding:11px 22px; font-size:13.5px; flex-shrink:0;}
 
+.img-placeholder{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  background:#E4E1D8; border-radius:var(--radius-md); color:var(--gray); font-size:12px; font-weight:700;
+  border:1px dashed rgba(28,31,46,0.18); overflow:hidden;
+}
+.img-placeholder .ip-icon{font-size:22px; opacity:0.5;}
+.img-placeholder img{width:100%; height:100%; object-fit:cover; display:block;}
+
 @media (max-width:480px){
-  .card{padding:24px 20px;}
+  .card{padding:16px 14px;}
   .hero-title{font-size:20px;}
 }
 </style>
@@ -212,18 +229,21 @@ a{color:inherit;}
   </div>
 
   <div class="hero">
-    <div class="hero-emoji">🗺️</div>
     <div class="hero-title">巧敲的<span class="accent">靈魂地圖・完整版</span></div>
     <div class="hero-sub" id="heroSub"></div>
     <div class="hero-cta" id="heroCta"></div>
   </div>
 
+  <div class="img-placeholder" id="imgHero" style="aspect-ratio:16/11; max-height:170px; margin-bottom:8px;">
+    <span class="ip-icon">🖼️</span><span>靈魂地圖對話畫面截圖</span>
+  </div>
+
   <div class="card">
-    <div class="body-text">如果你是那個很想往前衝的人——那個猶豫了很久的決定，你已經在心裡演練過無數次，卻還是遲遲沒有真的踏出去，好像每次靠近那一步，又會被自己拉回來。
+    <div class="body-text">如果你是那個很想往前衝的人。那個猶豫了很久的決定，你已經在心裡演練過無數次，卻還是遲遲沒有真的踏出去，好像每次靠近那一步，又會被自己拉回來。
 
-如果你是那個常常卡在關係裡的人——明明知道自己又用了一樣的方式在回應，吵完冷靜下來也懊悔，可是下一次遇到同樣的情況，還是忍不住做出一樣的反應。
+如果你是那個常常卡在關係裡的人。明明知道自己又用了一樣的方式在回應，吵完冷靜下來也懊悔，可是下一次遇到同樣的情況，還是忍不住做出一樣的反應。
 
-這些反覆，不是因為你不夠努力，也不是運氣不好——而是有一個具體的行為模式，一直在背後重複運作，你只是還沒看到它長什麼樣子、在命盤上的哪個位置。</div>
+這些反覆，不是因為你不夠努力，也不是運氣不好，而是有一個具體的行為模式，一直在背後重複運作，你只是還沒看到它長什麼樣子、在命盤上的哪個位置。</div>
   </div>
 
   <div class="card">
@@ -237,15 +257,15 @@ a{color:inherit;}
 
   <div class="card">
     <div class="section-title">聊完之後你會帶走什麼</div>
-    <div class="body-text" style="margin-bottom:6px;">免費版只能小小體驗一下——聊 1 種你卡住的狀態。完整版可以讓 AI 從更多角度、更深入地陪你把兩種卡住的地方一次聊透，包括：</div>
+    <div class="body-text" style="margin-bottom:6px;">免費版只能小小體驗一下，聊 1 種你卡住的狀態。完整版可以讓 AI 從更多角度、更深入地陪你把兩種卡住的地方一次聊透，包括：</div>
     <ul class="preview-list">
       <li class="preview-item">
         <div class="preview-num">1</div>
-        <div><div class="preview-title">你在感情裡，到底在重複哪一種模式？</div><div class="preview-desc">不是「妳眼光不好」這種空泛的話——是從妳金星、月亮或第七宮的具體位置，指出妳容易被什麼樣的人吸引、又習慣在關係裡先退一步還是先進攻，講到妳自己都覺得「這也太準」的程度。</div></div>
+        <div><div class="preview-title">你在感情裡，到底在重複哪一種模式？</div><div class="preview-desc">不是「你眼光不好」這種空泛的話。是從你金星、月亮或第七宮的具體位置，指出你容易被什麼樣的人吸引、又習慣在關係裡先退一步還是先進攻，講到你自己都覺得「這也太準」的程度。</div></div>
       </li>
       <li class="preview-item">
         <div class="preview-num">2</div>
-        <div><div class="preview-title">你很想往前衝，卡住你的到底是什麼？</div><div class="preview-desc">不是能力不夠——是妳命盤裡土星、或第十宮附近藏著一個具體在怕的東西，看不到它，妳會一直誤以為自己只是「不夠有勇氣」而已。</div></div>
+        <div><div class="preview-title">你很想往前衝，卡住你的到底是什麼？</div><div class="preview-desc">不是能力不夠。是你命盤裡土星、或第十宮附近藏著一個具體在怕的東西，看不到它，你會一直誤以為自己只是「不夠有勇氣」而已。</div></div>
       </li>
       <li class="preview-item">
         <div class="preview-num">3</div>
@@ -253,7 +273,7 @@ a{color:inherit;}
       </li>
       <li class="preview-item">
         <div class="preview-num">4</div>
-        <div><div class="preview-title">這兩件事，會不會其實是同一顆種子？</div><div class="preview-desc">完整版才有：把你在關係裡卡住的地方，跟你在方向上不敢動的地方串起來看，讓你看懂背後其實是同一件事——如果妳願意，還可以再加上人類圖、八字、紫微裡看到的角度一起交叉比對，同一個卡點從好幾個系統一起驗證，這是很多算命服務不會做到的事。</div></div>
+        <div><div class="preview-title">這兩件事，會不會其實是同一顆種子？</div><div class="preview-desc">完整版才有：把你在關係裡卡住的地方，跟你在方向上不敢動的地方串起來看，讓你看懂背後其實是同一件事。如果你願意，還可以再加上人類圖、八字、紫微裡看到的角度一起交叉比對，同一個卡點從好幾個系統一起驗證，這是很多算命服務不會做到的事。</div></div>
       </li>
       <li class="preview-item">
         <div class="preview-num">5</div>
@@ -262,11 +282,11 @@ a{color:inherit;}
     </ul>
     <div class="preview-locked">
       <div class="preview-locked-head">🔒 加碼贈送：5 組讓 AI 問到你起雞皮疙瘩的追問文字</div>
-      <div class="preview-locked-desc">解鎖完整版之後，我會額外傳給你 5 組「進階追問文字」——當你聊完覺得還想再挖深一點，直接貼給 AI 引導員，就能把你自己都說不清楚的感覺，問出真正的答案。</div>
+      <div class="preview-locked-desc">解鎖完整版之後，我會額外傳給你 5 組「進階追問文字」。當你聊完覺得還想再挖深一點，直接貼給 AI 引導員，就能把你自己都說不清楚的感覺，問出真正的答案。</div>
       <ul class="preview-locked-list">
         <li><span class="pl-icon">🔒</span><span class="pl-text">問出「現在到底是不是時候」的那組提問</span></li>
-        <li><span class="pl-icon">🔒</span><span class="pl-text">讓兩種卡住的地方，在妳面前對照到說不出話的那組提問</span></li>
-        <li><span class="pl-icon">🔒</span><span class="pl-text">挖出妳自己都沒發現、但 AI 已經看到的那個盲點</span></li>
+        <li><span class="pl-icon">🔒</span><span class="pl-text">讓兩種卡住的地方，在你面前對照到說不出話的那組提問</span></li>
+        <li><span class="pl-icon">🔒</span><span class="pl-text">挖出你自己都沒發現、但 AI 已經看到的那個盲點</span></li>
         <li><span class="pl-icon">🔒</span><span class="pl-text">把「我知道了」逼問成「我這週就要做」的那組提問</span></li>
         <li><span class="pl-icon">🔒</span><span class="pl-text">站在五年後回頭看現在，會後悔還是慶幸自己做了這個決定</span></li>
       </ul>
@@ -277,15 +297,15 @@ a{color:inherit;}
     <div class="section-title">在你決定之前，先聽我說一件事</div>
     <div class="body-text" id="storyText"></div>
     <div class="quote-block">
-      <p>「你種了什麼種子，就會一直長出什麼結果——覺察，才會有體悟；有體悟，才會真正修正；有修正，人生才會真的改變。」</p>
-      <div class="qmark">—— 巧敲</div>
+      <p>「你種了什麼種子，就會一直長出什麼結果。覺察，才會有體悟；有體悟，才會真正修正；有修正，人生才會真的改變。」</p>
+      <div class="qmark">巧敲</div>
     </div>
   </div>
 
   <div class="card trial-card" id="trialCard">
     <div class="t-eyebrow">還沒體驗過嗎</div>
     <h2>先免費聊一次看看</h2>
-    <p>不用先付費，直接上傳你的命盤截圖，就可以體驗一次「靈魂地圖」的解讀方式——很多人聊完的第一句話都是「原來是這樣」。</p>
+    <p>不用先付費，直接上傳你的命盤截圖，就可以體驗一次「靈魂地圖」的解讀方式，很多人聊完的第一句話都是「原來是這樣」。</p>
     <a class="btn btn-blue btn-block" href="https://candyshe10-hue.github.io/chat.html" target="_blank" rel="noopener">免費體驗一次解讀 →</a>
   </div>
 
@@ -295,7 +315,7 @@ a{color:inherit;}
       我這麼想往前衝，卡住我的到底是什麼<br>
       這兩件事，會不會其實是同一件事
     </div>
-    <div class="b-close">很多人免費體驗完之後，都會開始想這些——這些，完整版裡都有 ✦</div>
+    <div class="b-close">很多人免費體驗完之後，都會開始想這些。這些，完整版裡都有</div>
   </div>
 
   <div class="card">
@@ -306,7 +326,7 @@ a{color:inherit;}
       <span class="pill sys">🀄 八字</span>
       <span class="pill sys">🔯 紫微斗數</span>
     </div>
-    <div class="pill-caption">主要會用你最熟悉的星座命盤深入分析，其他幾套命盤系統則用來交叉對照——不需要你自己會算，AI 會幫你讀。</div>
+    <div class="pill-caption">主要會用你最熟悉的星座命盤深入分析，其他幾套命盤系統則用來交叉對照，不需要你自己會算，AI 會幫你讀。</div>
     <div class="pill-row">
       <span class="pill topic">渴望突破的人</span>
       <span class="pill topic">卡在關係裡的人</span>
@@ -320,19 +340,30 @@ a{color:inherit;}
 
   <div class="card">
     <div class="section-title">如果你完全沒接觸過命理</div>
-    <div class="body-text">不用擔心——這整套方法設計成不用妳自己會算，AI 會直接讀妳上傳的截圖跟妳聊。跟一般算命最大的不同是，這不是套公式生成的內容，是巧敲這幾年親自幫上百人解盤、一句一句歸納出來的心法設定進去的。準不準，妳聊過就會知道。</div>
+    <div class="body-text">不用擔心。這整套方法設計成不用你自己會算，AI 會直接讀你上傳的截圖跟你聊。跟一般算命最大的不同是，這不是套公式生成的內容，是巧敲這幾年親自幫上百人解盤、一句一句歸納出來的心法設定進去的。準不準，你聊過就會知道。</div>
   </div>
 
-  <div class="testimonial-card">
-    <div class="t-stars">★★★★★</div>
-    <span class="t-tag">💬 感情關係・真實客人回饋</span>
-    <p class="t-quote">以前總覺得是自己遇到不好的人，不知道自己為什麼會一直吸引到這樣的對象出現，看完自己的靈魂地圖才發現原來是這個原因，從來沒想過這件事！謝謝巧敲設計的這個系統，讓我可以更認識自己，覺得 688 太划算了！</p>
+  <div class="testimonial-section">
+    <div class="img-placeholder testimonial-photo" id="imgAuthor">
+      <span class="ip-icon">🖼️</span><span>本人照片</span>
+    </div>
+    <div class="testimonial-list">
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <span class="t-tag">💬 感情關係・真實客人回饋</span>
+        <p class="t-quote">以前總覺得是自己遇到不好的人，不知道自己為什麼會一直吸引到這樣的對象出現，看完自己的靈魂地圖才發現原來是這個原因，從來沒想過這件事！謝謝巧敲設計的這個系統，讓我可以更認識自己，覺得 688 太划算了！</p>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <span class="t-tag">💬 事業卡關・真實客人回饋</span>
+        <p class="t-quote">謝謝巧敲設計這個系統，讓我可以更認識自己，也知道怎麼運用在生活上。尤其是現在事業卡關的部分，看完不只引導我怎麼做，也給了我一個不同的觀點，讓我能夠真的去執行。</p>
+      </div>
+    </div>
   </div>
 
-  <div class="testimonial-card">
-    <div class="t-stars">★★★★★</div>
-    <span class="t-tag">💬 事業卡關・真實客人回饋</span>
-    <p class="t-quote">謝謝巧敲設計這個系統，讓我可以更認識自己，也知道怎麼運用在生活上。尤其是現在事業卡關的部分，看完不只引導我怎麼做，也給了我一個不同的觀點，讓我能夠真的去執行。</p>
+  <div class="img-placeholder" id="imgPrice" style="aspect-ratio:16/9; max-height:150px; margin-bottom:8px;">
+    <span class="ip-icon">🖼️</span><span>對話局部截圖</span>
   </div>
 
   <div class="card unlock-card" id="priceCard">
@@ -340,17 +371,17 @@ a{color:inherit;}
     <h2>解鎖「靈魂地圖・完整版」</h2>
     <ul class="unlock-feature-list">
       <li>✓ 兩種卡住的地方都能深入聊，AI 會幫你看懂它們是不是同一顆種子</li>
-      <li>✓ 想要的話還能加上人類圖、八字、紫微交叉比對，同一個卡點從好幾個系統一起驗證——這是很多算命服務不會做到的事</li>
+      <li>✓ 想要的話還能加上人類圖、八字、紫微交叉比對，同一個卡點從好幾個系統一起驗證，這是很多算命服務不會做到的事</li>
       <li>✓ 分析會更完整深入，給的落地練習更具體</li>
       <li>✓ 解鎖後加碼傳送「5 組進階追問文字」，聊到意猶未盡時貼給 AI，問出更深一層的答案</li>
       <li>✓ 這組序號可以陪你來回深聊到 60 則，足夠把一次探索聊透，不會聊到一半被打斷</li>
     </ul>
-    <div class="unlock-urgency">⏳ 近期將調漲價格，現在解鎖是目前最划算的時機</div>
+    <div class="unlock-urgency">近期將調漲價格，現在解鎖是目前最划算的時機</div>
     <div class="unlock-price">NT$ 688</div>
     <div class="unlock-price-note">一組專屬序號，供你這次深度對話使用</div>
     <a class="btn btn-gold btn-block" href="https://pl.sl-pay.com/OGE8RydF" target="_blank" rel="noopener">馬上解鎖完整版 →</a>
     <div class="order-confirm-box">
-      <p>✅ 付款完成後會自動導向專屬頁面，馬上產生你的序號，就可以直接開始探索你的靈魂地圖旅程了 🗺️</p>
+      <p>付款完成後會自動導向專屬頁面，馬上產生你的序號，就可以直接開始探索你的靈魂地圖旅程了。</p>
       <p>建議留一下 email，萬一之後忘記序號，我們才能幫你查回來喔。</p>
     </div>
   </div>
@@ -367,7 +398,7 @@ a{color:inherit;}
 
 <div class="sticky-bar">
   <div>
-    <div class="sb-label">✦ 靈魂地圖・完整版</div>
+    <div class="sb-label">靈魂地圖・完整版</div>
     <div class="sb-price">NT$ 688</div>
   </div>
   <a class="btn btn-gold" href="#priceCard">馬上解鎖 →</a>
@@ -396,7 +427,7 @@ a{color:inherit;}
   }
 })();
 
-var STORY_TEXT = "剛剛體驗版裡說的「冰山下的世界」，這裡想跟妳說清楚一點——\n\n很多人算了命、看懂了自己的星盤，卻不知道怎麼活出來，我覺得這樣很可惜——命盤其實是妳的「靈魂設定」，藏著妳這輩子想好好運用的天賦，怎麼把這份天賦活出來，一直是我最想幫大家做到的事。\n\n我是巧敲，這幾年一直在鑽研占星、也累積了不少解盤經驗。但真正讓我的人生開始不一樣的，是這五年我很認真在學、也認真在自己生活裡實踐的一套「種子理論」——原理很簡單：我們每一個念頭、每一句話、每一個行動，都像是在心裡種下一顆種子，時間到了就會發芽，長成我們生命裡真正發生的事。\n\n我自己就是這樣走出原本一直在重複的模式，這幾年也陪很多朋友、個案，用這個方式看懂自己卡住的地方、真的走出不一樣的結果。不管是感情裡一直重複的傷，還是很想往前衝卻一直卡住的猶豫，背後往往是同一件事——你種了什麼種子，就會一直長出什麼結果。這也是我做「靈魂地圖」的原因：把這套心法設定進了這位 AI 引導員裡，你不用自己準備帳號、不用複製貼上指令，直接上傳命盤截圖、開始聊就好。";
+var STORY_TEXT = "剛剛體驗版裡說的「冰山下的世界」，這裡想跟你說清楚一點。\n\n很多人算了命、看懂了自己的星盤，卻不知道怎麼活出來，我覺得這樣很可惜。命盤其實是你的「靈魂設定」，藏著你這輩子想好好運用的天賦，怎麼把這份天賦活出來，一直是我最想幫大家做到的事。\n\n我是巧敲，這幾年一直在鑽研占星、也累積了不少解盤經驗。但真正讓我的人生開始不一樣的，是這五年我很認真在學、也認真在自己生活裡實踐的一套「種子理論」。原理很簡單：我們每一個念頭、每一句話、每一個行動，都像是在心裡種下一顆種子，時間到了就會發芽，長成我們生命裡真正發生的事。\n\n我自己就是這樣走出原本一直在重複的模式，這幾年也陪很多朋友、個案，用這個方式看懂自己卡住的地方、真的走出不一樣的結果。不管是感情裡一直重複的傷，還是很想往前衝卻一直卡住的猶豫，背後往往是同一件事，你種了什麼種子，就會一直長出什麼結果。這也是我做「靈魂地圖」的原因：把這套心法設定進了這位 AI 引導員裡，你不用自己準備帳號、不用複製貼上指令，直接上傳命盤截圖、開始聊就好。";
 
 var FAQS = [
   { q: "我不懂命理也可以用嗎？", a: "完全可以，不需要你自己會算命。你只要照著提示到免費網站產生命盤截圖，上傳給 AI 引導員，剩下的交給它讀圖、跟你聊就好。" },
@@ -475,7 +506,7 @@ faqList.querySelectorAll(".faq-q").forEach(function(q){
 });
 
 var footer = document.getElementById("pageFooter");
-var parts = ["✦ " + escapeHtml(CONFIG.brandName || "")];
+var parts = [escapeHtml(CONFIG.brandName || "")];
 if(CONFIG.igLink){
   parts.push('<a href="' + CONFIG.igLink + '" target="_blank" rel="noopener">IG ' + escapeHtml(CONFIG.igLabel || "Instagram") + '</a>');
 }
