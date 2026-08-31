@@ -365,6 +365,24 @@ function logUserMessage(message, turn){
   }catch(e){ /* 記錄失敗也沒關係，不影響聊天 */ }
 }
 
+/* AI 的每一則回覆也記錄到同一張表，用同一個 sessionId、同一個 turn 對應
+   使用者那一則訊息，方便巧敲對照著看每一輪的問答。一樣是 fire-and-forget。 */
+function logAiReply(message, turn){
+  if(!CONFIG.logUrl || !message) return;
+  try{
+    fetch(CONFIG.logUrl, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        sessionId: getOrCreateLogSessionId(),
+        turnCount: turn,
+        aiReply: message
+      })
+    });
+  }catch(e){ /* 記錄失敗也沒關係，不影響聊天 */ }
+}
+
 /* 每日統計：只記錄「開始對話」跟「走到免費體驗結束標記」這兩個事件本身，
    不含任何聊天內容，純粹是為了讓巧敲知道每天大概有多少人開始聊、又有多少
    人真的聊到底。一樣是 fire-and-forget，送失敗也完全不影響使用者的體驗。 */
@@ -729,6 +747,7 @@ function callGemini(inputParts){
     }
 
     turnCount++;
+    logAiReply(replyText, turnCount);
     if(turnCount >= 4){
       ctaStrip.style.display = "block";
     }
