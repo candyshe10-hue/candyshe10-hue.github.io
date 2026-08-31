@@ -365,6 +365,24 @@ function logUserMessage(message, turn){
   }catch(e){ /* 記錄失敗也沒關係，不影響聊天 */ }
 }
 
+/* 每日統計：只記錄「開始對話」跟「走到免費體驗結束標記」這兩個事件本身，
+   不含任何聊天內容，純粹是為了讓巧敲知道每天大概有多少人開始聊、又有多少
+   人真的聊到底。一樣是 fire-and-forget，送失敗也完全不影響使用者的體驗。 */
+function logEvent(eventType){
+  if(!CONFIG.logUrl || !eventType) return;
+  try{
+    fetch(CONFIG.logUrl, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        sessionId: getOrCreateLogSessionId(),
+        event: eventType
+      })
+    });
+  }catch(e){ /* 記錄失敗也沒關係，不影響聊天 */ }
+}
+
 function collectMessagesFromDOM(){
   var messages = [];
   var bubbles = chatInner.querySelectorAll(".msg");
@@ -633,6 +651,7 @@ function sendMessage(){
   }
 
   addBubble("user", text, imgForBubble);
+  if(turnCount === 0){ logEvent("start"); }
   logUserMessage(text, turnCount + 1);
 
   textInput.value = "";
@@ -706,6 +725,7 @@ function callGemini(inputParts){
     var reachedQuota = /\[\[FREE_TRIAL_DONE\]\]/.test(replyText);
     if(reachedQuota){
       replyText = replyText.replace(/\[\[FREE_TRIAL_DONE\]\]\n*/g, "").trim();
+      logEvent("trial_done");
     }
 
     turnCount++;
