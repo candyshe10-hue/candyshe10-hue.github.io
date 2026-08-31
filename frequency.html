@@ -1,0 +1,338 @@
+<!doctype html>
+<title>頻率光譜</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;600;700&family=Fraunces:ital,wght@1,400;1,500&display=swap');
+
+  :root{
+    --void:      #17132A;
+    --void-2:    #241D3D;
+    --ember:     #5B3244;
+    --rust:      #9A4C3C;
+    --amber:     #D08A3E;
+    --gold:      #E9BE66;
+    --glow:      #F6E4B8;
+
+    --paper:       #F8F2E4;
+    --paper-line:  #E5D8BC;
+    --text-paper:      #2B2013;
+    --text-paper-dim:  #7C6A48;
+
+    --text-light:      #F3EAD8;
+    --text-light-dim:  #C7B9D6;
+    --text-dark:       #251A12;
+    --text-dark-dim:   #6E5636;
+
+    --serif: "Noto Serif TC", "Songti TC", serif;
+    --sans:  "Noto Sans TC", "PingFang TC", sans-serif;
+    --kicker:"Fraunces", var(--serif);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0;
+    background:var(--void);
+    color:var(--text-light);
+    font-family:var(--sans);
+    line-height:1.7;
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2{ font-family:var(--serif); text-wrap:balance; margin:0; }
+
+  .band{
+    position:relative;
+    padding:clamp(2.6rem,7vw,4.2rem) clamp(1.4rem,6vw,3rem);
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .band.in{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion:reduce){
+    .band{ opacity:1; transform:none; transition:none; }
+  }
+
+  .inner{ max-width:640px; margin:0 auto; }
+  .inner-wide{ max-width:760px; margin:0 auto; }
+
+  /* ---------- starfield ---------- */
+  .stars{
+    position:absolute; inset:0; pointer-events:none;
+    background-image:
+      radial-gradient(1.4px 1.4px at 12% 22%, rgba(243,234,216,.55), transparent 60%),
+      radial-gradient(1.2px 1.2px at 78% 14%, rgba(243,234,216,.4), transparent 60%),
+      radial-gradient(1.6px 1.6px at 34% 68%, rgba(243,234,216,.5), transparent 60%),
+      radial-gradient(1.1px 1.1px at 91% 55%, rgba(243,234,216,.35), transparent 60%),
+      radial-gradient(1.3px 1.3px at 58% 84%, rgba(243,234,216,.45), transparent 60%),
+      radial-gradient(1px 1px at 22% 90%, rgba(243,234,216,.3), transparent 60%),
+      radial-gradient(1.5px 1.5px at 66% 38%, rgba(243,234,216,.4), transparent 60%);
+    background-repeat:no-repeat;
+  }
+
+  /* ---------- header ---------- */
+  .hero{ background:var(--void); padding-top:clamp(3.6rem,10vw,6rem); }
+  .kicker{
+    font-family:var(--kicker); font-style:italic; font-weight:500;
+    font-size:.8rem; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--gold); margin:0 0 1.1rem;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem,6vw,3rem); font-weight:900;
+    color:var(--text-light); letter-spacing:.01em;
+  }
+  .hero .sub{
+    margin-top:.9rem; font-size:1.05rem; color:var(--text-light-dim);
+    max-width:30em;
+  }
+  .hero .lede{
+    margin-top:1.8rem; font-size:1rem; color:var(--text-light);
+    max-width:32em; border-top:1px solid rgba(243,234,216,.16); padding-top:1.6rem;
+  }
+
+  /* ---------- chart ---------- */
+  .chart-section{ background:var(--paper); color:var(--text-paper); }
+  .chart-title{
+    font-family:var(--kicker); font-style:italic; font-size:.76rem;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--text-paper-dim);
+    margin:0 0 1.6rem;
+  }
+
+  .zone{ display:flex; align-items:stretch; gap:clamp(.8rem,3vw,1.6rem); }
+  .rows{ flex:1 1 auto; display:flex; flex-direction:column; gap:.3rem; min-width:0; }
+
+  .row{
+    display:grid;
+    grid-template-columns:3.6rem auto 1fr;
+    align-items:center;
+    gap:clamp(.6rem,2.4vw,1.1rem);
+    padding:.4rem 0;
+  }
+  @media (max-width:600px){
+    .row{ grid-template-columns:3.6rem auto; row-gap:.4rem; }
+    .row .barcap{ grid-column:1 / -1; }
+  }
+
+  .score{
+    font-family:var(--kicker); font-style:italic; font-weight:500;
+    font-variant-numeric:tabular-nums; font-size:.98rem;
+    color:var(--text-paper-dim); text-align:right; white-space:nowrap;
+  }
+
+  .pill{
+    display:inline-block; padding:.26rem .8rem; border-radius:999px;
+    font-family:var(--serif); font-weight:700; font-size:.85rem;
+    white-space:nowrap; background:var(--bg); color:var(--fg);
+  }
+
+  .barcap{ display:flex; align-items:center; gap:.8rem; min-width:0; }
+  .bartrack{
+    position:relative; flex:1 1 auto; height:7px; border-radius:999px;
+    background:var(--paper-line); min-width:2.6rem; overflow:hidden;
+  }
+  .barfill{ position:absolute; inset:0 auto 0 0; border-radius:999px; background:var(--bg); }
+  .caption{
+    flex:0 0 auto; font-size:.8rem; color:var(--text-paper-dim);
+    white-space:nowrap;
+  }
+  @media (max-width:600px){
+    .caption{ white-space:normal; }
+  }
+
+  .source{
+    margin-top:1.8rem; padding-top:1.2rem; border-top:1px solid var(--paper-line);
+    font-size:.78rem; color:var(--text-paper-dim);
+  }
+
+  .divider{
+    position:relative; margin:1.5rem 0; padding-top:1rem;
+    border-top:1px dashed var(--paper-line);
+    text-align:center;
+  }
+  .divider span{
+    position:relative; top:-1.65rem; background:var(--paper);
+    padding:0 .9rem; font-family:var(--kicker); font-style:italic;
+    font-size:.78rem; letter-spacing:.05em; color:var(--text-paper-dim);
+  }
+
+  .sidelabel{
+    flex:0 0 auto; width:3.2rem; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:.5rem;
+    font-family:var(--kicker); font-style:italic; font-size:.74rem;
+    letter-spacing:.08em; line-height:1.5; text-align:center;
+  }
+  @media (max-width:520px){ .sidelabel{ width:2.4rem; font-size:.62rem; } }
+  .sidelabel .arrow{ font-style:normal; font-size:1.3rem; line-height:1; }
+  .sidelabel.pos{ color:#9C7A2E; }
+  .sidelabel.neg{ color:var(--text-paper-dim); }
+
+  /* ---------- footer ---------- */
+  .close{
+    background:var(--glow); color:var(--text-dark);
+    padding-bottom:clamp(3.4rem,9vw,5.2rem);
+  }
+  .close .glowbg{
+    position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(60% 55% at 50% 0%, rgba(255,255,255,.55), transparent 70%);
+  }
+  .close h2{
+    font-size:clamp(1.35rem,3.6vw,1.65rem); font-weight:700; color:var(--text-dark);
+    max-width:26em; text-wrap:balance;
+  }
+  .close .empower{ margin-top:1.1rem; font-size:1.02rem; color:#3B2A1A; }
+  .close .bridge{
+    margin-top:1.9rem; padding-top:1.6rem; border-top:1px solid rgba(37,26,18,.18);
+    font-family:var(--serif); font-weight:600; font-size:1.08rem; color:var(--text-dark);
+  }
+  .close .mark{
+    margin-top:2.2rem; font-family:var(--kicker); font-style:italic;
+    font-size:.78rem; letter-spacing:.14em; color:var(--text-dark-dim);
+  }
+</style>
+
+<section class="band hero">
+  <div class="stars"></div>
+  <div class="inner" style="position:relative">
+    <p class="kicker">Soul Map · The Frequency of Choice</p>
+    <h1>頻率光譜</h1>
+    <p class="sub">同一件事，兩種選擇，會把妳帶往完全不同的結果。</p>
+    <p class="lede">不管是感情、工作、家人，還是妳跟自己的關係——面對同一件事，妳選擇怎麼回應，那個選擇，就是妳當下所在的頻率。而頻率，決定了事情會走向靠近，還是越走越遠。</p>
+  </div>
+</section>
+
+<section class="band chart-section">
+  <div class="inner-wide">
+    <p class="chart-title">意識能量對照表 · 17 個層級</p>
+
+    <div class="zone zone-pos">
+      <div class="rows">
+        <div class="row" style="--bg:#F8E7C4;--fg:#251A12">
+          <span class="score">700–1000</span>
+          <span class="pill">開悟</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:100%"></span></span><span class="caption">無我，意識頂峰</span></span>
+        </div>
+        <div class="row" style="--bg:#F3D9A3;--fg:#251A12">
+          <span class="score">600</span>
+          <span class="pill">平和</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:88%"></span></span><span class="caption">永恆，通靈狀態</span></span>
+        </div>
+        <div class="row" style="--bg:#EFCB84;--fg:#251A12">
+          <span class="score">540</span>
+          <span class="pill">喜悅</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:80%"></span></span><span class="caption">慈悲，持久樂觀</span></span>
+        </div>
+        <div class="row" style="--bg:#EABE66;--fg:#251A12">
+          <span class="score">500</span>
+          <span class="pill">愛</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:74%"></span></span><span class="caption">幸福，聚焦美好</span></span>
+        </div>
+        <div class="row" style="--bg:#E4AC54;--fg:#251A12">
+          <span class="score">400</span>
+          <span class="pill">明智</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:64%"></span></span><span class="caption">理性，看清全局</span></span>
+        </div>
+        <div class="row" style="--bg:#DA9A47;--fg:#251A12">
+          <span class="score">350</span>
+          <span class="pill">寬容</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:58%"></span></span><span class="caption">自控，無對錯觀</span></span>
+        </div>
+        <div class="row" style="--bg:#CC823D;--fg:#251A12">
+          <span class="score">310</span>
+          <span class="pill">主動</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:52%"></span></span><span class="caption">樂觀，願意克服</span></span>
+        </div>
+        <div class="row" style="--bg:#B66B3A;--fg:#F3EAD8">
+          <span class="score">250</span>
+          <span class="pill">淡定</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:45%"></span></span><span class="caption">安全，不再抗拒</span></span>
+        </div>
+        <div class="row" style="--bg:#A05539;--fg:#F3EAD8">
+          <span class="score">200</span>
+          <span class="pill">勇氣</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:38%"></span></span><span class="caption">賦權，願意面對</span></span>
+        </div>
+      </div>
+      <div class="sidelabel pos"><span class="arrow">▲</span><span>正能量<br>層級</span></div>
+    </div>
+
+    <div class="divider"><span>200 · 勇氣門檻</span></div>
+
+    <div class="zone zone-neg">
+      <div class="rows">
+        <div class="row" style="--bg:#8B4438;--fg:#F3EAD8">
+          <span class="score">175</span>
+          <span class="pill">驕傲</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:33%"></span></span><span class="caption">否認，向外索求</span></span>
+        </div>
+        <div class="row" style="--bg:#75383A;--fg:#F3EAD8">
+          <span class="score">150</span>
+          <span class="pill">憤怒</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:28%"></span></span><span class="caption">怨恨，容易攻擊</span></span>
+        </div>
+        <div class="row" style="--bg:#5F313D;--fg:#F3EAD8">
+          <span class="score">125</span>
+          <span class="pill">慾望</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:24%"></span></span><span class="caption">上癮，貪婪無度</span></span>
+        </div>
+        <div class="row" style="--bg:#4C2A3F;--fg:#F3EAD8">
+          <span class="score">100</span>
+          <span class="pill">恐懼</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:20%"></span></span><span class="caption">擔憂，壓抑個性</span></span>
+        </div>
+        <div class="row" style="--bg:#3A2340;--fg:#F3EAD8">
+          <span class="score">75</span>
+          <span class="pill">悲傷</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:16%"></span></span><span class="caption">失落，悲痛萬分</span></span>
+        </div>
+        <div class="row" style="--bg:#281B3F;--fg:#F3EAD8">
+          <span class="score">50</span>
+          <span class="pill">冷淡</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:12%"></span></span><span class="caption">漠視，失去希望</span></span>
+        </div>
+        <div class="row" style="--bg:#1E1735;--fg:#F3EAD8">
+          <span class="score">30</span>
+          <span class="pill">內疚</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:8%"></span></span><span class="caption">自責，影響身心</span></span>
+        </div>
+        <div class="row" style="--bg:#17132A;--fg:#F3EAD8">
+          <span class="score">20</span>
+          <span class="pill">羞愧</span>
+          <span class="barcap"><span class="bartrack"><span class="barfill" style="width:5%"></span></span><span class="caption">自我否定，摧殘身心</span></span>
+        </div>
+      </div>
+      <div class="sidelabel neg"><span>負能量<br>層級</span><span class="arrow">▼</span></div>
+    </div>
+
+    <p class="source">概念與分級參考自 David R. Hawkins 博士《心靈能量》（Power vs. Force）的意識能量對照表。</p>
+  </div>
+</section>
+
+<section class="band close" style="position:relative">
+  <div class="glowbg"></div>
+  <div class="inner" style="position:relative">
+    <h2>對方、環境，不是沒有責任。</h2>
+    <p class="empower">但在每一次選擇裡，妳永遠有一個自己能決定的地方——這一次，我想用哪一種頻率回應。選擇，才是真正在創造妳命運的那股力量。</p>
+    <p class="bridge">妳最常卡在哪一層、又是為什麼卡在那裡——妳的命盤，看得見。</p>
+    <p class="mark">靈魂地圖 Soul Map</p>
+  </div>
+</section>
+
+<script>
+  (function(){
+    var bands = document.querySelectorAll('.band');
+    if(!('IntersectionObserver' in window)){
+      bands.forEach(function(b){ b.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:.15 });
+    bands.forEach(function(b){ io.observe(b); });
+  })();
+</script>
