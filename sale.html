@@ -55,6 +55,12 @@ a{color:inherit;}
 .hero-title{font-size:23px; font-weight:900; line-height:1.5; margin:0 0 10px 0;}
 .hero-title .accent{color:var(--pink);}
 .hero-sub{font-size:14.5px; color:var(--medium); line-height:1.8;}
+.hero-cta{margin-top:20px;}
+
+.big-points{display:flex; flex-direction:column; gap:24px;}
+.big-point{display:flex; gap:14px; align-items:flex-start;}
+.big-point .bp-num{flex-shrink:0; font-size:24px; font-weight:900; color:var(--pink); line-height:1.5; font-style:italic;}
+.big-point .bp-text{font-size:17px; font-weight:700; color:var(--dark); line-height:1.7;}
 
 .card{
   background:#fff; border-radius:var(--radius-lg); padding:30px 26px; box-shadow:var(--shadow-card);
@@ -208,7 +214,8 @@ a{color:inherit;}
   <div class="hero">
     <div class="hero-emoji">🗺️</div>
     <div class="hero-title">巧敲的<span class="accent">靈魂地圖・完整版</span></div>
-    <div class="hero-sub">那個決定你演練了幾十次，那句話你可能已經吵過同樣的版本第五次了。<br>你的命盤不是拿來算命的，是拿來指出——這些重複，具體是從哪裡來的。</div>
+    <div class="hero-sub" id="heroSub"></div>
+    <div class="hero-cta" id="heroCta"></div>
   </div>
 
   <div class="card">
@@ -220,7 +227,16 @@ a{color:inherit;}
   </div>
 
   <div class="card">
-    <div class="section-title">完整版可以陪你聊懂什麼</div>
+    <div class="section-title" style="text-align:center;">聊完之後，你會帶走三個東西</div>
+    <div class="big-points">
+      <div class="big-point"><span class="bp-num">一</span><span class="bp-text">這個模式到底從哪裡來，為什麼是你，為什麼是現在</span></div>
+      <div class="big-point"><span class="bp-num">二</span><span class="bp-text">一個這一兩天就能開始做的練習，不是道理，是動作</span></div>
+      <div class="big-point"><span class="bp-num">三</span><span class="bp-text">下一次同樣的情況出現時，你認得出那是模式在動，不是你真的想要</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">聊完之後你會帶走什麼</div>
     <div class="body-text" style="margin-bottom:6px;">免費版只能小小體驗一下——聊 1 種你卡住的狀態。完整版可以讓 AI 從更多角度、更深入地陪你把兩種卡住的地方一次聊透，包括：</div>
     <ul class="preview-list">
       <li class="preview-item">
@@ -407,6 +423,29 @@ function escapeHtml(str){
 }
 
 document.getElementById("storyText").textContent = STORY_TEXT;
+
+/* 第一屏文案：從免費體驗過來的人（網址帶 ?from=trial）已經看過模式了，
+   第一屏要問她「看見之後怎麼辦」；直接進來、還沒體驗過的人，第一屏還是
+   要先讓她「看見」自己的重複模式，下方主要按鈕改成先帶她去免費體驗，
+   不是直接推購買。 */
+var HERO_TRIAL_HTML = "你剛剛看見了那個模式。<br>接下來的問題只有一個：<br>下一次它又出現的時候，你要怎麼辦。<br>完整版就是在做這件事。";
+var HERO_DEFAULT_HTML = "你已經吵過同樣的版本第五次了。<br>那個決定，你也演練了幾十次。<br>不是你不夠努力。<br>是有一套反應一直在背後運作，<br>而它在你的命盤上，有一個具體的位置。";
+(function(){
+  var isFromTrial = false;
+  try{
+    var heroParams = new URLSearchParams(window.location.search);
+    isFromTrial = heroParams.get("from") === "trial";
+  }catch(e){}
+
+  var heroSubEl = document.getElementById("heroSub");
+  if(heroSubEl){
+    heroSubEl.innerHTML = isFromTrial ? HERO_TRIAL_HTML : HERO_DEFAULT_HTML;
+  }
+  var heroCtaEl = document.getElementById("heroCta");
+  if(heroCtaEl && !isFromTrial){
+    heroCtaEl.innerHTML = '<a class="btn btn-blue" href="https://candyshe10-hue.github.io/chat.html" target="_blank" rel="noopener">免費體驗一次解讀 →</a>';
+  }
+})();
 
 /* 如果是從免費版聊完點過來的（網址帶 ?from=trial），代表已經體驗過了，
    隱藏「先免費聊一次看看」卡片；其他來源（IG／LINE／朋友分享直接開這頁）維持顯示。 */
