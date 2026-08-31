@@ -262,7 +262,8 @@ input,textarea{font-family:inherit;}
 var CONFIG = {
   workerUrl: "https://soulmap-gemini-proxy.candyshe10.workers.dev/",
   model: "gemini-3.1-flash-lite",
-  purchaseLink: "https://candyshe10-hue.github.io/sale.html?from=trial"
+  purchaseLink: "https://candyshe10-hue.github.io/sale.html?from=trial",
+  logUrl: "https://script.google.com/macros/s/AKfycbwE6J7gJrTaIE6e-WWPVevra1-m6HiX_gzx-SMou4xkZhseKqbUHIhNQXLji4tIqJnZ/exec"
 };
 
 var GREETING = "嗨，我是「靈魂地圖」的免費體驗 AI 引導員 🗺️\n\n先不急著打字聊，我們先來一個立即版的小驚喜 ✨ 妳現在最想先知道哪一塊：\n\n💕 感情關係｜🚀 方向決定｜💰 財運金錢｜🌙 近期整體運勢\n\n打其中一個關鍵字給我就好（例如打「感情」），我再帶妳去產生命盤截圖\n\n這次體驗會用到這套免費命盤工具：\n🌌 星座命盤\n（這是巧敲研究最久、最擅長的系統，之後我會一步步帶妳產生截圖）";
@@ -332,6 +333,37 @@ var quotaLocked = false; // 免費額度是否已經用完（AI 回覆裡帶 [[F
    但對話文字紀錄跟「額度已用完」的鎖定狀態都會接續，不會讓使用者靠重整頁面
    無限重新開始體驗。 ---------- */
 var STORAGE_KEY = "soulmap_chat_trial_v1";
+var LOG_SESSION_KEY = "soulmap_chat_trial_v1_logsession";
+
+/* 免費版困擾記錄：把使用者打的文字內容另外送一份到巧敲自己的 Google 試算表，
+   純粹是為了讓巧敲知道大家實際問了什麼、卡在哪裡，跟聊天本身的功能完全無關，
+   所以用 no-cors 的 fire-and-forget 方式送出，就算送失敗、送不出去，也完全不
+   影響使用者聊天的體驗，不用等回應、也不處理錯誤。 */
+function getOrCreateLogSessionId(){
+  try{
+    var id = localStorage.getItem(LOG_SESSION_KEY);
+    if(!id){
+      id = "s_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem(LOG_SESSION_KEY, id);
+    }
+    return id;
+  }catch(e){ return "unknown"; }
+}
+function logUserMessage(message, turn){
+  if(!CONFIG.logUrl || !message) return;
+  try{
+    fetch(CONFIG.logUrl, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        sessionId: getOrCreateLogSessionId(),
+        turnCount: turn,
+        message: message
+      })
+    });
+  }catch(e){ /* 記錄失敗也沒關係，不影響聊天 */ }
+}
 
 function collectMessagesFromDOM(){
   var messages = [];
@@ -380,6 +412,7 @@ function lockInputForQuota(){
    狀態，回到最一開始的歡迎訊息，讓她可以乾淨地重新走一輪體驗。 */
 function resetTrialSession(){
   try{ localStorage.removeItem(STORAGE_KEY); }catch(e){ /* 清不掉也沒關係 */ }
+  try{ localStorage.removeItem(LOG_SESSION_KEY); }catch(e){ /* 清不掉也沒關係，下一輪重新產生新的 session ID 即可 */ }
   previousInteractionId = null;
   pendingImage = null;
   isSending = false;
@@ -600,6 +633,7 @@ function sendMessage(){
   }
 
   addBubble("user", text, imgForBubble);
+  logUserMessage(text, turnCount + 1);
 
   textInput.value = "";
   textInput.style.height = "auto";
