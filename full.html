@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<!-- 這個頁面的內容（對話、序號狀態）都是動態的，不希望瀏覽器或 LINE 內建瀏覽器
+     把整頁 HTML 快取起來太久，導致換序號、清空重測之後看到的還是舊版本畫面。 -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>靈魂地圖・完整版</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -450,7 +455,10 @@ if(switchCodeBtn){
     clearSession();
     // 用 location.pathname（不含網址上的 ?code=... 參數）重新整理，
     // 避免網址上還留著舊序號時，一重新整理又被 autoUnlockFromUrl 自動帶回舊序號。
-    location.href = location.pathname;
+    // 後面加一個每次都不一樣的 _r 參數，是為了強迫瀏覽器（尤其是手機、LINE
+    // 內建瀏覽器）重新跟伺服器要一次最新版本的頁面，而不是直接讀快取裡舊的
+    // 版本，導致明明已經改好的程式又沒生效。
+    location.href = location.pathname + "?_r=" + Date.now();
   });
 }
 
