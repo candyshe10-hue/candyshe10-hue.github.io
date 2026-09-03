@@ -919,19 +919,34 @@ function callGemini(inputParts){
         updateUsageUI();
         if(usageUsed >= usageMax) lockInputForCap();
 
-        // 如果伺服器上的對話紀錄比目前畫面上看到的還多（例如剛剛在別的
-        // 裝置／瀏覽器用同一組序號續聊過），就用伺服器的版本補齊，
-        // 避免這個裝置看到的還是舊的、比較短的對話。
+        // 一律以「伺服器上」的對話紀錄為準：跟這個分頁畫面上目前看到的不一樣
+        // 就整個重畫一次——不管是伺服器比較多（例如剛剛在別的裝置／瀏覽器
+        // 用同一組序號續聊過），還是伺服器比較少（例如這組序號剛被「清空
+        // 重測」重置過，但這個分頁是很久以前開著、還沒關掉的舊分頁，畫面上
+        // 還停留在重置前的舊對話）。
+        //
+        // 這裡刻意「只讀不寫」——不會呼叫 saveSession() 把這個分頁本地看到的
+        // 內容存回伺服器。原本這裡會呼叫 saveSession()，但這其實是個資料污染
+        // 的漏洞：一個很久沒關、本地資料已經過時的分頁，只要重新整理一次觸發
+        // 這段背景檢查，就會把自己本地那份舊的對話蓋回伺服器，讓已經清空或
+        // 在別的裝置更新過的紀錄「復活」——這正是造成「明明用全新序號、伺服器
+        // 也真的清空過，卻還是看得到很久以前的舊對話」的根本原因。真的要把
+        // 對話存回伺服器，只應該在使用者在「這個分頁」實際傳送新訊息、或剛
+        // 解鎖成功的當下才做（saveSession() 的其他呼叫點）。
+        var serverMessages = (data.messages && data.messages.length) ? data.messages : [];
         var localCount = chatInner.querySelectorAll(".msg").length;
-        if(data.messages && data.messages.length > localCount){
+        if(serverMessages.length !== localCount){
           chatInner.innerHTML = "";
-          data.messages.forEach(function(m){ addBubble(m.role, m.text); });
-          scrollToBottom();
+          if(serverMessages.length){
+            serverMessages.forEach(function(m){ addBubble(m.role, m.text); });
+            scrollToBottom();
+          } else {
+            insertSampleButtonAfterSystems(addBubble("ai", GREETING));
+          }
         }
         if(typeof data.previousInteractionId === "string" && data.previousInteractionId){
           previousInteractionId = data.previousInteractionId;
         }
-        saveSession();
       }
     })
     .catch(function(){ /* 背景確認失敗就算了，不打斷使用者 */ });
