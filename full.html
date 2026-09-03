@@ -56,6 +56,12 @@ input,textarea{font-family:inherit;}
   font-size:11px; font-weight:700; border-radius:16px; padding:6px 10px; cursor:pointer; white-space:nowrap;
 }
 .sample-btn-topbar:hover{background:var(--light-gold);}
+.switch-code-btn{
+  position:absolute; left:14px; top:50%; transform:translateY(-50%);
+  border:1.5px solid var(--gray); background:#fff; color:var(--gray);
+  font-size:11px; font-weight:700; border-radius:16px; padding:6px 10px; cursor:pointer; white-space:nowrap;
+}
+.switch-code-btn:hover{background:var(--bg);}
 
 /* ---------- App 內建瀏覽器提醒 ---------- */
 .inapp-banner{
@@ -206,6 +212,7 @@ input,textarea{font-family:inherit;}
     <div class="sub">兩種輪廓都能聊透・還能看懂同一顆種子</div>
     <div class="usage" id="usageLine"></div>
   </div>
+  <button type="button" class="switch-code-btn" id="switchCodeBtn">🔄 換序號</button>
   <button type="button" class="sample-btn-topbar" id="sampleBtnTopbar">📸 看範例</button>
 </div>
 
@@ -322,6 +329,7 @@ var usageLine = document.getElementById("usageLine");
 var hintLine = document.getElementById("hintLine");
 var sampleOverlay = document.getElementById("sampleOverlay");
 var sampleCloseBtn = document.getElementById("sampleCloseBtn");
+var switchCodeBtn = document.getElementById("switchCodeBtn");
 
 function openSampleOverlay(){ sampleOverlay.classList.add("open"); }
 function closeSampleOverlay(){ sampleOverlay.classList.remove("open"); }
@@ -431,6 +439,17 @@ function loadSession(){
 }
 function clearSession(){
   try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+}
+
+// 「換序號」按鈕——讓使用者（或巧敲自己測試時）不用清瀏覽器資料、
+// 不用開無痕視窗，就能離開目前這組序號、回到輸入序號畫面，改用別組序號。
+if(switchCodeBtn){
+  switchCodeBtn.addEventListener("click", function(){
+    var ok = window.confirm("要換一組序號嗎？\n\n目前這組序號的對話紀錄還是會保留，之後重新輸入同一組序號可以接續。");
+    if(!ok) return;
+    clearSession();
+    location.reload();
+  });
 }
 
 function scrollToBottom(){
