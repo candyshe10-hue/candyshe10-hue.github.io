@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>靈魂地圖</title>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><title>靈魂地圖</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&display=swap">
@@ -367,6 +362,32 @@
     max-width: 32em;
   }
 
+  .asks {
+    margin: 46px 0 0;
+    border-top: 1px solid var(--rule);
+    padding-top: 38px;
+  }
+  .asks ul {
+    list-style: none;
+    margin: 26px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+    gap: 14px 32px;
+  }
+  .asks li {
+    font-family: var(--serif);
+    font-size: 16.5px;
+    line-height: 1.85;
+    letter-spacing: .02em;
+    color: var(--blush);
+    padding-left: 20px;
+    position: relative;
+  }
+  .asks li::before { content: "「"; position: absolute; left: 0; color: var(--pill); }
+  .asks li::after { content: "」"; color: var(--pill); }
+  .asks .after { margin-top: 30px; color: var(--blush-2); }
+
   /* 重新排版過的真實對話：手機上字不會縮小 */
   .chat {
     background: #FBFAF7;
@@ -572,9 +593,8 @@
 
   .nb { white-space: nowrap; }
   p, h1, h2, h3, h4, dt, li, .pull p, .types .says, .cards p, .faq dd, .mech p { text-wrap: balance; }
-</style>
-</head>
-<body>
+</style></head><body>
+
 <canvas id="stars" aria-hidden="true"></canvas>
 
 <div class="band-dark band-hero">
@@ -628,6 +648,21 @@
       </div>
     </div>
 
+    <div class="asks">
+      <p class="eyebrow-zh">你 可 以 問 它 什 麼</p>
+      <ul>
+        <li>他到底愛不愛我</li>
+        <li>我該不該分手</li>
+        <li>為什麼我一直遇到同一種人</li>
+        <li>我該不該離職</li>
+        <li>我適合創業還是上班</li>
+        <li>為什麼我一直存不到錢</li>
+        <li>我跟我媽為什麼永遠講不通</li>
+        <li>我到底想要的是什麼</li>
+      </ul>
+      <p class="after">想到什麼問什麼，用你自己的話講就好——它會從你的盤上回答你</p>
+    </div>
+
     <div class="shot">
       <figure>
         <div class="chat">
@@ -645,7 +680,7 @@
             <div class="msg me">對，真的</div>
           </div>
         </div>
-        <figcaption>實際的對話畫面——它會直接講到你盤上的位置，然後問你一個你得停下來想的問題</figcaption>
+        <figcaption>每個人在這裡都會被問到一個自己沒想過的問題<br>那個問題是什麼，要看你的盤</figcaption>
       </figure>
     </div>
   </section>
@@ -807,7 +842,4 @@
 })();
 </script>
 
-
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "e7210588e220453c8231539d3471f334"}'></script><!-- End Cloudflare Web Analytics -->
-
-</body></html>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "e7210588e220453c8231539d3471f334"}'></script><!-- End Cloudflare Web Analytics --></body></html>
