@@ -448,7 +448,9 @@ if(switchCodeBtn){
     var ok = window.confirm("要換一組序號嗎？\n\n目前這組序號的對話紀錄還是會保留，之後重新輸入同一組序號可以接續。");
     if(!ok) return;
     clearSession();
-    location.reload();
+    // 用 location.pathname（不含網址上的 ?code=... 參數）重新整理，
+    // 避免網址上還留著舊序號時，一重新整理又被 autoUnlockFromUrl 自動帶回舊序號。
+    location.href = location.pathname;
   });
 }
 
@@ -645,6 +647,9 @@ function tryUnlock(){
       previousInteractionId = data.previousInteractionId || null;
       showChatScreen();
       updateUsageUI();
+      // 解鎖成功一定先清空畫面上原本的對話泡泡，再依這組序號的資料重畫一次，
+      // 避免手動換序號、或連續解鎖兩組不同序號時，畫面上殘留上一組序號的對話。
+      chatInner.innerHTML = "";
       if(data.messages && data.messages.length){
         // 這組序號在其他裝置／瀏覽器已經聊過，接續顯示之前的對話紀錄
         data.messages.forEach(function(m){ addBubble(m.role, m.text); });
