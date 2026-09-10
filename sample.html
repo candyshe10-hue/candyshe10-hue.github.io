@@ -86,6 +86,71 @@ p.body.lead{font-size:12.5pt;color:var(--ink);margin-bottom:5.5mm;line-height:1.
 .cta-alt{font-size:9.5pt;line-height:1.75;color:var(--ink-soft);margin-top:5mm;}
 .cta-alt a{color:var(--gold-deep);text-decoration:none;border-bottom:0.4pt solid var(--gold-soft);}
 .cta-alt b{color:var(--gold-deep);}
+
+/* ═══════════════ 手機／小螢幕：改成連續閱讀，列印仍維持 A4 ═══════════════ */
+@media screen and (max-width:820px){
+  body{background:var(--ivory);}
+  .page{
+    width:100%;height:auto;min-height:0;display:block;
+    padding:30px 20px 40px;margin:0 0 10px;
+    overflow:visible;border-bottom:1px solid var(--gold-soft);
+  }
+  .page:last-child{border-bottom:0;}
+  .page::before{inset:9px;}
+  .page::after{inset:15px;}
+  .corner-wrap{display:none;}
+  .pgnum{position:static;margin-top:26px;font-size:11px;}
+
+  .kicker{font-size:10px;letter-spacing:.3em;}
+  .cn-label{font-size:11px;letter-spacing:.38em;}
+  h2.sec{font-size:21px;margin-top:8px;}
+  .sec-sub{font-size:13px;margin-top:4px;}
+  .rule{width:38px;height:1px;margin:16px 0 18px;}
+  .rule::after{left:-3px;top:-3px;width:6px;height:6px;}
+
+  p.body{font-size:15.5px;line-height:1.95;margin-bottom:16px;}
+  p.body.lead{font-size:16.5px;line-height:1.9;margin-bottom:18px;}
+  .keyline{font-size:16px;line-height:1.85;padding-left:14px;border-left-width:2px;margin:14px 0;}
+
+  .aspect-card{padding:16px;margin-bottom:16px;}
+  .aspect-label{font-size:10.5px;letter-spacing:.18em;}
+  .aspect-title{font-size:16px;margin-bottom:8px;}
+  .aspect-body{font-size:14.5px;line-height:1.9;}
+
+  .subhead{font-size:16.5px;margin-bottom:12px;}
+  .subhead small{font-size:12px;}
+
+  .trio{grid-template-columns:1fr;gap:12px;margin:8px 0 18px;}
+  .trio>div{padding:14px 16px;}
+  .trio .t-en{font-size:10px;}
+  .trio .t-pos{font-size:14.5px;}
+  .trio .t-txt{font-size:14px;line-height:1.85;}
+
+  .gifts{margin:4px 0 16px;}
+  .gift{grid-template-columns:24px 1fr;gap:10px;padding:13px 0;}
+  .gift .g-n{font-size:15px;}
+  .gift .g-t{font-size:15.5px;}
+  .gift .g-b{font-size:14.5px;line-height:1.9;}
+
+  .dot-no{font-size:40px;margin-bottom:10px;}
+
+  .tl{margin:6px 0 18px;}
+  .tl-row{grid-template-columns:54px 1fr;gap:12px;padding:13px 0;}
+  .tl-m{font-size:15px;}
+  .tl-t{font-size:14.5px;line-height:1.85;}
+
+  .seal{padding:22px 18px;margin:8px 0 18px;}
+  .seal .q{font-size:17px;line-height:1.8;}
+  .seal .s{font-size:14px;margin-top:12px;}
+
+  .cta-box{padding:22px 18px;margin-top:12px;}
+  .cta-box .l{font-size:9.5px;}
+  .cta-box .t{font-size:16px;line-height:1.85;}
+  .btn{display:block;margin-top:18px;padding:16px 10px;font-size:16px;letter-spacing:.08em;}
+  .cta-alt{font-size:14px;line-height:1.85;margin-top:16px;}
+
+  .closing{font-size:17px;line-height:2.05;}
+}
 </style></head><body>
 
 <!-- ============ 封面 ============ -->
@@ -316,8 +381,8 @@ p.body.lead{font-size:12.5pt;color:var(--ink);margin-bottom:5.5mm;line-height:1.
   <div class="cta-box">
     <div class="l">Next Step</div>
     <div class="t">想知道那顆源頭是哪一個嗎？<br>這是一場 60 分鐘的線上對話，我一個月只開三場。</div>
-    <a class="btn" href="https://lin.ee/OyVrggK">申請這場對話</a>
-    <div class="cta-alt">或者直接私訊我也可以——<br>加 LINE <a href="https://lin.ee/OyVrggK">lin.ee/OyVrggK</a>，跟我說「<b>我看完報告了</b>」，我就知道是你</div>
+    <a class="btn" href="https://lin.ee/OyVrggK" target="_blank" rel="noopener">申請這場對話</a>
+    <div class="cta-alt">或者直接私訊我也可以——<br>加 LINE <a href="https://lin.ee/OyVrggK" target="_blank" rel="noopener">lin.ee/OyVrggK</a>，跟我說「<b>我看完報告了</b>」，我就知道是你</div>
   </div>
   <div class="pgnum">— 13 —</div>
 </div>
