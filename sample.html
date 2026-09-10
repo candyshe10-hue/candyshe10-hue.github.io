@@ -1,0 +1,350 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<title>靈魂定位報告</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ivory:#fbf8f3;--paper:#fffdf9;--cream:#f4ecdd;
+  --gold:#c9a96e;--gold-deep:#a8854e;--gold-soft:#e3d3b0;
+  --ink:#36322c;--ink-soft:#6f6657;--ink-faint:#9a9082;
+  --rose:#c97a72;--rose-soft:#f0dbd9;--rose-deep:#a85850;
+  --slate:#7a8fa8;--slate-soft:#dce4ee;--slate-deep:#506070;
+  --serif-cjk:'Noto Serif TC','Noto Serif CJK TC',serif;
+  --serif-en:'Cormorant Garamond',serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+@page{size:A4;margin:0;}
+html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+body{font-family:var(--serif-cjk);color:var(--ink);background:#ccc;}
+
+.page{width:210mm;height:297mm;background:var(--ivory);display:flex;flex-direction:column;justify-content:center;
+  padding:28mm 28mm 22mm;position:relative;page-break-after:always;break-after:page;overflow:hidden;margin:0 auto;}
+.page:last-child{page-break-after:auto;break-after:auto;}
+.page::before{content:"";position:absolute;inset:13mm;border:0.4pt solid var(--gold-soft);pointer-events:none;}
+.page::after{content:"";position:absolute;inset:15.2mm;border:0.4pt solid var(--gold-soft);opacity:.45;pointer-events:none;}
+
+.pgnum{position:absolute;bottom:12mm;left:0;right:0;text-align:center;font-family:var(--serif-en);font-size:9pt;letter-spacing:.3em;color:var(--ink-faint);}
+.kicker{font-family:var(--serif-en);font-size:9.5pt;letter-spacing:.42em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;}
+.cn-label{font-size:9pt;letter-spacing:.5em;color:var(--ink-faint);margin-top:2mm;}
+h2.sec{font-weight:600;font-size:20pt;color:var(--ink);letter-spacing:.08em;margin-top:3mm;line-height:1.4;}
+.sec-sub{font-family:var(--serif-en);font-size:11pt;font-style:italic;color:var(--gold-deep);letter-spacing:.08em;margin-top:2mm;}
+.rule{width:36mm;height:0.6pt;background:var(--gold);margin:5mm 0;position:relative;flex-shrink:0;}
+.rule::after{content:"";position:absolute;left:-1mm;top:-1.1mm;width:2mm;height:2mm;background:var(--gold);transform:rotate(45deg);}
+
+p.body{font-size:11pt;line-height:1.9;color:#403b33;letter-spacing:.02em;margin-bottom:4.5mm;flex-shrink:0;}
+p.body.lead{font-size:12.5pt;color:var(--ink);margin-bottom:5.5mm;line-height:1.85;}
+.keyline{font-size:13pt;line-height:1.8;color:var(--gold-deep);font-weight:500;letter-spacing:.04em;margin:3mm 0;padding-left:6mm;border-left:1.4pt solid var(--gold);flex-shrink:0;}
+
+.aspect-card{background:linear-gradient(160deg,var(--paper),var(--cream));border:0.5pt solid var(--gold-soft);padding:5mm 7mm;margin-bottom:4.5mm;flex-shrink:0;}
+.aspect-label{font-family:var(--serif-en);font-size:7.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:1.5mm;}
+.aspect-title{font-size:12pt;color:var(--ink);font-weight:600;letter-spacing:.04em;margin-bottom:2.5mm;}
+.aspect-body{font-size:10.5pt;line-height:1.8;color:#433e36;}
+
+.subhead{font-weight:600;font-size:12.5pt;color:var(--ink);letter-spacing:.04em;margin:0 0 3mm;flex-shrink:0;}
+.subhead small{font-family:var(--serif-en);font-style:italic;font-weight:500;font-size:9pt;color:var(--gold-deep);margin-left:2mm;}
+
+.corner-wrap{position:absolute;inset:0;pointer-events:none;}
+.corner{position:absolute;width:7mm;height:7mm;}
+.corner::before,.corner::after{content:"";position:absolute;background:var(--gold);}
+.corner::before{width:7mm;height:0.7pt;}.corner::after{height:7mm;width:0.7pt;}
+.closing{font-size:12.5pt;line-height:2.2;color:var(--ink);letter-spacing:.04em;text-align:center;}
+
+/* 三核心 */
+.trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3.5mm;margin:2mm 0 5mm;flex-shrink:0;}
+.trio>div{background:linear-gradient(160deg,var(--paper),var(--cream));border:0.5pt solid var(--gold-soft);padding:4mm 4.5mm 5mm;}
+.trio .t-en{font-family:var(--serif-en);font-size:7.5pt;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;}
+.trio .t-pos{font-size:11.5pt;color:var(--ink);font-weight:600;letter-spacing:.04em;margin:1.5mm 0 2mm;}
+.trio .t-txt{font-size:9.5pt;line-height:1.65;color:var(--ink-soft);}
+
+/* 天賦條列 */
+.gifts{margin:1mm 0 4mm;flex-shrink:0;}
+.gift{display:grid;grid-template-columns:8mm 1fr;gap:3mm;padding:3.5mm 0;border-bottom:0.4pt solid var(--gold-soft);}
+.gift:last-child{border-bottom:0;}
+.gift .g-n{font-family:var(--serif-en);font-size:12pt;font-weight:600;color:var(--gold);line-height:1.4;}
+.gift .g-t{font-size:11.5pt;font-weight:600;color:var(--ink);letter-spacing:.03em;margin-bottom:1.5mm;}
+.gift .g-b{font-size:10pt;line-height:1.75;color:#433e36;}
+
+.dot-no{font-family:var(--serif-en);font-size:34pt;font-weight:500;color:var(--gold-soft);line-height:1;margin-bottom:3mm;flex-shrink:0;}
+
+.tl{margin:2mm 0 5mm;flex-shrink:0;}
+.tl-row{display:grid;grid-template-columns:26mm 1fr;gap:5mm;padding:4mm 0;border-bottom:0.4pt solid var(--gold-soft);}
+.tl-row:last-child{border-bottom:0;}
+.tl-m{font-family:var(--serif-en);font-size:12pt;font-weight:600;color:var(--gold-deep);letter-spacing:.1em;}
+.tl-t{font-size:10.5pt;line-height:1.8;color:#433e36;}
+
+.seal{background:linear-gradient(160deg,var(--paper),var(--cream));border:0.5pt solid var(--gold);padding:8mm 9mm;margin:2mm 0 5mm;flex-shrink:0;text-align:center;}
+.seal .q{font-size:14pt;line-height:1.9;color:var(--gold-deep);font-weight:600;letter-spacing:.05em;}
+.seal .s{font-size:10.5pt;line-height:1.8;color:var(--ink-soft);margin-top:4mm;}
+
+/* 行動區 */
+.cta-box{border:0.5pt solid var(--gold);padding:6mm 8mm 7mm;margin-top:2mm;flex-shrink:0;text-align:center;}
+.cta-box .l{font-family:var(--serif-en);font-size:8pt;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;}
+.cta-box .t{font-size:12pt;line-height:1.8;color:var(--ink);margin-top:3mm;}
+.btn{display:inline-block;margin-top:5mm;padding:3.5mm 12mm;background:var(--gold);color:#fff;text-decoration:none;
+  font-size:11.5pt;font-weight:600;letter-spacing:.12em;border-radius:1mm;}
+.btn:hover{background:var(--gold-deep);}
+.cta-alt{font-size:9.5pt;line-height:1.75;color:var(--ink-soft);margin-top:5mm;}
+.cta-alt a{color:var(--gold-deep);text-decoration:none;border-bottom:0.4pt solid var(--gold-soft);}
+.cta-alt b{color:var(--gold-deep);}
+</style></head><body>
+
+<!-- ============ 封面 ============ -->
+<div class="page">
+  <div class="corner-wrap">
+    <div class="corner" style="top:17mm;left:17mm;"></div>
+    <div class="corner" style="top:17mm;right:17mm;transform:scaleX(-1);"></div>
+    <div class="corner" style="bottom:17mm;left:17mm;transform:scaleY(-1);"></div>
+    <div class="corner" style="bottom:17mm;right:17mm;transform:scale(-1,-1);"></div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;">
+    <div style="font-family:var(--serif-en);font-size:10.5pt;letter-spacing:.5em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:13mm;">Natal Chart &nbsp;·&nbsp; Soul Positioning</div>
+    <div style="font-weight:600;font-size:30pt;letter-spacing:.18em;color:var(--ink);line-height:1.35;">靈魂定位報告</div>
+    <div style="font-family:var(--serif-en);font-size:13pt;font-style:italic;color:var(--gold-deep);letter-spacing:.12em;margin-top:5mm;">Why It Keeps Happening to You</div>
+    <div style="font-family:var(--serif-en);font-size:13pt;color:var(--gold);letter-spacing:.9em;margin-top:8mm;">✦&nbsp;&nbsp;✧&nbsp;&nbsp;✦</div>
+    <div style="margin-top:12mm;text-align:center;">
+      <div style="font-family:var(--serif-en);font-size:8pt;letter-spacing:.38em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:2mm;">For</div>
+      <div style="font-size:18pt;letter-spacing:.35em;color:var(--ink);">思思</div>
+      <div style="font-size:9pt;letter-spacing:.2em;color:var(--ink-faint);margin-top:2mm;">1992.04.03　14:30　台北</div>
+    </div>
+    <div style="margin-top:18mm;">
+      <div style="font-family:var(--serif-en);font-size:9.5pt;letter-spacing:.3em;color:var(--gold-deep);text-transform:uppercase;">Reader &nbsp;·&nbsp; 巧敲是個雙子座</div>
+      <div style="font-size:8.5pt;letter-spacing:.38em;color:var(--ink-faint);margin-top:2mm;">IG｜chiao_ah</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 02　你問的是 ============ -->
+<div class="page">
+  <div class="kicker">Preface</div>
+  <div class="cn-label">你 問 的 是</div>
+  <div class="rule"></div>
+  <p class="body lead">思思，你好。</p>
+  <p class="body">你寫給我的是——「我每一段感情最後都會走到一樣的結局，我不知道是我運氣不好，還是我真的有問題。」</p>
+  <p class="body">這份報告會先帶你看一遍你的盤：你是什麼樣的人、你身上很好的那幾個部分、還有你這一生真正在練的那件事。然後我們才進到你問的這個問題，看它是怎麼從你的盤上長出來的。</p>
+  <p class="body">先說一句話——你不是運氣不好，也不是有問題。你只是有一個從很早以前就長好的反應，而你從來沒有機會從外面看它一次。</p>
+  <div class="keyline">你已經很努力了。只是有些東西，不是靠努力就看得見的。</div>
+  <div class="pgnum">— 02 —</div>
+</div>
+
+<!-- ============ 03　你是什麼樣的人 ============ -->
+<div class="page">
+  <div class="kicker">Chapter 01</div>
+  <h2 class="sec">你是什麼樣的人</h2>
+  <div class="sec-sub">The Three Cores of Your Chart</div>
+  <div class="rule"></div>
+  <p class="body lead">一張盤裡最先要看的是三個位置：太陽是你想成為的樣子，月亮是你真正的需要，上升是別人先看到的你。這三個常常不是同一個人。</p>
+  <div class="trio">
+    <div>
+      <div class="t-en">Sun · 太陽</div>
+      <div class="t-pos">牡羊座　13°</div>
+      <div class="t-txt">想要的東西會直接去要，決定得快，不喜歡拖。你的行動力比你自己以為的強。</div>
+    </div>
+    <div>
+      <div class="t-en">Moon · 月亮</div>
+      <div class="t-pos">巨蟹座　12°　第4宮</div>
+      <div class="t-txt">情緒需要一個確定的地方才會安放。安全感沒到位之前，你不會真的鬆開。</div>
+    </div>
+    <div>
+      <div class="t-en">Rising · 上升</div>
+      <div class="t-pos">天秤座　5°</div>
+      <div class="t-txt">別人看到的你是溫和、好相處、不會給人壓力的。你很會照顧場面的氣氛。</div>
+    </div>
+  </div>
+  <p class="body">所以你身上其實有兩股力量在拉：太陽牡羊要你往前衝，月亮巨蟹要你先確認安全。而上升天秤讓你在別人面前把這場拉扯藏得很好——別人看到的你是從容的，只有你自己知道裡面在拉。</p>
+  <div class="keyline">你不是矛盾。你只是同時帶著一個想前進的人，和一個想被保護的人。</div>
+  <div class="pgnum">— 03 —</div>
+</div>
+
+<!-- ============ 04　你的天賦 ============ -->
+<div class="page">
+  <div class="kicker">Chapter 02</div>
+  <h2 class="sec">你身上很好的那幾個部分</h2>
+  <div class="sec-sub">What You're Naturally Good At</div>
+  <div class="rule"></div>
+  <p class="body lead">先講你身上很好的部分。這幾個不是安慰你的話，是你的盤上真的比一般人強的地方。</p>
+  <div class="gifts">
+    <div class="gift">
+      <div class="g-n">I</div>
+      <div><div class="g-t">你讀得懂別人的情緒</div><div class="g-b">月亮在巨蟹加上升天秤，讓你對氣氛非常敏感。別人還沒開口，你已經知道他今天不對勁。這是很少人有的能力，只是你常常拿它來擔心，而不是拿它來當優勢。</div></div>
+    </div>
+    <div class="gift">
+      <div class="g-n">II</div>
+      <div><div class="g-t">你決定得比你以為的快</div><div class="g-b">太陽在牡羊，代表你其實有很強的直覺判斷力。你在真正重要的事情上一向決定得很快——會慢的都是那些你在等別人先動的事。</div></div>
+    </div>
+    <div class="gift">
+      <div class="g-n">III</div>
+      <div><div class="g-t">你有讓人放鬆的能力</div><div class="g-b">上升天秤讓你天生會調節關係裡的溫度。人跟你相處會覺得舒服、不緊繃。這在工作跟感情裡都是很大的資產。</div></div>
+    </div>
+  </div>
+  <div class="keyline">你不缺能力。你缺的是把這些能力用在自己身上的習慣。</div>
+  <div class="pgnum">— 04 —</div>
+</div>
+
+<!-- ============ 05　核心課題 ============ -->
+<div class="page">
+  <div class="kicker">Chapter 03</div>
+  <h2 class="sec">你這一生的核心課題</h2>
+  <div class="sec-sub">Saturn in the 7th House</div>
+  <div class="rule"></div>
+  <div class="aspect-card">
+    <div class="aspect-label">土星 天秤 22°　·　第 7 宮</div>
+    <div class="aspect-title">在關係裡，學會不用退讓換安全</div>
+    <div class="aspect-body">土星落在第七宮，是關係宮。這個位置的人一輩子都在同一件事上練習：怎麼在關係裡，既不失去對方，也不失去自己。它會讓你在關係裡特別謹慎、特別容易覺得自己不夠好，但也會讓你最後長出很紮實的關係能力。</div>
+  </div>
+  <p class="body">土星不是懲罰，它是慢工。它給你的東西不會早到，但只要你練成了，就不會再掉。所以你在關係裡走得比別人慢、痛得比別人多，這是這個位置的常態，不是你做錯了什麼。</p>
+  <p class="body">而你問我的那件事——每一段感情最後都走到一樣的結局——它不是一個獨立的問題。它就是這個課題在你生活裡長出來的樣子。</p>
+  <div class="keyline">你不是在重複失敗。你是在重複練習同一件還沒練成的事。</div>
+  <div class="pgnum">— 05 —</div>
+</div>
+
+<!-- ============ 06　先講結論 ============ -->
+<div class="page">
+  <div class="kicker">Overview</div>
+  <h2 class="sec">先講結論</h2>
+  <div class="sec-sub">The One Move You Keep Making</div>
+  <div class="rule"></div>
+  <p class="body lead">你的盤上有一個很清楚的動作：<b>在關係快要真的靠近的時候，你會先退一步，確認自己安不安全。</b></p>
+  <p class="body">你以為那是謹慎，其實那是保護。而保護的代價是——對方感受到的不是你在小心，是你在拉開。</p>
+  <p class="body">於是你等他先靠過來，他等你先鬆開，兩個人就停在那個距離上，直到其中一個人先累。</p>
+  <div class="keyline">你不是不敢愛，你是不敢在還沒確定之前，先把自己交出去。</div>
+  <div class="pgnum">— 06 —</div>
+</div>
+
+<!-- ============ 07-09　三個點 ============ -->
+<div class="page">
+  <div class="kicker">Point 01</div>
+  <div class="dot-no">01</div>
+  <h2 class="sec">你會先確認安全，才敢真的靠近</h2>
+  <div class="sec-sub">Moon in Cancer, 4th House</div>
+  <div class="rule"></div>
+  <div class="aspect-card">
+    <div class="aspect-label">月亮 巨蟹 12°34′　·　第 4 宮</div>
+    <div class="aspect-title">安全感要先到位，感情才敢往前</div>
+    <div class="aspect-body">月亮在巨蟹又落在第四宮，是全盤最需要「確定」的位置。在關係裡，這會變成一個很具體的動作：你會先觀察、先確認、先累積證據，覺得夠安全了才敢投入。</div>
+  </div>
+  <p class="body">在生活裡它長成這樣——對方說要見面，你會先想「他是真的想見我，還是剛好有空」。他說喜歡你，你會在心裡放三個月，看他做的事跟講的話對不對得上。</p>
+  <p class="body">這不是你多疑。這是你的系統在做它一直以來的工作：先確保不會受傷，再談其他。</p>
+  <div class="pgnum">— 07 —</div>
+</div>
+<div class="page">
+  <div class="kicker">Point 02</div>
+  <div class="dot-no">02</div>
+  <h2 class="sec">你很難開口要，寧可自己吞</h2>
+  <div class="sec-sub">Venus in the 12th House</div>
+  <div class="rule"></div>
+  <div class="aspect-card">
+    <div class="aspect-label">金星 雙魚 3°08′　·　第 12 宮</div>
+    <div class="aspect-title">愛得很深，但說不出口</div>
+    <div class="aspect-body">金星落在第十二宮，代表你的愛是往內收的。你會為對方想很多、做很多，但要你直接說「我想要你多陪我一點」——那句話會卡在喉嚨。</div>
+  </div>
+  <p class="body">在生活裡它長成這樣——你會等對方自己發現，而不是說出來。你會覺得「如果要我講，那就沒意思了」。然後在對方沒發現的時候，默默失望。</p>
+  <p class="body">這個位置也讓你很容易把委屈藏起來，藏到自己都以為沒事了，直到某一天突然爆開，連你自己都嚇一跳。</p>
+  <div class="pgnum">— 08 —</div>
+</div>
+<div class="page">
+  <div class="kicker">Point 03</div>
+  <div class="dot-no">03</div>
+  <h2 class="sec">對方一沒接住你，你就先幫他找理由</h2>
+  <div class="sec-sub">Mercury Square Saturn</div>
+  <div class="rule"></div>
+  <div class="aspect-card">
+    <div class="aspect-label">水星 四分 土星　·　5.3°</div>
+    <div class="aspect-title">先講道理，再處理感受</div>
+    <div class="aspect-body">水星跟土星形成四分相，代表你在情緒來的時候，第一反應是先分析。你會很快幫對方找到一個合理的解釋，然後說服自己不要在意。</div>
+  </div>
+  <p class="body">在生活裡它長成這樣——他訊息回慢了，你腦內已經跑完三套劇本，最後選了最體貼的那一套：「他應該只是在忙。」然後把那個不舒服壓下去。</p>
+  <p class="body">你以為你在成熟。但那個被壓下去的東西不會消失，它會累積，然後在下一次變成更大的失望。</p>
+  <div class="pgnum">— 09 —</div>
+</div>
+
+
+<!-- ============ 10　三個點是同一件事 ============ -->
+<div class="page">
+  <div class="kicker">The Pattern</div>
+  <h2 class="sec">這三個點，是同一個動作</h2>
+  <div class="sec-sub">Same Move, Three Scenes</div>
+  <div class="rule"></div>
+  <p class="body lead">先確認安全、不開口要、幫對方找理由——這三件事看起來不一樣，但它們在做同一件事：<b>在你受傷之前，先把自己收起來。</b></p>
+  <p class="body">而且它不只出現在感情裡。</p>
+  <p class="body">你回想一下——工作上有話想講的時候，你是不是也會先幫主管想好他的立場，然後把自己那句話吞回去？跟家人之間有沒有一件事，你等了很久等他們自己發現，結果他們一直沒發現？</p>
+  <div class="keyline">同一個動作，換了三個場景。你以為是三個問題，其實只有一個。</div>
+  <div class="pgnum">— 10 —</div>
+</div>
+
+<!-- ============ 11　接下來三個月 ============ -->
+<div class="page">
+  <div class="kicker">Timing</div>
+  <h2 class="sec">接下來三個月</h2>
+  <div class="sec-sub">When It Will Show Up</div>
+  <div class="rule"></div>
+  <p class="body">這個動作不是每天都會被觸發，它有時間點。接下來三個月，有三段時間它最容易出現——</p>
+  <div class="tl">
+    <div class="tl-row"><div class="tl-m">10月</div><div class="tl-t">會有一個人明顯靠近，前期很順。你會覺得「這次好像不太一樣」，但同時心裡會有一個聲音要你先確認。</div></div>
+    <div class="tl-row"><div class="tl-m">11月</div><div class="tl-t">你會開始注意到一些細節。這個月是那個動作最容易發生的時候——你會想退一步，而且會幫自己找到很好的理由。</div></div>
+    <div class="tl-row"><div class="tl-m">12月</div><div class="tl-t">會有一次需要你開口的場合。說了跟沒說，會走向兩個很不一樣的結果。</div></div>
+  </div>
+  <div class="keyline">十一月是關鍵。那個月你怎麼選，會決定後面兩個月怎麼走。</div>
+  <div class="pgnum">— 11 —</div>
+</div>
+
+<!-- ============ 12　你可以做的一件事 ============ -->
+<div class="page">
+  <div class="kicker">One Small Thing</div>
+  <h2 class="sec">你現在可以做的一件事</h2>
+  <div class="sec-sub">Just Notice, Don't Fix</div>
+  <div class="rule"></div>
+  <div class="subhead">留意那個「算了」出現的瞬間 <small>Catch the Moment</small></div>
+  <p class="body">接下來這幾週，當那句「算了，我先不要講」要冒出來的時候，先不要急著決定講或不講。</p>
+  <p class="body">只做一件事：<b>感覺一下，那個瞬間你的喉嚨是不是先緊了，還是胸口先悶了。</b></p>
+  <p class="body">就這樣，不用改任何事。你甚至可以照樣把話吞回去——這一次只是要你看見它發生。</p>
+  <div class="keyline">先不用改，只要看見就好。光是看見，那個循環就已經開始鬆動了。</div>
+  <div class="pgnum">— 12 —</div>
+</div>
+
+<!-- ============ 13　那顆源頭 ============ -->
+<div class="page">
+  <div class="kicker">The Root</div>
+  <h2 class="sec">但這三個點裡面</h2>
+  <div class="sec-sub">One of Them Came First</div>
+  <div class="rule"></div>
+  <div class="seal">
+    <div class="q">有一個，是另外兩個的源頭</div>
+    <div class="s">其他兩個，只是它長出來的樣子</div>
+  </div>
+  <p class="body">我沒有在這份報告裡寫出來是哪一個。因為要確定它，我需要知道你現在真實的處境——你正在經歷什麼、已經試過什麼、在什麼時候最撐不住。那不是一份報告做得到的事。</p>
+  <p class="body">但只要找到那一個，另外兩個會自己鬆開。你不需要三件事一起改。</p>
+  <div class="cta-box">
+    <div class="l">Next Step</div>
+    <div class="t">想知道那顆源頭是哪一個嗎？<br>這是一場 60 分鐘的線上對話，我一個月只開三場。</div>
+    <a class="btn" href="https://lin.ee/OyVrggK">申請這場對話</a>
+    <div class="cta-alt">或者直接私訊我也可以——<br>加 LINE <a href="https://lin.ee/OyVrggK">lin.ee/OyVrggK</a>，跟我說「<b>我看完報告了</b>」，我就知道是你</div>
+  </div>
+  <div class="pgnum">— 13 —</div>
+</div>
+
+<!-- ============ 結語 ============ -->
+<div class="page">
+  <div class="corner-wrap">
+    <div class="corner" style="top:17mm;left:17mm;"></div>
+    <div class="corner" style="top:17mm;right:17mm;transform:scaleX(-1);"></div>
+    <div class="corner" style="bottom:17mm;left:17mm;transform:scaleY(-1);"></div>
+    <div class="corner" style="bottom:17mm;right:17mm;transform:scale(-1,-1);"></div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;">
+    <div style="font-family:var(--serif-en);font-size:10pt;letter-spacing:.5em;text-transform:uppercase;color:var(--gold-deep);">致 思思</div>
+    <div style="margin:7mm auto;width:38mm;height:0.6pt;background:var(--gold);"></div>
+    <div class="closing">
+      <p style="margin-bottom:7mm;">你一直以為是自己不夠好，<br>或者運氣不夠好。</p>
+      <p style="margin-bottom:7mm;">其實只是有一個動作，<br>你做了太多年，做到不覺得它是一個選擇。</p>
+      <p style="margin-bottom:7mm;">看見它，就已經不一樣了。</p>
+      <p>你的人生，是你每一個抉擇創造出來的。</p>
+    </div>
+    <div style="margin-top:11mm;">
+      <div style="font-family:var(--serif-en);font-size:12pt;color:var(--gold);letter-spacing:.9em;">✦&nbsp;&nbsp;✧&nbsp;&nbsp;✦</div>
+      <div style="font-family:var(--serif-en);font-size:10.5pt;font-style:italic;color:var(--gold-deep);letter-spacing:.12em;margin-top:7mm;">With love, 巧敲是個雙子座</div>
+      <div style="font-size:8.5pt;letter-spacing:.42em;color:var(--ink-faint);margin-top:3mm;">IG｜chiao_ah</div>
+    </div>
+  </div>
+</div>
+
+</body></html>
