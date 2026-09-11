@@ -49,7 +49,9 @@ input.bad,textarea.bad,select.bad{border-color:var(--rose-deep);}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 @media(max-width:400px){.row2{grid-template-columns:1fr;}}
 .chk{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--ink-soft);margin-top:9px;line-height:1.7;cursor:pointer;}
-.chk input{width:17px;height:17px;flex:none;margin-top:4px;accent-color:var(--gold-deep);}
+.chk input{width:20px;height:20px;flex:none;margin-top:3px;accent-color:var(--gold-deep);
+  /* 上面那條 input{appearance:none} 會把打勾符號整個拿掉，這裡一定要救回來 */
+  -webkit-appearance:checkbox;appearance:auto;cursor:pointer;}
 .tzline{font-size:12.5px;color:var(--ink-faint);margin-top:7px;}
 .tzline a{color:var(--gold-deep);text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
 #tzbox{display:none;margin-top:11px;}
@@ -72,7 +74,7 @@ button.go:hover{background:var(--gold-deep);}
 button.go:disabled{background:var(--gold-soft);color:#fff;cursor:default;}
 .foot{font-size:12.5px;color:var(--ink-faint);text-align:center;line-height:1.9;margin-top:18px;}
 .errbox{display:none;background:#fbeeec;border:1px solid #e5c4bf;color:var(--rose-deep);
-  padding:13px 16px;border-radius:2px;font-size:14px;line-height:1.8;margin-top:20px;}
+  padding:13px 16px;border-radius:2px;font-size:14px;line-height:1.8;margin-top:20px;white-space:pre-line;}
 .errbox.on{display:block;}
 
 /* 成功畫面 */
@@ -119,8 +121,9 @@ button.go:disabled{background:var(--gold-soft);color:#fff;cursor:default;}
     <div class="f">
       <label>出生時間</label>
       <input id="time" type="time">
-      <label class="chk"><input id="notime" type="checkbox"><span>我不確定幾點出生<br><span style="color:var(--ink-faint);font-size:12.5px;">沒關係，報告一樣做得出來，只是上升與宮位那部分會略過</span></span></label>
       <p class="tip">出生時間寫在媽媽手冊或出生證明上。差一小時，上升星座就可能不一樣。</p>
+      <label class="chk" style="margin-top:16px;"><input id="notime" type="checkbox"><span>我不確定幾點出生<br><span style="color:var(--ink-faint);font-size:12.5px;">勾了這個，上面填的時間就不算。報告一樣做得出來，但上升與宮位那一整段會略過</span></span></label>
+      <div id="notimewarn" style="display:none;margin-top:10px;padding:11px 13px;border-left:2px solid var(--gold);background:#faf4e8;font-size:13px;line-height:1.75;color:var(--gold-deep);">已改為「時辰不確定」，上面的出生時間已清空。<br>如果你其實知道時間，把這個勾取消掉再填一次。</div>
     </div>
 
     <div class="f">
@@ -428,7 +431,7 @@ return new kd(this.curr.time,a,b)};$jscomp.global.Object.defineProperties(H.prot
 <script>
 (function(){
   /* ====== 這一行改成你的 Apps Script 網頁應用程式網址 ====== */
-  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwAtdq9yTP74-U4WDbBWuensZFk3JtJnpmErguU3R_vDfvbfnZEAmzFkU1Oc76PleRBww/exec';
+  var ENDPOINT = '__ENDPOINT__';
 
   var A = window.Astronomy;
   var D2R=Math.PI/180, R2D=180/Math.PI;
@@ -645,6 +648,32 @@ return new kd(this.curr.time,a,b)};$jscomp.global.Object.defineProperties(H.prot
     else { e.scrollIntoView({behavior:'smooth',block:'center'}); }
   }
 
+  /* ---------- 時間欄 與「不確定」互斥 ----------
+     以前兩邊可以同時成立：畫面上時間還在，程式卻只看勾選框，
+     結果客人以為自己填了時辰，報告卻整段略過上升。現在勾了就把時間清掉。 */
+  $('notime').addEventListener('change',function(){
+    var t=$('time');
+    if(this.checked){
+      t.value=''; t.disabled=true; t.style.opacity='.4';
+      t.classList.remove('bad');
+      $('notimewarn').style.display='block';
+    }else{
+      t.disabled=false; t.style.opacity='';
+      $('notimewarn').style.display='none';
+    }
+    確認時辰=false; $('go').textContent='送出，開始製作我的報告書';
+  });
+  $('time').addEventListener('input',function(){
+    if(this.value && $('notime').checked){
+      $('notime').checked=false;
+      this.disabled=false; this.style.opacity='';
+      $('notimewarn').style.display='none';
+    }
+    確認時辰=false; $('go').textContent='送出，開始製作我的報告書';
+  });
+
+  var 確認時辰=false;   /* 勾了「不確定」時，要按兩次送出才算數 */
+
   $('go').addEventListener('click',function(){
     var btn=this;
     $('err').classList.remove('on');
@@ -661,6 +690,13 @@ return new kd(this.curr.time,a,b)};$jscomp.global.Object.defineProperties(H.prot
     if(!dv) return fail('請填出生年月日。',$('date'));
     if(!noTime && !tv) return fail('請填出生時間。真的不確定的話，勾下面那個「我不確定幾點出生」。',$('time'));
     if(q.length<15) return fail('最後這題請多寫一點（至少 15 個字）。這題決定了整份報告寫什麼，太短我會抓不到方向。',$('q'));
+
+    /* 勾了「不確定時辰」的話，送出前再確認一次——這一勾會讓上升與宮位整段消失 */
+    if(noTime && !確認時辰){
+      確認時辰=true;
+      btn.textContent='再按一次，確認送出';
+      return fail('你勾了「我不確定幾點出生」，所以這份報告的上升星座與十二宮位會整段略過。\n如果你其實知道出生時間，請把那個勾取消、把時間填進去。\n確定要這樣送出的話，再按一次按鈕。',$('notime'));
+    }
 
     var p=PLACES[+sel.value], lat, lon, placeName;
     if(p[1]===null){
