@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>關係組合測驗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<style>
+  :root{--bg:#FDF3EF;--ink:#3E2A2C;--gold:#9C4E5A;--wine:#7A3344;--soft:#F9E4DF;--muted:#7A5F5E;--line:#EBD2CC;--field:#FFF9F6;--pink:#F4D5D0;--blush:#D2908C;--sage:#6F7662;
+    --serif:'Noto Serif TC','Songti TC',serif;--sans:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;}
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{background:var(--bg);color:var(--ink);}
+  body{font-family:var(--sans);font-size:16px;line-height:1.6;padding-inline:16px;}
+  .wrap{max-width:440px;margin:0 auto;padding-block:40px 56px;display:flex;flex-direction:column;gap:20px;min-height:100%;}
+  .eyebrow{font-size:13px;letter-spacing:.14em;color:var(--sage);font-weight:500;}
+  .en{font-family:var(--serif);font-size:12px;letter-spacing:.42em;color:var(--sage);text-transform:uppercase;}
+  .heart{display:flex;align-items:center;gap:10px;color:var(--blush);font-size:14px;}
+  .heart::before,.heart::after{content:"";flex:1;height:1px;background:var(--line);}
+  h1{margin:0;font-family:var(--serif);font-weight:700;line-height:1.3;text-wrap:balance;}
+  .h-cover{font-size:clamp(34px,10vw,42px);margin-top:16px;color:var(--gold);}
+  .h-step{font-size:30px;color:var(--gold);}
+  .lead{margin:0;color:var(--muted);}
+  .types{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .types div{padding:14px;border-radius:16px;background:var(--field);border:1px solid var(--line);color:var(--wine);font-family:var(--serif);font-size:17px;font-weight:700;}
+  .types small{display:block;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--sage);}
+  .btn{display:block;width:100%;text-align:center;padding:16px;border-radius:999px;background:var(--gold);color:#fff;font:500 17px var(--sans);border:0;cursor:pointer;text-decoration:none;}
+  .btn.ghost{background:var(--field);color:var(--gold);border:1px solid var(--line);}
+  .btn:focus-visible,.chip:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+  .note{margin:0;text-align:center;font-size:13px;color:var(--muted);}
+  .field{display:flex;flex-direction:column;gap:8px;}
+  .field label,.label{font-size:15px;font-weight:500;}
+  input[type=date]{padding:14px;font:16px var(--sans);border:1px solid var(--line);border-radius:12px;background:var(--field);color:var(--ink);width:100%;box-sizing:border-box;min-height:52px;-webkit-appearance:none;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .chip{padding:10px 18px;min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--field);color:var(--ink);font:15px var(--sans);cursor:pointer;}
+  .chip[aria-pressed=true]{background:var(--gold);border-color:var(--gold);color:#fff;}
+  .err{margin:0;color:#9B3B2A;font-size:14px;}
+  .actions{margin-top:auto;display:flex;flex-direction:column;gap:12px;padding-top:12px;}
+
+  /* result card: designed at 432px wide, scales with its width */
+  .cardbox{container-type:inline-size;width:100%;}
+  .card{width:100%;aspect-ratio:9/16;box-sizing:border-box;padding:7.4cqw 6.9cqw 6cqw;background:var(--bg);display:flex;flex-direction:column;gap:4.2cqw;border:1px solid var(--line);border-radius:3cqw;overflow:hidden;}
+  .c-top{display:flex;justify-content:space-between;font-size:2.8cqw;letter-spacing:.12em;color:var(--sage);font-weight:500;}
+  .c-head{display:flex;flex-direction:column;gap:1.9cqw;padding-bottom:4.2cqw;border-bottom:1px solid var(--line);}
+  .c-title{margin:0;font-family:var(--serif);font-size:9.3cqw;line-height:1.2;font-weight:700;color:var(--gold);}
+  .c-title .x{color:var(--blush);}
+  .c-meta{display:flex;gap:2.3cqw;align-items:center;flex-wrap:wrap;}
+  .c-nick{padding:.9cqw 2.8cqw;border-radius:999px;background:var(--gold);color:#fff;font-size:3.25cqw;font-weight:500;}
+  .c-signs{font-size:3cqw;color:var(--muted);}
+  .c-line{margin:0;font-size:3.5cqw;color:var(--muted);line-height:1.5;}
+  .c-sec{display:flex;flex-direction:column;gap:2.8cqw;}
+  .c-sec h2{margin:0;font-family:var(--serif);font-size:4.2cqw;font-weight:700;color:var(--wine);}
+  .c-item{display:flex;gap:2.8cqw;align-items:flex-start;}
+  .c-num{flex-shrink:0;width:5.6cqw;height:5.6cqw;border-radius:50%;background:var(--pink);color:var(--gold);font-size:3cqw;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:.5cqw;}
+  .c-item p{margin:0;font-size:3.5cqw;line-height:1.6;}
+  .c-tip{margin-top:auto;padding:3.7cqw 4.2cqw;border-radius:3.2cqw;background:var(--field);border:1px solid var(--line);display:flex;flex-direction:column;gap:1.4cqw;}
+  .c-tip .k{font-size:2.8cqw;letter-spacing:.1em;color:var(--gold);font-weight:700;}
+  .c-tip .say{margin:0;font-family:var(--serif);font-size:3.95cqw;line-height:1.5;font-weight:600;color:var(--wine);}
+  .c-tip .why{margin:0;font-size:2.9cqw;line-height:1.55;color:var(--muted);}
+  .c-foot{display:flex;justify-content:space-between;font-size:2.9cqw;color:var(--muted);}
+  .c-foot b{color:var(--ink);font-weight:500;}
+
+  .unlock{background:linear-gradient(180deg,var(--pink),var(--soft));color:var(--ink);border-radius:20px;padding:28px 22px;display:flex;flex-direction:column;gap:14px;margin-top:12px;}
+  .unlock .brand{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;}
+  .unlock .brand b{font-family:var(--serif);font-size:30px;color:var(--gold);letter-spacing:.08em;}
+  .unlock h2{margin:0;font-family:var(--serif);font-size:24px;line-height:1.4;color:var(--wine);text-align:center;text-wrap:balance;}
+  .unlock p{margin:0;color:var(--muted);font-size:15px;}
+  .unlock ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+  .unlock li{padding:12px 14px;border-radius:12px;background:var(--field);border:1px solid var(--line);font-size:15px;}
+  .unlock .btn{background:var(--gold);color:#fff;font-weight:700;}
+
+  .overlay{position:fixed;inset:0;background:rgba(62,42,44,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 16px calc(24px + env(safe-area-inset-bottom,0px));z-index:10;}
+  .overlay img{max-height:72vh;max-width:100%;border-radius:12px;}
+  .overlay p{margin:0;color:var(--bg);font-size:15px;text-align:center;}
+  .overlay .btn{max-width:240px;background:var(--bg);color:var(--gold);}
+  @media (prefers-reduced-motion:no-preference){.view{animation:in .35s ease both}@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+
+
+<main>
+  <section id="v-cover" class="view wrap">
+    <div class="eyebrow">伴侶溝通說明書</div>
+    <h1 class="h-cover">你們是哪一種<br>關係組合？</h1>
+    <div class="heart" aria-hidden="true">♡</div>
+    <p class="lead">輸入你們兩個人的生日，看懂他吵架時腦袋在想什麼，還有下次吵架前，妳可以先說哪一句。</p>
+    <div class="types">
+      <div>爆衝型<small>火象水星</small></div>
+      <div>關機型<small>土象水星</small></div>
+      <div>講理型<small>風象水星</small></div>
+      <div>追問型<small>水象水星</small></div>
+    </div>
+    <div class="actions">
+      <button class="btn" id="go">開始測</button>
+      <p class="note">只要生日，不用出生時間・約 1 分鐘</p>
+    </div>
+  </section>
+
+  <section id="v-input" class="view wrap" hidden>
+    <div class="eyebrow">伴侶溝通說明書</div>
+    <h1 class="h-step">先告訴我<br>你們的生日</h1>
+    <div class="field">
+      <label for="me">妳的生日</label>
+      <input id="me" type="date" min="1930-01-01" max="2025-12-31">
+    </div>
+    <div class="field">
+      <label for="him">他的生日（不知道可以先空著）</label>
+      <input id="him" type="date" min="1930-01-01" max="2025-12-31">
+    </div>
+    <div class="field">
+      <span class="label" id="st-label">你們現在是</span>
+      <div class="chips" role="group" aria-labelledby="st-label">
+        <button class="chip" aria-pressed="true" data-st="已婚">已婚</button>
+        <button class="chip" aria-pressed="false" data-st="交往中">交往中</button>
+        <button class="chip" aria-pressed="false" data-st="曖昧中">曖昧中</button>
+      </div>
+    </div>
+    <p class="err" id="err" hidden>請先填妳的生日。</p>
+    <div class="actions">
+      <button class="btn" id="calc">看我們的組合</button>
+      <p class="note">不知道他的生日？只填妳的，先看妳自己是哪一型</p>
+    </div>
+  </section>
+
+  <section id="v-result" class="view wrap" hidden>
+    <div class="cardbox"><div class="card" id="card"></div></div>
+    <button class="btn" id="save">存成圖片，分享到限動</button>
+    <button class="btn ghost" id="again">再測一次</button>
+    <div class="unlock">
+      <div class="brand"><b>粉色森林</b><span class="en">Pink Forest</span></div>
+      <div class="heart" aria-hidden="true">♡</div>
+      <h2>剛剛那張<br>只是說明書的第一頁</h2>
+      <p>加入免費社群，完整版《伴侶溝通說明書》會照你們的組合告訴妳：</p>
+      <ul>
+        <li>他吵架時，心裡真正在怕什麼</li>
+        <li>3 句一開口就不容易吵起來的話</li>
+        <li>吵完之後，怎麼先把關係接回來</li>
+        <li>你們這一組在親密感上的地雷</li>
+      </ul>
+      <a class="btn" id="skool" href="#">走進粉色森林，領完整說明書</a>
+    </div>
+  </section>
+</main>
+
+<div class="overlay" id="ov" hidden>
+  <img id="ov-img" alt="你們的關係組合結果卡">
+  <p>長按圖片存到相簿，就可以分享到限動</p>
+  <button class="btn" id="ov-close">關閉</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+/* ===== 設定：換成妳自己的連結 ===== */
+const SKOOL_URL = 'https://www.skool.com/pink-forest-3841/about';          // 免費社群連結，例如 https://www.skool.com/xxx
+const SHEET_WEBHOOK = '';      // （選填）Apps Script 網址，想統計測驗人數/關係狀態時填
+/* ================================= */
+
+const SIGNS=['牡羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
+const EL_TYPE=['爆衝型','關機型','講理型','追問型']; // 火 土 風 水
+const TYPES={
+ '爆衝型':{el:'火象水星',look:'想到就說，情緒來得快、去得也快。',fear:'被無視、被晾在那裡。',
+   say:'我不是要吵贏，我想要你聽我講完三分鐘，再換你說。',why:'爆衝型怕的是被晾著。給他清楚的輪流規則，他反而冷靜得下來。',
+   me:'讓我先講完。我氣完就會好，不要在我氣頭上跟我講道理。'},
+ '關機型':{el:'土象水星',look:'需要時間消化，被逼急了就沉默。',fear:'說錯話、被否定。',
+   say:'你不用現在回我。今天睡前，我們再聊十分鐘就好。',why:'關機型不是不在乎，是需要時間。給他時間也給期限，他就不會一直躲。',
+   me:'我安靜不是不在乎。給我一點時間，我想好了會回來找你。'},
+ '講理型':{el:'風象水星',look:'用分析處理情緒，吵架像在辯論。',fear:'場面失控、事情變混亂。',
+   say:'我現在不需要解決方法，我需要你先說一句「我懂妳為什麼難過」。',why:'講理型不是冷，是不知道妳要什麼。講清楚，他就做得到。',
+   me:'我講道理是想把事情弄清楚，不是不在乎你的感受。'},
+ '追問型':{el:'水象水星',look:'要先確認感覺被接住，才聽得進道理。',fear:'不被在乎、被丟下。',
+   say:'我有在聽，我知道這件事對你很重要。',why:'追問型要的不是答案，是確定你還在。先接住感覺，道理才進得去。',
+   me:'我一直問，是想確定你還在。先抱我一下，我就能好好講。'}
+};
+const COMBOS=[
+ ['追問型','關機型','追與逃','一個越追、一個越躲，最常見也最累的組合。',['追問型越問，關機型越沉默；關機型越沉默，追問型越慌，繞成一個圈。','關機型的安靜，在追問型眼裡是「他不在乎了」。','追問型的追問，在關機型耳裡是「我又做錯了」。']],
+ ['追問型','講理型','心與腦','一個要被懂，一個想解決。',['追問型要的是「我懂妳」，講理型給的是三個建議。','講理型一句「妳想太多了」，追問型聽到的是「妳的感覺不重要」。','追問型一翻舊帳，講理型就開始逐條糾正時間跟細節。']],
+ ['爆衝型','關機型','火撞石頭','一個要現在講清楚，一個只想先離開。',['爆衝型要當下吵完，關機型需要先離開現場。','爆衝型覺得對方冷漠，關機型覺得自己在被審問。','事情永遠停在「晚點再說」，然後就沒有晚點。']],
+ ['追問型','爆衝型','火燒到心','一個說完就忘，一個每句都記住。',['爆衝型氣頭上的一句重話，追問型會反覆想好幾天。','爆衝型吵完已經沒事了，追問型還在等一個道歉。','追問型想好好談感受，爆衝型只覺得「怎麼又要講」。']],
+ ['爆衝型','講理型','火遇辯論社','情緒撞上邏輯，越講越遠。',['爆衝型在發洩，講理型在糾正用詞。','一句「妳冷靜一點」，直接讓火燒得更大。','吵到最後在爭誰對，忘了一開始在氣什麼。']],
+ ['講理型','關機型','分析遇沉默','一個一直問，一個一直不答。',['講理型一直丟問題要答案，關機型只想安靜。','講理型覺得對方「根本不溝通」。','關機型覺得「講了也會被反駁」，乾脆不講。']],
+ ['爆衝型','爆衝型','兩把火','吵得快、和得也快，但話最傷人。',['誰先停下來誰就輸，所以沒有人停。','氣頭上說出「那就分開啊」這種收不回的話。','吵完直接跳過，問題沒解決，下次同一件事又炸。']],
+ ['關機型','關機型','兩台冰箱','看起來不吵架，其實是冷戰。',['兩個人都在等對方先開口。','不滿一直存，存到某天突然說想離開。','日子很平穩，但很久沒真正聊過心裡話。']],
+ ['講理型','講理型','兩位律師','每一場吵架都像開庭。',['吵架變成比誰的邏輯更完整。','兩個人都在講道理，沒有人說「我其實很受傷」。','辯論贏了，感情輸了。']],
+ ['追問型','追問型','兩顆玻璃心','都很在乎，所以都很容易受傷。',['兩個人都在等對方先來安慰自己。','很容易互相猜「你是不是不愛我了」。','一件小事，就吵成對整段關係的懷疑。']]
+];
+
+/* 水星星座：JPL 近似軌道要素（1800–2050），以台灣時間中午計算 */
+function kep(el,T){const r=Math.PI/180;const [a,e,I,L,w,O]=el.map(([x0,x1])=>x0+x1*T);
+  let M=((L-w)*r)%(2*Math.PI);let E=M;for(let i=0;i<30;i++)E-= (E-e*Math.sin(E)-M)/(1-e*Math.cos(E));
+  const xp=a*(Math.cos(E)-e),yp=a*Math.sqrt(1-e*e)*Math.sin(E),om=(w-O)*r,Or=O*r,Ir=I*r;
+  return [(Math.cos(om)*Math.cos(Or)-Math.sin(om)*Math.sin(Or)*Math.cos(Ir))*xp+(-Math.sin(om)*Math.cos(Or)-Math.cos(om)*Math.sin(Or)*Math.cos(Ir))*yp,
+          (Math.cos(om)*Math.sin(Or)+Math.sin(om)*Math.cos(Or)*Math.cos(Ir))*xp+(-Math.sin(om)*Math.sin(Or)+Math.cos(om)*Math.cos(Or)*Math.cos(Ir))*yp];}
+const ME=[[0.38709927,0.00000037],[0.20563593,0.00001906],[7.00497902,-0.00594749],[252.25032350,149472.67411175],[77.45779628,0.16047689],[48.33076593,-0.12534081]];
+const EA=[[1.00000261,0.00000562],[0.01671123,-0.00004392],[-0.00001531,-0.01294668],[100.46457166,35999.37244981],[102.93768193,0.32327364],[0,0]];
+function mercurySign(iso){const [y,m,d]=iso.split('-').map(Number);const ms=Date.UTC(y,m-1,d,4,0);
+  const T=(ms/86400000+2440587.5-2451545)/36525;const [mx,my]=kep(ME,T),[ex,ey]=kep(EA,T);
+  let lon=Math.atan2(my-ey,mx-ex)*180/Math.PI+1.397*T;lon=((lon%360)+360)%360;return Math.floor(lon/30);}
+
+const $=id=>document.getElementById(id);
+let status='已婚';
+function show(v){['v-cover','v-input','v-result'].forEach(id=>$(id).hidden=id!==v);window.scrollTo(0,0);}
+$('go').onclick=()=>show('v-input');
+$('again').onclick=()=>show('v-input');
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed','false'));c.setAttribute('aria-pressed','true');status=c.dataset.st;});
+if(SKOOL_URL){$('skool').href=SKOOL_URL;$('skool').target='_blank';$('skool').rel='noopener';}
+
+const esc=s=>s.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+const FOOT='<div class="c-foot"><span>@chiao_ah・巧敲是個雙子座</span><b>測你們的組合 →</b></div>';
+function renderPair(si,sj){
+  const a=EL_TYPE[si%4],b=EL_TYPE[sj%4];
+  const c=COMBOS.find(x=>(x[0]===a&&x[1]===b)||(x[0]===b&&x[1]===a));const t=TYPES[b];
+  $('card').innerHTML=`<div class="c-top"><span>伴侶溝通說明書</span><span>我們的關係組合</span></div>
+  <div class="c-head"><h1 class="c-title">${a} <span class="x">×</span> ${b}</h1>
+   <div class="c-meta"><span class="c-nick">「${c[2]}」</span><span class="c-signs">妳：${SIGNS[si]}水星　他：${SIGNS[sj]}水星</span></div>
+   <p class="c-line">${c[3]}</p></div>
+  <div class="c-sec"><h2>你們最容易卡在這 3 件事</h2>${c[4].map((p,i)=>`<div class="c-item"><div class="c-num">${i+1}</div><p>${esc(p)}</p></div>`).join('')}</div>
+  <div class="c-tip"><div class="k">下次吵架前，對他說這句</div><p class="say">「${esc(t.say)}」</p><p class="why">${t.why}</p></div>${FOOT}`;
+}
+function renderSolo(si){
+  const a=EL_TYPE[si%4],t=TYPES[a];
+  $('card').innerHTML=`<div class="c-top"><span>伴侶溝通說明書</span><span>我的關係類型</span></div>
+  <div class="c-head"><h1 class="c-title">妳是 <span class="x">${a}</span></h1>
+   <div class="c-meta"><span class="c-nick">${t.el}</span><span class="c-signs">妳：${SIGNS[si]}水星</span></div></div>
+  <div class="c-sec"><h2>吵架時的妳</h2>
+   <div class="c-item"><div class="c-num">1</div><p>${t.look}</p></div>
+   <div class="c-item"><div class="c-num">2</div><p>妳心裡其實在怕：${t.fear}</p></div>
+   <div class="c-item"><div class="c-num">3</div><p>妳不是難相處，只是需要對方用對的方式靠近。</p></div></div>
+  <div class="c-tip"><div class="k">把這張傳給他：跟我吵架時請這樣做</div><p class="say">「${esc(t.me)}」</p><p class="why">再去問他的生日，測測你們是哪一種關係組合。</p></div>${FOOT}`;
+}
+$('calc').onclick=()=>{
+  const me=$('me').value,him=$('him').value;
+  if(!me){$('err').hidden=false;return;} $('err').hidden=true;
+  const si=mercurySign(me);
+  if(him){renderPair(si,mercurySign(him));}else{renderSolo(si);}
+  show('v-result');
+  if(SHEET_WEBHOOK){try{fetch(SHEET_WEBHOOK,{method:'POST',mode:'no-cors',body:JSON.stringify({me,him,status,at:new Date().toISOString()})});}catch(e){}}
+};
+$('save').onclick=async()=>{
+  const btn=$('save');btn.disabled=true;btn.textContent='圖片產生中…';
+  try{await document.fonts.ready;const el=$('card');
+    const canvas=await html2canvas(el,{scale:1080/el.offsetWidth,backgroundColor:'#FDF3EF',useCORS:true});
+    $('ov-img').src=canvas.toDataURL('image/png');$('ov').hidden=false;
+  }catch(e){btn.textContent='產生失敗，請直接截圖這張卡片';setTimeout(()=>btn.textContent='存成圖片，分享到限動',2500);btn.disabled=false;return;}
+  btn.disabled=false;btn.textContent='存成圖片，分享到限動';
+};
+$('ov-close').onclick=()=>$('ov').hidden=true;
+</script>
+
+</body>
+</html>
