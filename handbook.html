@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>溝通練習手冊｜粉色森林</title>
+<meta name="description" content="三種類型自我檢查、他的水星話術、這禮拜的練習記錄。手機直接寫，寫完自動留在這台裝置。">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF5F7; --card:#FFFFFF; --ink:#4A2A38; --ink2:#7D5A69; --muted:#A88B97;
+  --pink:#E8739A; --pink-deep:#C94F7C; --pink-soft:#FBD6E2; --leaf:#7FAF8A; --leaf-soft:#E3F1E6;
+  --line:#F3D3DE; --shadow:0 10px 30px rgba(201,79,124,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto;padding:24px 16px 70px}
+h1,h2,h3{font-family:"Noto Serif TC",serif;line-height:1.35}
+.brand{font-size:12px;letter-spacing:.2em;color:var(--pink-deep);text-align:center}
+.hero{text-align:center;padding:14px 4px 20px}
+.hero h1{font-size:26px;margin:8px 0 10px}
+.hero p{color:var(--ink2);font-size:14.5px}
+.card{background:var(--card);border-radius:20px;padding:20px 17px;box-shadow:var(--shadow);margin-bottom:16px}
+.sec{display:flex;align-items:center;gap:8px;margin:26px 4px 12px}
+.sec h2{font-size:20px}
+.sec .n{font-family:"Noto Sans TC";font-size:12px;background:var(--pink);color:#fff;border-radius:99px;padding:2px 10px;flex:none}
+.lead{background:var(--leaf-soft);border-radius:14px;padding:12px 14px;font-size:14.5px;margin-bottom:14px}
+.type{border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;background:#FFFBFC;cursor:pointer;display:block}
+.type.on{border-color:var(--pink);background:#FFF1F5}
+.type b{display:flex;align-items:center;gap:8px;font-size:16px;color:var(--pink-deep);margin-bottom:4px}
+.tick{width:20px;height:20px;border:1.5px solid var(--pink);border-radius:5px;flex:none;position:relative}
+.type.on .tick{background:var(--pink)}
+.type.on .tick::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.type p{font-size:14px;color:var(--ink2)}
+.type .go{display:inline-block;margin-top:6px;font-size:13.5px;color:var(--pink-deep);font-weight:700}
+select,input,textarea{width:100%;font-family:inherit;font-size:16px;color:var(--ink);border:1.5px solid var(--line);background:#FFFBFC;border-radius:12px;padding:11px 12px}
+select:focus,input:focus,textarea:focus{outline:none;border-color:var(--pink)}
+label.small{display:block;font-size:12.5px;color:var(--muted);margin:10px 0 4px}
+.manual{margin-top:14px}
+.manual .row{padding:11px 0;border-bottom:1px dashed var(--line)}
+.manual .row:last-child{border:0}
+.manual .lb{display:block;font-size:12.5px;color:var(--pink-deep);font-weight:700;margin-bottom:2px}
+.manual .say{font-size:15.5px}
+.mine{background:var(--pink-soft);border-radius:14px;padding:12px 14px;font-size:14px;margin-top:12px}
+table.rec{width:100%;border-collapse:collapse;margin-top:6px}
+table.rec td{padding:0 0 8px}
+.rec .d{width:88px}
+textarea{min-height:90px;resize:vertical}
+.hint{font-size:12.5px;color:var(--muted);margin-top:8px}
+.q{background:#FFF5F7;border-left:3px solid var(--pink);border-radius:0 12px 12px 0;padding:10px 14px;margin-bottom:8px;font-size:15px}
+.btn{display:block;width:100%;border:0;border-radius:99px;padding:14px;font-size:16px;font-weight:700;font-family:inherit;color:#fff;background:linear-gradient(135deg,var(--pink),var(--pink-deep));box-shadow:0 8px 20px rgba(201,79,124,.3);text-align:center;text-decoration:none;cursor:pointer;margin-top:16px}
+.btn.ghost{background:none;color:var(--pink-deep);box-shadow:none;border:1.5px solid var(--pink-soft)}
+.saved{text-align:center;font-size:12.5px;color:var(--leaf);margin-top:10px;min-height:1.2em}
+footer{text-align:center;font-size:12.5px;color:var(--muted);margin-top:26px}
+@media print{.btn,.saved,.hint{display:none}body{background:#fff}.card{box-shadow:none;border:1px solid #eee}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">PINK FOREST · 粉色森林</div>
+  <div class="hero">
+    <h1>溝通練習手冊</h1>
+    <p>先看懂他的頻道，再換一種說法<br>這禮拜就能試一次</p>
+  </div>
+
+  <div class="sec"><span class="n">01</span><h2>妳卡的是哪一種</h2></div>
+  <div class="card">
+    <div class="lead">三種的解法完全不一樣。先點出自己的那一種，再做對應的練習就好，不用三種都做。</div>
+
+    <div class="type" data-k="a">
+      <b><span class="tick"></span>頻道不同</b>
+      <p>一個內吞一個暴躁、一個一直念一個沉默、一個一直講另一個插不上話，或者生活習慣和觀念不一樣。兩個人其實都還願意講，只是方式對不上。</p>
+      <span class="go">→ 做下面第 02 段的話術練習，一週內就看得到差別</span>
+    </div>
+
+    <div class="type" data-k="b">
+      <b><span class="tick"></span>情緒存貨</b>
+      <p>一開口就翻舊帳、小事吵到幾年前、心裡有很多不舒服一直沒講出來。問題不在這次講什麼，而在前面累積了幾年的帳。</p>
+      <span class="go">→ 話術會失效，先做第 04 段的存貨清單</span>
+    </div>
+
+    <div class="type" data-k="c">
+      <b><span class="tick"></span>界線問題</b>
+      <p>一方很愛控制另一半，或者根本不尊重對方。這不是溝通問題，話術解不了。</p>
+      <span class="go">→ 做第 05 段的三個判斷題</span>
+    </div>
+  </div>
+
+  <div class="sec"><span class="n">02</span><h2>他的水星怎麼講</h2></div>
+  <div class="card">
+    <div class="lead">先到<a href="synastry.html" style="color:var(--pink-deep);font-weight:700">溝通合盤</a>查到他的水星星座，選下去就會出現那三句話。三句不用一次講完，先用開場那一句就有差別。</div>
+    <label class="small">他的水星星座</label>
+    <select id="sign"><option value="">請選擇</option></select>
+    <div class="manual" id="manual"></div>
+    <div class="mine">句子裡的○○○換成妳自己的話。要的東西不用改，改的只是前面那一句——人一旦防衛，後面講什麼都聽不進去。</div>
+  </div>
+
+  <div class="sec"><span class="n">03</span><h2>這禮拜的練習記錄</h2></div>
+  <div class="card">
+    <div class="lead">挑一件小事，用開場那一句講一次。先不要挑最大的那件。有效沒效都記，沒效比有效更有用。</div>
+    <table class="rec">
+      <tr><td class="d"><input id="d1" placeholder="日期"></td><td><input id="w1" placeholder="我用了哪一句"></td></tr>
+      <tr><td colspan="2"><input id="r1" placeholder="他的反應"></td></tr>
+      <tr><td class="d"><input id="d2" placeholder="日期"></td><td><input id="w2" placeholder="我用了哪一句"></td></tr>
+      <tr><td colspan="2"><input id="r2" placeholder="他的反應"></td></tr>
+      <tr><td class="d"><input id="d3" placeholder="日期"></td><td><input id="w3" placeholder="我用了哪一句"></td></tr>
+      <tr><td colspan="2"><input id="r3" placeholder="他的反應"></td></tr>
+    </table>
+    <p class="hint">寫完之後問自己一句：那一次講出口的時候，我心裡在想什麼？如果心裡有卡住的感覺，往下看第 04 段。</p>
+  </div>
+
+  <div class="sec"><span class="n">04</span><h2>存貨清單</h2></div>
+  <div class="card">
+    <div class="lead">如果話術妳都懂，但真的要開口那一秒還是講不出來，通常不是妳學不會，是前面還有帳沒清。這一段只留在妳的手機裡，不會傳給任何人。</div>
+    <label class="small">有哪幾件事，我心裡還記著，但從來沒跟他講</label>
+    <textarea id="stock" placeholder="一件一行就好，想到幾件寫幾件"></textarea>
+    <p class="hint">不用急著全部講出來。先圈一件最早發生的，那件通常是源頭。</p>
+  </div>
+
+  <div class="sec"><span class="n">05</span><h2>三個判斷題</h2></div>
+  <div class="card">
+    <div class="lead">有些狀況不是溝通問題，話術也解不了。這三題自己回答就好。</div>
+    <div class="q">一、我是不是有很多事不敢講？</div>
+    <div class="q">二、我講完是不是常常在道歉？</div>
+    <div class="q">三、我是不是越來越不像自己？</div>
+    <p style="margin-top:10px;font-size:15px">如果三題都是，那不是妳還沒學會講話，也不是妳再努力一點就好。這種情況需要的不是話術，來社群私訊我，我會跟妳說可以找哪些協助。</p>
+    <h3 style="font-size:16px;margin:18px 0 6px">如果控制的那一個是我呢</h3>
+    <p style="font-size:15px">會想幫他決定、他沒回訊息就一直追問、他做得不如我想就忍不住糾正——如果是這樣，其實是好消息，因為能動的就是妳。</p>
+    <p style="font-size:15px;margin-top:8px">放下控制不是變成沒意見，是先問再說：先聽完他怎麼想，再講妳的。練起來他會慢慢願意開口，因為他知道講了不會被否定。</p>
+  </div>
+
+  <a class="btn" id="back" href="https://www.skool.com/pink-forest-3841/classroom" target="_blank" rel="noopener">回到粉色森林</a>
+  <button class="btn ghost" onclick="window.print()">列印或存成 PDF</button>
+  <div class="saved" id="saved"></div>
+
+  <footer>巧敲是個雙子座 · IG @chiao_ah</footer>
+</div>
+
+<script>
+/* ===== 資料 ===== */
+const SIGNS=["牡羊","金牛","雙子","巨蟹","獅子","處女","天秤","天蠍","射手","摩羯","水瓶","雙魚"];
+const MERC=[
+ {open:"我有件事想跟你講，三分鐘就好。",need:"我要的很簡單：○○○，你能做到嗎？",end:"講完了，謝謝你聽我說。",hate:"繞一大圈才講重點、話講一半"},
+ {open:"我想跟你講一件事，你什麼時候方便？",need:"不急著現在回我，你想一下再告訴我。",end:"我知道要改要花時間，我們慢慢來。",hate:"逼他馬上回答、臨時改計畫"},
+ {open:"我問你喔，你覺得那天那件事是怎麼回事？",need:"我不是要吵架，我只是想跟你聊聊。",end:"那我們先這樣試一週，不行再改。",hate:"沉著臉說教、一件事講很久"},
+ {open:"你今天是不是也不好受？",need:"我不是在怪你，我只是有點難過。",end:"不管怎樣，我們是一起的。",hate:"冷冰冰地講道理、「你想太多了」"},
+ {open:"你那天幫我○○○，我其實很感謝。",need:"我知道你已經很努力，我只是希望○○○。",end:"這件事你決定，我相信你。",hate:"當著別人糾正他、全盤否定"},
+ {open:"我講具體一點：我希望你以後○○○。",need:"不是你做錯，是我想調一下我們的做法。",end:"這樣可以嗎？不行你說，我們再改。",hate:"模糊的指控、「你每次都這樣」"},
+ {open:"我們找個時間商量一下好不好？",need:"我想聽聽你的想法，再看怎麼做比較公平。",end:"謝謝你願意聽，我不想跟你吵。",hate:"大聲、逼他選邊站"},
+ {open:"你不用現在回答我，我只是想讓你知道我的感受。",need:"我不是要挖你什麼，我只是想靠近你一點。",end:"不管你說什麼，我都不會拿來對付你。",hate:"追問、試探、查勤"},
+ {open:"大方向我想跟你確認一下。",need:"我不是要管你，我只是希望○○○。",end:"細節你自己抓，我相信你。",hate:"碎念、翻舊帳"},
+ {open:"講重點：我希望以後遇到這種狀況，我們○○○。",need:"我不是要抱怨，我是想找個做法。",end:"那就這樣定，下次照這個來。",hate:"沒有結論的抱怨、情緒勒索"},
+ {open:"我跟你說我的邏輯，你聽聽看合不合理。",need:"我不是要你照我的方式，我只是想讓你知道我怎麼想。",end:"你想一下再跟我說，不急。",hate:"情緒逼迫、要他馬上表態"},
+ {open:"我想跟你說一件事，你先抱我一下好不好？",need:"我不是怪你，我只是有點孤單。",end:"我很在乎我們，所以才跟你講。",hate:"太直接、太尖銳的話"}
+];
+
+/* ===== 存檔（只存在這台裝置） ===== */
+const KEY="pf_handbook_v1";
+const FIELDS=["d1","w1","r1","d2","w2","r2","d3","w3","r3","stock"];
+let state={types:[],sign:"",fields:{}};
+function load(){
+  try{ const raw=localStorage.getItem(KEY); if(raw) state=Object.assign(state,JSON.parse(raw)); }catch(e){}
+}
+let t=null;
+function save(){
+  try{ localStorage.setItem(KEY,JSON.stringify(state));
+    const s=document.getElementById("saved"); s.textContent="已存在這台裝置 ♡";
+    clearTimeout(t); t=setTimeout(()=>{s.textContent="";},1800);
+  }catch(e){}
+}
+
+/* ===== 類型勾選 ===== */
+document.querySelectorAll(".type").forEach(el=>{
+  el.addEventListener("click",()=>{
+    const k=el.dataset.k, i=state.types.indexOf(k);
+    if(i>-1){ state.types.splice(i,1); el.classList.remove("on"); }
+    else { state.types.push(k); el.classList.add("on"); }
+    save();
+  });
+});
+
+/* ===== 水星說明書 ===== */
+const sel=document.getElementById("sign");
+SIGNS.forEach((s,i)=>{ const o=document.createElement("option"); o.value=i; o.textContent="水星"+s; sel.appendChild(o); });
+function drawManual(){
+  const box=document.getElementById("manual");
+  const i=sel.value;
+  if(i===""){ box.innerHTML=""; return; }
+  const m=MERC[+i];
+  box.innerHTML=`
+    <div class="row"><span class="lb">這樣開場</span><span class="say">「${m.open}」</span></div>
+    <div class="row"><span class="lb">說出妳的需求</span><span class="say">「${m.need}」</span></div>
+    <div class="row"><span class="lb">收尾</span><span class="say">「${m.end}」</span></div>
+    <div class="row"><span class="lb">地雷（別這樣講）</span><span class="say">${m.hate}</span></div>`;
+}
+sel.addEventListener("change",()=>{ state.sign=sel.value; save(); drawManual(); });
+
+/* ===== 欄位 ===== */
+FIELDS.forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener("input",()=>{ state.fields[id]=el.value; save(); });
+});
+
+/* ===== 初始化 ===== */
+load();
+(state.types||[]).forEach(k=>{ const el=document.querySelector(`.type[data-k="${k}"]`); if(el) el.classList.add("on"); });
+if(state.sign!==""&&state.sign!=null){ sel.value=state.sign; drawManual(); }
+FIELDS.forEach(id=>{ if(state.fields&&state.fields[id]!=null) document.getElementById(id).value=state.fields[id]; });
+</script>
+</body>
+</html>
