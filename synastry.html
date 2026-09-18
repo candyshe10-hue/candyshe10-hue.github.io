@@ -134,16 +134,19 @@ footer{text-align:center;font-size:12.5px;color:var(--muted);margin-top:30px}
 <script>
 /* ===== 設定：要改文字或連結改這裡 ===== */
 // 第二章那一課的網址（要換課就改這一行）
-const LESSON_URL = "https://www.skool.com/pink-forest-3841/classroom/b74eeca7?md=6866b1f649654daa82b192540b542702";
+const LESSON_BY_ELEM = {
+  "火": "https://www.skool.com/pink-forest-3841/classroom/21e4b918?md=18ed56b5e7414f9a89d394c858f6eaaa",
+  "土": "https://www.skool.com/pink-forest-3841/classroom/21e4b918?md=b0407d259ed84b458957042cf32cfc78",
+  "風": "https://www.skool.com/pink-forest-3841/classroom/21e4b918?md=4545da3bf1e84b6ab486d1ac198b09bb",
+  "水": "https://www.skool.com/pink-forest-3841/classroom/21e4b918?md=3cdcfa647c0f4388aed4ebf145d6e08b"
+};
 // 還沒加入社群的人：免費加入頁
 const JOIN_URL = "https://www.skool.com/pink-forest-3841/about";
 // 備用：LESSON_URL 留空時會帶到教室首頁
 const CLASSROOM_URL = "https://www.skool.com/pink-forest-3841/classroom";
 
-const NEXT_URL = LESSON_URL.trim() || CLASSROOM_URL;
-const NEXT_TITLE = "第二章";
 const NEXT_SUBTITLE = "他不是不愛妳，是他的頻道跟妳不一樣";
-const NEXT_TEASER = "同一句話，換一個說法，他就聽得進去。第二章我用他的水星，給妳三句可以直接照抄的話，這個禮拜就能拿去試試看。不用拉他一起來上課，妳先換一種說法就好。";
+const NEXT_TEASER = "同一句話，換一個說法，他就聽得進去。他那一櫃裡面有兩頁：他是怎麼聽的、以及今晚怎麼開口——還有 5 句可以直接照抄的話。不用拉他一起來上課，妊先換一種說法就好。";
 
 // 困擾選項（key 對應下面每個卡點的 tags）
 const PROBLEMS = [
@@ -415,6 +418,9 @@ function render(r,A,B){
   const cusp = (C)=>!C.hasTime && (degIn(C.lon.Moon)<7 || degIn(C.lon.Moon)>23);
   const tip = (cusp(A)||cusp(B)) ? `<p class="note">月亮剛好在換星座的邊界，補上出生時間會更準。</p>` : "";
   const pl = PROBLEMS.find(x=>x.key===problem)?.label || "";
+  const HIS_ELEM = ELEM[SIGNS.indexOf(r.b.sign) % 4] || "";
+  const NEXT_URL = LESSON_BY_ELEM[HIS_ELEM] || CLASSROOM_URL;
+  const NEXT_TITLE = HIS_ELEM ? ("他是"+HIS_ELEM+"象") : "他那一櫃";
   const nMatch = r.issues.filter(c=>c.match).length;
   const focusLine = nMatch
     ? `<div class="focus">妳說最困擾的是「${esc(pl)}」。在你們的盤上，跟這件事最有關的，我放在最前面。</div>`
@@ -451,23 +457,23 @@ function render(r,A,B){
       <li><span class="lb">他的地雷（別這樣講）</span>${esc(r.b.hate)}</li>
       <li><span class="lb">他有情緒時，需要的是（月亮${r.b.moon}）</span>${esc(r.b.comfort)}</li>
     </ul>
-    <p class="note" style="text-align:left;margin-top:12px">這是第二章那三句話裡的第一句。完整的「開場、說出需求、收尾」三句，在第二章的水星話術表裡。</p>
+    <p class="note" style="text-align:left;margin-top:12px">這只是開場的第一句。完整的說明書——他是怎麼聽的、今晚怎麼開口，都在他那一櫃裡。</p>
   </div>
   ${tip}
 
   <div class="bridge">
-    <div class="done">✓ 第一章完成</div>
+    <div class="done">✓ 合盤完成</div>
     <h2>先別急著改變他</h2>
     <p>看完合盤，很多人第一個念頭是：「我要拿給他看，叫他改。」</p>
     <p>先等一下。這週，只挑一個「今天可以先試的一件事」，自己做做看就好。</p>
-    <div class="ask">回到社群，在第一章的留言區回覆：<br><b>「我們的組合是 ${esc(r.combo)}，最像我們的是卡點 0＿」</b><br>也看看其他人的組合，妳會發現不是只有妳這樣。</div>
+    <div class="ask">回到粉色森林，在〈 0.5 溝通合盤〉那一頁的留言區回覆：<br><b>「我們的組合是 ${esc(r.combo)}，最像我們的是卡點 0＿」</b><br>也看看其他人的組合，妳會發現不是只有妳這樣。</div>
     <div class="nextbox">
       <div class="nextk">接下來 · ${esc(NEXT_TITLE)}</div>
       <h2 style="font-size:20px;margin:4px 0 10px">${esc(NEXT_SUBTITLE)}</h2>
       <p style="margin-bottom:0">${esc(NEXT_TEASER)}</p>
     </div>
-    <a class="btn" href="${NEXT_URL}" target="_blank" rel="noopener">回到粉色森林，前往${esc(NEXT_TITLE)}</a>
-    <div class="joinline">還不是粉色森林的成員？<a href="${JOIN_URL}" target="_blank" rel="noopener">免費加入，就能看第二章</a></div>
+    <a class="btn" href="${NEXT_URL}" target="_blank" rel="noopener">回到粉色森林，看${esc(NEXT_TITLE)}那一櫃</a>
+    <div class="joinline">還不是粉色森林的成員？<a href="${JOIN_URL}" target="_blank" rel="noopener">免費加入，就能看他的說明書</a></div>
   </div>
   <button class="again" onclick="location.reload()">重新算一組</button>`;
   $("formBox").style.display="none";
@@ -477,3 +483,4 @@ function render(r,A,B){
 </script>
 </body>
 </html>
+
