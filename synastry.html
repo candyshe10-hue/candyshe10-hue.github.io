@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>溝通合盤｜粉色森林</title>
+<meta name="description" content="輸入妳和他的生日，看你們最容易卡在哪 3 件事，拿到今天就能做的小練習。">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<style>
+:root{
+  --bg:#FFF5F7; --bg2:#FDE7EE; --card:#FFFFFF; --ink:#4A2A38; --ink2:#7D5A69; --muted:#A88B97;
+  --pink:#E8739A; --pink-deep:#C94F7C; --pink-soft:#FBD6E2; --leaf:#7FAF8A; --leaf-soft:#E3F1E6;
+  --line:#F3D3DE; --shadow:0 10px 30px rgba(201,79,124,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:520px;margin:0 auto;padding:28px 16px 60px}
+h1,h2,h3{font-family:"Noto Serif TC",serif;line-height:1.35}
+.brand{font-size:13px;letter-spacing:.2em;color:var(--pink-deep);text-align:center}
+.hero{text-align:center;padding:18px 4px 22px}
+.hero h1{font-size:28px;margin:8px 0 10px}
+.hero p{color:var(--ink2);font-size:15px}
+.leafdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--leaf);margin:0 6px;vertical-align:middle}
+.card{background:var(--card);border-radius:22px;padding:22px 18px;box-shadow:var(--shadow);margin-bottom:18px}
+.who{font-weight:700;font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.who .tag{font-size:12px;background:var(--pink-soft);color:var(--pink-deep);border-radius:99px;padding:2px 10px;font-weight:500}
+.row{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.row.t{grid-template-columns:1fr 1fr}
+label.small{display:block;font-size:12px;color:var(--muted);margin:2px 0 4px}
+select{width:100%;appearance:none;-webkit-appearance:none;border:1.5px solid var(--line);background:#FFFBFC;border-radius:12px;padding:11px 10px;font-size:16px;color:var(--ink);font-family:inherit}
+select:focus{outline:none;border-color:var(--pink)}
+.hint{font-size:12.5px;color:var(--muted);margin-top:2px}
+.sep{height:1px;background:var(--line);margin:18px 0}
+.btn{display:block;width:100%;border:0;border-radius:99px;padding:15px;font-size:17px;font-weight:700;font-family:inherit;color:#fff;background:linear-gradient(135deg,var(--pink),var(--pink-deep));cursor:pointer;box-shadow:0 8px 20px rgba(201,79,124,.3);text-align:center;text-decoration:none}
+.btn:active{transform:scale(.98)}
+.joinline{margin-top:12px;text-align:center;font-size:13px;color:#8a7078}
+.joinline a{color:var(--pink-deep);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:#FFFBFC;color:var(--ink);border-radius:99px;padding:9px 14px;font-size:15px;font-family:inherit;cursor:pointer}
+.chip.on{background:var(--pink);border-color:var(--pink);color:#fff}
+.focus{background:var(--pink-soft);border-radius:16px;padding:14px 16px;font-size:15px;margin-bottom:14px}
+.match{display:inline-block;font-size:12px;background:var(--pink);color:#fff;border-radius:99px;padding:1px 10px;margin-left:6px;vertical-align:2px;font-family:"Noto Sans TC"}
+.done{text-align:center;font-size:13px;color:#4E8A5D;font-weight:700;letter-spacing:.1em}
+.ask{background:var(--bg);border-radius:16px;padding:14px 16px;margin:14px 0 18px;font-size:15px}
+.err{color:var(--pink-deep);font-size:14px;margin-top:10px;text-align:center;min-height:1em}
+#result{display:none}
+.combo{text-align:center;background:linear-gradient(160deg,#FFE3EC,#FFF5F7 60%,#EAF5EC);border-radius:22px;padding:26px 16px 22px;box-shadow:var(--shadow);margin-bottom:18px}
+.combo .k{font-size:13px;color:var(--ink2);letter-spacing:.1em}
+.combo h2{font-size:26px;margin:6px 0 14px;color:var(--pink-deep)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left}
+.pair div{background:rgba(255,255,255,.8);border-radius:14px;padding:10px 12px;font-size:13.5px;color:var(--ink2)}
+.pair b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+.sec-title{font-size:20px;margin:26px 4px 12px;display:flex;align-items:center;gap:8px}
+.sec-title .n{font-family:"Noto Sans TC";font-size:12px;background:var(--pink);color:#fff;border-radius:99px;padding:2px 10px}
+.issue h3{font-size:18px;margin-bottom:8px;color:var(--ink)}
+.issue .num{color:var(--pink);font-size:14px;font-family:"Noto Sans TC";font-weight:700;display:block;margin-bottom:2px}
+.issue p{font-size:15px;margin-bottom:10px}
+.why{font-size:13px;color:var(--muted);border-left:3px solid var(--pink-soft);padding-left:10px;margin-bottom:12px}
+.todo{background:var(--leaf-soft);border-radius:14px;padding:12px 14px;font-size:14.5px}
+.todo b{color:#4E8A5D;display:block;font-size:13px;margin-bottom:2px}
+.good{background:var(--leaf-soft);border-radius:22px;padding:18px;margin-bottom:18px;font-size:15px}
+.good b{color:#4E8A5D}
+.manual li{list-style:none;padding:10px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.manual li:last-child{border:0}
+.manual .lb{display:block;font-size:12.5px;color:var(--pink-deep);font-weight:700}
+.shot{text-align:center;font-size:13px;color:var(--muted);margin:4px 0 8px}
+.bridge{background:#fff;border:2px solid var(--pink-soft);border-radius:24px;padding:26px 18px;margin-top:28px;box-shadow:var(--shadow)}
+.bridge h2{font-size:22px;text-align:center;margin-bottom:12px}
+.bridge p{font-size:15px;margin-bottom:12px}
+.bridge ul{margin:14px 0 20px}
+.bridge li{list-style:none;background:var(--bg);border-radius:14px;padding:12px 14px;margin-bottom:8px;font-size:14.5px}
+.bridge li b{display:block;color:var(--pink-deep)}
+.nextbox{background:var(--bg);border-radius:18px;padding:18px 16px;margin:18px 0}
+.nextk{font-size:12.5px;letter-spacing:.12em;color:var(--pink-deep);font-weight:700;text-align:center}
+.note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:10px}
+.again{display:block;margin:18px auto 0;background:none;border:0;color:var(--ink2);font-size:14px;text-decoration:underline;font-family:inherit;cursor:pointer}
+footer{text-align:center;font-size:12.5px;color:var(--muted);margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">PINK FOREST · 粉色森林</div>
+  <div class="hero">
+    <h1>你們的溝通合盤</h1>
+    <p>輸入妳和他的生日<br>看你們最容易卡在哪 3 件事，<br>還有今天就能先試的小練習</p>
+  </div>
+
+  <div id="formBox" class="card">
+    <div class="who">妳 <span class="tag">我自己</span></div>
+    <div class="row">
+      <div><label class="small">年</label><select id="aY"></select></div>
+      <div><label class="small">月</label><select id="aM"></select></div>
+      <div><label class="small">日</label><select id="aD"></select></div>
+    </div>
+    <div class="row t">
+      <div><label class="small">出生時（選填）</label><select id="aH"></select></div>
+      <div><label class="small">分</label><select id="aMi"></select></div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="who">他 <span class="tag">伴侶</span></div>
+    <div class="row">
+      <div><label class="small">年</label><select id="bY"></select></div>
+      <div><label class="small">月</label><select id="bM"></select></div>
+      <div><label class="small">日</label><select id="bD"></select></div>
+    </div>
+    <div class="row t">
+      <div><label class="small">出生時（選填）</label><select id="bH"></select></div>
+      <div><label class="small">分</label><select id="bMi"></select></div>
+    </div>
+    <p class="hint">不知道出生時間也可以算，知道的話會更準。以台灣時間計算。</p>
+
+    <div class="sep"></div>
+
+    <div class="who">現在最困擾妳的是？</div>
+    <div class="chips" id="chips"></div>
+
+    <div style="height:18px"></div>
+    <button class="btn" id="goBtn">看我們的合盤</button>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div id="result"></div>
+
+  <footer>巧敲是個雙子座 · IG @chiao_ah</footer>
+</div>
+
+<script>
+/* ===== 設定：要改文字或連結改這裡 ===== */
+// 第二章那一課的網址（要換課就改這一行）
+const LESSON_URL = "https://www.skool.com/pink-forest-3841/classroom/b74eeca7?md=6866b1f649654daa82b192540b542702";
+// 還沒加入社群的人：免費加入頁
+const JOIN_URL = "https://www.skool.com/pink-forest-3841/about";
+// 備用：LESSON_URL 留空時會帶到教室首頁
+const CLASSROOM_URL = "https://www.skool.com/pink-forest-3841/classroom";
+
+const NEXT_URL = LESSON_URL.trim() || CLASSROOM_URL;
+const NEXT_TITLE = "第二章";
+const NEXT_SUBTITLE = "他不是不愛妳，是他的頻道跟妳不一樣";
+const NEXT_TEASER = "同一句話，換一個說法，他就聽得進去。第二章我用他的水星，給妳三句可以直接照抄的話，這個禮拜就能拿去試試看。不用拉他一起來上課，妳先換一種說法就好。";
+
+// 困擾選項（key 對應下面每個卡點的 tags）
+const PROBLEMS = [
+  {key:"cold",     label:"冷戰，他不說話"},
+  {key:"fight",    label:"一講就吵"},
+  {key:"unheard",  label:"雞同鴨講，講了他聽不懂"},
+  {key:"feelings", label:"他不懂我的感受"},
+  {key:"criticize",label:"常被否定、被挑剔"},
+  {key:"distant",  label:"越來越像室友，沒有親密感"}
+];
+
+/* ===== 資料 ===== */
+const SIGNS = ["牡羊","金牛","雙子","巨蟹","獅子","處女","天秤","天蠍","射手","摩羯","水瓶","雙魚"];
+const ELEM = ["火","土","風","水"]; // sign index % 4
+const TYPE = {"火":"直球型","土":"務實型","風":"講道理型","水":"感受型"};
+
+// 水星：講話的樣子 / 開場句（＝第二章話術表第一句）/ 聽的時候需要 / 地雷
+const MERC = [
+  {style:"直接、快，想到就講", open:"我有件事想跟你講，三分鐘就好。", need:"講重點、直接說", hate:"繞一大圈才講重點、話講一半"},
+  {style:"慢慢來，想清楚才開口", open:"我想跟你講一件事，你什麼時候方便？", need:"給時間想，不逼他當下回答", hate:"逼他馬上回答、臨時改計畫"},
+  {style:"跳躍、愛聊，邊講邊想", open:"我問你喔，你覺得那天那件事是怎麼回事？", need:"輕鬆、有來有往的聊天", hate:"沉著臉說教、一件事講很久"},
+  {style:"帶著情緒講，先講感受", open:"你今天是不是也不好受？", need:"先被接住心情", hate:"冷冰冰地講道理、「你想太多了」"},
+  {style:"有溫度，講話帶著自尊", open:"你那天幫我○○○，我其實很感謝。", need:"先被肯定，再聽建議", hate:"當著別人糾正他、全盤否定"},
+  {style:"講細節，想把問題修好", open:"我講具體一點：我希望你以後○○○。", need:"具體、有條理，說清楚要做什麼", hate:"模糊的指控、「你每次都這樣」"},
+  {style:"委婉，很顧氣氛", open:"我們找個時間商量一下好不好？", need:"溫和的語氣、商量的口吻", hate:"大聲、逼他選邊站"},
+  {style:"話不多但很深，會先觀察", open:"你不用現在回答我，我只是想讓你知道我的感受。", need:"安全感，不被逼問", hate:"追問、試探、查勤"},
+  {style:"直率、講大方向，偶爾誇張", open:"大方向我想跟你確認一下。", need:"講大方向，留自由空間", hate:"碎念、翻舊帳"},
+  {style:"務實，先講結論，情緒放後面", open:"講重點：我希望以後遇到這種狀況，我們○○○。", need:"講重點和做法", hate:"沒有結論的抱怨、情緒勒索"},
+  {style:"理性，有自己的一套邏輯", open:"我跟你說我的邏輯，你聽聽看合不合理。", need:"講道理，被當成獨立的人", hate:"情緒逼迫、要他馬上表態"},
+  {style:"感性，不直說，常用暗示", open:"我想跟你說一件事，你先抱我一下好不好？", need:"溫柔，懂他沒說出口的", hate:"太直接、太尖銳的話"}
+];
+// 月亮：有情緒時需要的安慰
+const MOON = [
+  "讓他先發洩完，或一起出去動一動，別叫他冷靜",
+  "實際的陪伴：一頓好吃的、一個擁抱",
+  "陪他聊別的、轉移注意力，別逼他一直講感受",
+  "被照顧、被在乎，感覺家是安全的",
+  "被重視、被肯定，知道自己是第一位",
+  "幫他把事情整理清楚，做點實際的事",
+  "溫和的氣氛，確認你們之間沒事",
+  "不離開：給空間，但不消失",
+  "空間和一點樂觀，別把氣氛弄得太沉重",
+  "讓他先自己處理，事後肯定他的努力",
+  "一點距離和理解，別逼他馬上有情緒回應",
+  "溫柔地陪著，不評判"
+];
+
+const ASPECTS = [
+  {name:"合相", deg:0,   orb:7, kind:"conj"},
+  {name:"六分相", deg:60,  orb:4, kind:"soft"},
+  {name:"刑相", deg:90,  orb:6, kind:"hard"},
+  {name:"三分相", deg:120, orb:6, kind:"soft"},
+  {name:"沖相", deg:180, orb:7, kind:"hard"}
+];
+const BODY_ZH = {Sun:"太陽",Moon:"月亮",Mercury:"水星",Venus:"金星",Mars:"火星",Saturn:"土星"};
+
+/* 卡點規則：a = 妳, b = 他。on: 哪些相位類型會觸發 */
+const RULES = [
+  {a:"Mercury",b:"Mercury",on:["hard"],group:"mm",tags:["unheard", "fight"],
+   title:"同一件事，兩種頻道",
+   scene:"妳覺得已經講得很清楚，他卻回了一句完全不相干的話；兩個人都覺得「你根本沒在聽」。",
+   todo:"講完重要的事，請他用自己的話說一次他聽到了什麼。不是考他，是在對頻道。"},
+  {a:"Mercury",b:"Mercury",on:["conj"],group:"mm",tags:["fight"],
+   title:"太像了，誰都不讓誰",
+   scene:"你們反應一樣快，一吵起來都想把話講完、搶著證明自己是對的。",
+   todo:"約一個暗號（例如「喝口水」），誰先說，兩個人就一起停 30 秒。"},
+  {a:"Mercury",b:"Moon",on:["hard"],group:"merc-moon",tags:["fight", "cold", "unheard"],
+   title:"妳在講事情，他在聽情緒",
+   scene:"妳只是就事論事，他卻覺得被批評，突然不開心或防衛起來。",
+   todo:"講事情之前先加一句：「我不是在怪你，我只是想跟你一起想辦法。」"},
+  {a:"Moon",b:"Mercury",on:["hard"],group:"merc-moon",tags:["feelings", "criticize"],
+   title:"他隨口一句，妳記很久",
+   scene:"他覺得只是隨口說說，妳卻聽得很受傷；妳不開心時，他完全不知道自己哪句說錯。",
+   todo:"別生悶氣。當下說：「剛剛那句，我聽了有點難過。」只說感受，不翻舊帳。"},
+  {a:"Mercury",b:"Mars",on:["hard","conj"],group:"merc-mars",tags:["fight", "unheard"],
+   title:"妳一講道理，他就點火",
+   scene:"妳想好好談，他卻越聽越煩、音量越來越大，最後變成吵架。",
+   todo:"避開他剛下班、肚子餓、很累的時候談；把「你每次都這樣」換成「我希望○○○」。"},
+  {a:"Mars",b:"Mercury",on:["hard","conj"],group:"merc-mars",tags:["fight", "criticize"],
+   title:"他一開口，妳就火大",
+   scene:"他說話的語氣或時機常常讓妳一秒被點燃，明明是小事卻吵很大。",
+   todo:"感覺火上來時，先說「我需要十分鐘」，離開現場喝杯水再回來講。"},
+  {a:"Mercury",b:"Saturn",on:["hard","conj"],group:"merc-sat",tags:["cold", "unheard", "criticize"],
+   title:"妳想談，他關機",
+   scene:"妳想把話說開，他卻沉默、說「沒什麼好講的」，或直接否定妳。妳越講越急，他越縮越遠。",
+   todo:"不要當下逼他回答。改說：「我想跟你講一件事，你今晚還是明天比較方便？」讓他有時間準備。"},
+  {a:"Saturn",b:"Mercury",on:["hard","conj"],group:"merc-sat",tags:["cold", "distant"],
+   title:"他想講，妳先挑毛病",
+   scene:"他分享想法的時候，妳會不自覺先指出問題、先潑冷水，久了他就不跟妳說了。",
+   todo:"他講話時先回「然後呢？」或「聽起來不錯」，把建議留到他講完再說。"},
+  {a:"Moon",b:"Saturn",on:["hard","conj"],group:"moon",tags:["feelings", "cold", "distant"],
+   title:"妳要的是安慰，他給的是冷處理",
+   scene:"妳難過時只想要一個抱抱，他卻丟給妳大道理，或乾脆不說話，妳覺得被丟下。",
+   todo:"直接說出妳要的：「我現在不需要建議，只要你抱我一下。」他不是不愛，是真的不知道該怎麼做。"},
+  {a:"Saturn",b:"Moon",on:["hard","conj"],group:"moon",tags:["cold", "distant"],
+   title:"他低落時，妳急著要他振作",
+   scene:"他心情不好，妳急著叫他想開一點、趕快解決，他反而更封閉。",
+   todo:"下次先陪著他，不急著給解法，只說一句「辛苦了」。"},
+  {a:"Moon",b:"Mars",on:["hard","conj"],group:"moon",tags:["fight", "feelings"],
+   title:"他一急，就踩到妳的心",
+   scene:"他急起來講話很衝，妳的情緒就跟著上來，小事變成大戰。",
+   todo:"兩個人約好：吵得再兇，都不說「分手」「離婚」「你就是這種人」。"},
+  {a:"Mars",b:"Moon",on:["hard","conj"],group:"moon",tags:["fight", "cold"],
+   title:"妳一急，他就縮起來",
+   scene:"妳急起來語氣變重，他覺得被攻擊，不是躲起來就是反擊。",
+   todo:"想講重要的事時，刻意把語速放慢、音量降一半，效果會差很多。"},
+  {a:"Mars",b:"Mars",on:["hard"],group:"mars",tags:["fight", "cold"],
+   title:"吵架的節奏對不上",
+   scene:"一個想當場吵完，一個被逼到牆角就爆發，每次吵架都越吵越遠。",
+   todo:"約好「暫停規則」：誰喊暫停都可以，但一定要約好什麼時候回來講完。"}
+];
+
+/* 優勢（和諧相位） */
+const GOOD_RULES = [
+  {a:"Mercury",b:"Mercury",on:["soft"],text:"你們的水星很合，平常聊天容易對上頻道。只要不是在氣頭上，其實很能講得通。"},
+  {a:"Mercury",b:"Moon",on:["soft","conj"],text:"妳說的話很容易讓他覺得被懂，這是妳在這段關係裡很珍貴的能力。"},
+  {a:"Moon",b:"Mercury",on:["soft","conj"],text:"他說話其實很能安撫到妳，只要他願意開口，妳就容易覺得被理解。"},
+  {a:"Mercury",b:"Venus",on:["soft","conj"],text:"妳講話在他聽來是溫柔的，好好說話是你們的底子。"},
+  {a:"Venus",b:"Mercury",on:["soft","conj"],text:"他講話在妳聽來是溫柔的，好好說話是你們的底子。"},
+  {a:"Moon",b:"Moon",on:["soft","conj"],text:"你們的情緒節奏很接近，一個不開心，另一個很快就感覺得到。"}
+];
+
+/* ===== 計算 ===== */
+function signOf(lon){ return Math.floor(((lon%360)+360)%360/30); }
+function elemOf(lon){ return ELEM[signOf(lon)%4]; }
+function degIn(lon){ return (((lon%360)+360)%360)%30; }
+function aspectBetween(l1,l2){
+  let d=Math.abs(l1-l2)%360; if(d>180) d=360-d;
+  for(const a of ASPECTS){ const orb=Math.abs(d-a.deg); if(orb<=a.orb) return {...a, exact:orb}; }
+  return null;
+}
+
+function chart(y,m,d,h,mi){
+  const hasTime = h!=="";
+  const hour = hasTime?+h:12, minute = hasTime?+mi:0;
+  const date = new Date(Date.UTC(y,m-1,d,hour-8,minute)); // 台灣 UTC+8
+  const lon = {};
+  lon.Sun = Astronomy.SunPosition(date).elon;
+  lon.Moon = Astronomy.EclipticGeoMoon(date).lon;
+  for(const b of ["Mercury","Venus","Mars","Saturn"]) lon[b] = Astronomy.Ecliptic(Astronomy.GeoVector(b,date,true)).elon;
+  return {lon, hasTime};
+}
+
+function analyze(A,B,problem){
+  const cands=[], goods=[];
+  const zh = (who,body,lon)=>`${who}的${BODY_ZH[body]}（${SIGNS[signOf(lon)]}）`;
+  for(const r of RULES){
+    const asp = aspectBetween(A.lon[r.a],B.lon[r.b]); if(!asp || !r.on.includes(asp.kind)) continue;
+    // 同一顆星對同一顆星只算一次（水星×水星、火星×火星）
+    cands.push({...r, weight: 10 + (asp.orb-asp.exact) + (asp.kind==="hard"?1:0),
+      why:`${zh("妳",r.a,A.lon[r.a])}和${zh("他",r.b,B.lon[r.b])}形成${asp.name}（${asp.deg} 度）`});
+  }
+  for(const g of GOOD_RULES){
+    const asp = aspectBetween(A.lon[g.a],B.lon[g.b]); if(asp && g.on.includes(asp.kind)) goods.push({text:g.text,exact:asp.exact});
+  }
+  const covered = new Set(cands.map(c=>c.group));
+  const aMs=signOf(A.lon.Mercury), bMs=signOf(B.lon.Mercury);
+  const aMe=elemOf(A.lon.Mercury), bMe=elemOf(B.lon.Mercury);
+  const aMo=signOf(A.lon.Moon), bMo=signOf(B.lon.Moon);
+  const aMa=elemOf(A.lon.Mars), bMa=elemOf(B.lon.Mars);
+
+  // 星座層級的補充卡點（沒有強烈相位時才用）
+  if(!covered.has("mm")){
+    if(aMe!==bMe) cands.push({group:"mm",weight:3,tags:["unheard","feelings"],
+      title:"妳要的，跟他給的不一樣",
+      scene:`妳講話${MERC[aMs].style}，他卻是${MERC[bMs].style}。妳需要${MERC[aMs].need}，他需要的卻是${MERC[bMs].need}。`,
+      why:`妳的水星在${SIGNS[aMs]}（${aMe}象），他的水星在${SIGNS[bMs]}（${bMe}象），講話的底層邏輯不同`,
+      todo:`跟他講重要的事時，用這句開場：「${MERC[bMs].open}」，並避開他的地雷：${MERC[bMs].hate}。`});
+    else cands.push({group:"mm",weight:2.5,tags:["fight"],
+      title:"講話方式很像，反而不讓",
+      scene:"你們說話的方式很像，平常很聊得來，但一吵起來，兩個人都在等對方先退一步。",
+      why:`你們的水星都在${aMe}象星座（妳${SIGNS[aMs]}、他${SIGNS[bMs]}）`,
+      todo:"下次吵起來時，妳先說一句「我知道你的意思是…」，先接住，再講妳的。"});
+  }
+  if(!covered.has("moon") && !covered.has("merc-moon")){
+    if(elemOf(A.lon.Moon)!==elemOf(B.lon.Moon)) cands.push({group:"moon",weight:2,tags:["feelings","distant"],
+      title:"難過的時候，你們要的東西不同",
+      scene:`妳難過時需要的是：${MOON[aMo]}。但他習慣的安慰方式是：${MOON[bMo]}。他以為在安慰妳，妳卻覺得他不懂。`,
+      why:`妳的月亮在${SIGNS[aMo]}，他的月亮在${SIGNS[bMo]}，情緒需求不一樣`,
+      todo:"找個心情好的時候，跟他說一句具體的話：「我難過的時候，你只要＿＿＿就好。」"});
+    else cands.push({group:"moon",weight:1.8,tags:["fight","feelings"],
+      title:"情緒一起來，兩個人一起往下掉",
+      scene:"你們的情緒反應很像，一個人不開心，另一個人很快也被帶走，沒有人穩住。",
+      why:`你們的月亮都在${elemOf(A.lon.Moon)}象星座（妳${SIGNS[aMo]}、他${SIGNS[bMo]}）`,
+      todo:"約好：一個人低落的時候，另一個人先當「穩的那個」，等對方好了再換。"});
+  }
+  if(!covered.has("mars")){
+    const fast=e=>e==="火"||e==="風";
+    if(fast(aMa)!==fast(bMa)) cands.push({group:"mars",weight:1.5,tags:["cold","fight"],
+      title:"一個想馬上講清楚，一個需要時間",
+      scene:`${fast(aMa)?"妳":"他"}想當下就把事情講開，${fast(aMa)?"他":"妳"}卻需要先安靜消化。一個追、一個躲，越追越遠。`,
+      why:`妳的火星在${aMa}象，他的火星在${bMa}象，處理衝突的速度不同`,
+      todo:"吵起來時，想講的人給對方一個時間（例如「一小時後再聊」），需要時間的人一定要回來。"});
+    else if(fast(aMa)) cands.push({group:"mars",weight:1.5,tags:["fight"],
+      title:"兩個都急，一點就燃",
+      scene:"你們處理衝突都很快、很直接，常常話說出口才後悔。",
+      why:`你們的火星都在火、風象星座（妳${aMa}象、他${bMa}象）`,
+      todo:"吵架時先深呼吸三次再回話，就這麼簡單，但會擋掉很多說出口就收不回的話。"});
+    else cands.push({group:"mars",weight:1.5,tags:["cold","distant"],
+      title:"都悶著，冷戰拖很久",
+      scene:"你們不太大吵，但會各自把不滿吞下去，冷戰一拖就好幾天，問題沒有真的解決。",
+      why:`你們的火星都在土、水象星座（妳${aMa}象、他${bMa}象）`,
+      todo:"約好一條規則：再不開心，隔天睡前一定要講開，哪怕只講一句。"});
+  }
+
+  // 跟她選的困擾有關的卡點優先（只在盤上真的有的卡點裡排序）
+  for(const c of cands){ c.match = !!problem && (c.tags||[]).includes(problem); if(c.match) c.weight += 8; }
+  // 取前三，同一組最多一個
+  cands.sort((x,y)=>y.weight-x.weight);
+  const picked=[], used=new Set();
+  for(const c of cands){ if(used.has(c.group)) continue; picked.push(c); used.add(c.group); if(picked.length===3) break; }
+  for(const c of cands){ if(picked.length===3) break; if(!picked.includes(c)) picked.push(c); }
+
+  goods.sort((x,y)=>x.exact-y.exact);
+  let good = goods[0]?.text;
+  if(!good){
+    const pairOK = (aMe===bMe) || ({"火":"風","風":"火","土":"水","水":"土"}[aMe]===bMe);
+    good = pairOK ? `妳是${TYPE[aMe]}、他是${TYPE[bMe]}，你們講話的底子其實是合的，卡住的是方法，不是感情。`
+                  : `你們講話方式差很多，但這也代表你們能補到對方看不到的地方。學會對方的語言，差異就會變成互補。`;
+  }
+
+  return {
+    combo:`${TYPE[aMe]} × ${TYPE[bMe]}`,
+    a:{sign:SIGNS[aMs], ...MERC[aMs]},
+    b:{sign:SIGNS[bMs], ...MERC[bMs], moon:SIGNS[bMo], comfort:MOON[bMo]},
+    issues:picked, good
+  };
+}
+
+/* ===== 畫面 ===== */
+const $=id=>document.getElementById(id);
+function fill(sel, from, to, pad, placeholder){
+  const s=$(sel); s.innerHTML = placeholder?`<option value="">${placeholder}</option>`:"";
+  for(let i=from;i<=to;i++){ const o=document.createElement("option"); o.value=i; o.textContent=pad?String(i).padStart(2,"0"):i; s.appendChild(o); }
+}
+for(const p of ["a","b"]){
+  const s=$(p+"Y"); s.innerHTML='<option value="">年</option>';
+  for(let y=2008;y>=1950;y--){ const o=document.createElement("option"); o.value=y; o.textContent=y; s.appendChild(o); }
+  fill(p+"M",1,12,false,"月"); fill(p+"D",1,31,false,"日");
+  fill(p+"H",0,23,true,"不知道"); fill(p+"Mi",0,59,true,"");
+}
+function readPerson(p){
+  const y=$(p+"Y").value, m=$(p+"M").value, d=$(p+"D").value;
+  if(!y||!m||!d) return null;
+  const last = new Date(+y,+m,0).getDate();
+  if(+d>last) return "bad";
+  return {y:+y,m:+m,d:+d,h:$(p+"H").value,mi:$(p+"Mi").value||0};
+}
+let problem="";
+for(const pr of PROBLEMS){
+  const bt=document.createElement("button"); bt.type="button"; bt.className="chip"; bt.textContent=pr.label;
+  bt.onclick=()=>{ problem=pr.key; document.querySelectorAll(".chip").forEach(x=>x.classList.remove("on")); bt.classList.add("on"); };
+  $("chips").appendChild(bt);
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+$("goBtn").addEventListener("click",()=>{
+  const a=readPerson("a"), b=readPerson("b");
+  if(!a||!b){ $("err").textContent="請把兩個人的生日都選好喔"; return; }
+  if(!problem){ $("err").textContent="選一個現在最困擾妳的，結果會更貼近妳"; return; }
+  if(a==="bad"||b==="bad"){ $("err").textContent="日期好像不存在，再確認一下～"; return; }
+  if(typeof Astronomy==="undefined"){ $("err").textContent="網路有點慢，請重新整理再試一次"; return; }
+  $("err").textContent="";
+  const A=chart(a.y,a.m,a.d,a.h,a.mi), B=chart(b.y,b.m,b.d,b.h,b.mi);
+  render(analyze(A,B,problem), A, B);
+});
+
+function render(r,A,B){
+  const cusp = (C)=>!C.hasTime && (degIn(C.lon.Moon)<7 || degIn(C.lon.Moon)>23);
+  const tip = (cusp(A)||cusp(B)) ? `<p class="note">月亮剛好在換星座的邊界，補上出生時間會更準。</p>` : "";
+  const pl = PROBLEMS.find(x=>x.key===problem)?.label || "";
+  const nMatch = r.issues.filter(c=>c.match).length;
+  const focusLine = nMatch
+    ? `<div class="focus">妳說最困擾的是「${esc(pl)}」。在你們的盤上，跟這件事最有關的，我放在最前面。</div>`
+    : `<div class="focus">妳說最困擾的是「${esc(pl)}」。下面是你們盤上最明顯的三個卡點，可以對照看看，哪一個最像你們吵起來的樣子。</div>`;
+  const html = `
+  <div class="combo">
+    <div class="k">你們的關係組合</div>
+    <h2>${esc(r.combo)}</h2>
+    <div class="pair">
+      <div><b>妳・水星${r.a.sign}</b>${esc(r.a.style)}</div>
+      <div><b>他・水星${r.b.sign}</b>${esc(r.b.style)}</div>
+    </div>
+  </div>
+  <p class="shot">截圖存下來，也可以分享到限動 ♡</p>
+
+  <div class="sec-title">你們最容易卡在這 3 件事</div>
+  ${focusLine}
+  ${r.issues.map((c,i)=>`
+    <div class="card issue">
+      <span class="num">卡點 0${i+1}</span>
+      <h3>${esc(c.title)}${c.match?'<span class="match">跟妳的困擾有關</span>':''}</h3>
+      <p>${esc(c.scene)}</p>
+      <div class="why">盤上看到的：${esc(c.why)}</div>
+      <div class="todo"><b>今天可以先試的一件事</b>${esc(c.todo)}</div>
+    </div>`).join("")}
+
+  <div class="good"><b>你們的溝通優勢：</b>${esc(r.good)}</div>
+
+  <div class="sec-title">他的溝通使用說明書</div>
+  <div class="card">
+    <ul class="manual">
+      <li><span class="lb">想跟他講事情，這樣開場</span>「${esc(r.b.open)}」</li>
+      <li><span class="lb">他聽的時候需要</span>${esc(r.b.need)}</li>
+      <li><span class="lb">他的地雷（別這樣講）</span>${esc(r.b.hate)}</li>
+      <li><span class="lb">他有情緒時，需要的是（月亮${r.b.moon}）</span>${esc(r.b.comfort)}</li>
+    </ul>
+    <p class="note" style="text-align:left;margin-top:12px">這是第二章那三句話裡的第一句。完整的「開場、說出需求、收尾」三句，在第二章的水星話術表裡。</p>
+  </div>
+  ${tip}
+
+  <div class="bridge">
+    <div class="done">✓ 第一章完成</div>
+    <h2>先別急著改變他</h2>
+    <p>看完合盤，很多人第一個念頭是：「我要拿給他看，叫他改。」</p>
+    <p>先等一下。這週，只挑一個「今天可以先試的一件事」，自己做做看就好。</p>
+    <div class="ask">回到社群，在第一章的留言區回覆：<br><b>「我們的組合是 ${esc(r.combo)}，最像我們的是卡點 0＿」</b><br>也看看其他人的組合，妳會發現不是只有妳這樣。</div>
+    <div class="nextbox">
+      <div class="nextk">接下來 · ${esc(NEXT_TITLE)}</div>
+      <h2 style="font-size:20px;margin:4px 0 10px">${esc(NEXT_SUBTITLE)}</h2>
+      <p style="margin-bottom:0">${esc(NEXT_TEASER)}</p>
+    </div>
+    <a class="btn" href="${NEXT_URL}" target="_blank" rel="noopener">回到粉色森林，前往${esc(NEXT_TITLE)}</a>
+    <div class="joinline">還不是粉色森林的成員？<a href="${JOIN_URL}" target="_blank" rel="noopener">免費加入，就能看第二章</a></div>
+  </div>
+  <button class="again" onclick="location.reload()">重新算一組</button>`;
+  $("formBox").style.display="none";
+  const box=$("result"); box.innerHTML=html; box.style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</body>
+</html>
