@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>免費｜關係卡點快篩</title>
+<meta name="description" content="還在一起，卻總是卡在同一個地方？幫妳看懂你們最容易重複的互動模式。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<style>
+  [hidden]{display:none!important;}
+  :root{--bg:#FDF3EF;--ink:#3E2A2C;--gold:#9C4E5A;--wine:#7A3344;--soft:#F9E4DF;--muted:#7A5F5E;--line:#EBD2CC;--field:#FFF9F6;--blush:#D2908C;--sage:#6F7662;
+    --serif:'Noto Serif TC','Songti TC',serif;--sans:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;}
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;background:var(--bg);color:var(--ink);}
+  body{font-family:var(--sans);font-size:16px;line-height:1.7;padding-inline:16px;}
+  .wrap{max-width:440px;margin:0 auto;padding-block:40px 56px;display:flex;flex-direction:column;gap:20px;}
+  .en{font-family:var(--serif);font-size:12px;letter-spacing:.42em;color:var(--sage);text-transform:uppercase;}
+  .heart{display:flex;align-items:center;gap:10px;color:var(--blush);font-size:14px;}
+  .heart::before,.heart::after{content:"";flex:1;height:1px;background:var(--line);}
+  h1{margin:0;font-family:var(--serif);font-weight:700;line-height:1.35;color:var(--gold);text-wrap:balance;}
+  .h-cover{font-size:clamp(30px,9vw,38px);}
+  .h-step{font-size:24px;}
+  .lead{margin:0;color:var(--muted);}
+  .card{background:var(--field);border:1px solid var(--line);border-radius:18px;padding:18px;}
+  .card h2{margin:0 0 8px;font:700 16px var(--serif);color:var(--wine);}
+  .card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:15px;}
+  .card .steps{gap:10px;}
+  .card .steps b{color:var(--gold);font-weight:700;}
+  .lead strong{color:var(--wine);}
+  .card.fit li::before{content:"✓ ";color:var(--gold);font-weight:700;}
+  .card.notfit{background:transparent;}
+  .card.notfit li::before{content:"· ";color:var(--muted);}
+  .card.notfit p{margin:10px 0 0;font-size:14px;color:var(--muted);}
+  .btn{display:block;width:100%;text-align:center;padding:16px;border-radius:999px;background:var(--gold);color:#fff;font:500 17px var(--sans);border:0;cursor:pointer;text-decoration:none;}
+  .btn.ghost{background:var(--field);color:var(--gold);border:1px solid var(--line);}
+  .btn.line{background:#06C755;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  .btn:focus-visible,.chip:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+  .note{margin:0;text-align:center;font-size:13px;color:var(--muted);}
+  .progress{display:flex;gap:6px;}
+  .progress span{flex:1;height:4px;border-radius:4px;background:var(--line);}
+  .progress span.on{background:var(--gold);}
+  .field{display:flex;flex-direction:column;gap:8px;}
+  .label{font-size:15px;font-weight:500;}
+  .hint{font-size:13px;color:var(--muted);margin-top:-4px;}
+  input[type=text],input[type=date],input[type=time],textarea{padding:14px;font:16px var(--sans);border:1px solid var(--line);border-radius:12px;background:var(--field);color:var(--ink);width:100%;min-height:52px;-webkit-appearance:none;appearance:none;}
+  textarea{min-height:140px;resize:vertical;line-height:1.6;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .chip{padding:10px 16px;min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--field);color:var(--ink);font:15px var(--sans);cursor:pointer;text-align:left;}
+  .chip[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#fff;}
+  .row{display:flex;gap:10px;align-items:center;}
+  .row input[type=time]{flex:1;}
+  .check{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);white-space:nowrap;}
+  .check input{width:20px;height:20px;accent-color:var(--gold);}
+  .section-title{font:700 17px var(--serif);color:var(--wine);margin:6px 0 -4px;}
+  .nav{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+  .error{color:var(--wine);font-size:14px;margin:0;}
+  .done-box{background:var(--soft);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;}
+  .done-box ol{margin:0;padding-left:20px;font-size:15px;display:flex;flex-direction:column;gap:6px;}
+  .small-link{display:block;text-align:center;font-size:14px;color:var(--gold);}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <!-- 封面 -->
+  <section id="s0">
+    <div class="wrap" style="padding:0">
+      <div class="en">Pink Forest</div>
+      <h1 class="h-cover">免費｜關係卡點快篩</h1>
+      <div class="heart">♡</div>
+      <p class="lead">還在一起，卻總是卡在同一個地方？<br>我會用你們兩個人的<strong>星盤合盤</strong>，<br>配上妳最近遇到的事，<br>幫妳看懂你們最容易重複的互動模式。</p>
+      <div class="card">
+        <h2>我會怎麼幫妳看</h2>
+        <ul class="steps">
+          <li><b>1　妳的故事</b>：妳最近最困擾的一件事，和你們吵架時各自的反應</li>
+          <li><b>2　你們的合盤</b>：從兩個人的出生年月日，看出你們在安全感、溝通、衝突反應上天生的差異</li>
+          <li><b>3　放在一起看</b>：找出你們為什麼一直卡在同一個地方</li>
+        </ul>
+      </div>
+      <div class="card fit">
+        <h2>這個快篩適合</h2>
+        <ul>
+          <li>現在還在一段穩定關係裡</li>
+          <li>還想繼續經營這段感情</li>
+          <li>最近常常覺得累、內耗或講不通</li>
+          <li>想知道你們到底卡在哪裡</li>
+          <li>也願意一起看看自己在互動裡的反應</li>
+        </ul>
+      </div>
+      <div class="card notfit">
+        <h2>如果妳目前是</h2>
+        <ul>
+          <li>分手挽回、想知道對方會不會回頭</li>
+          <li>只想問他愛不愛妳</li>
+          <li>重大外遇、暴力或安全危機</li>
+        </ul>
+        <p>這個工具可能不是最適合妳目前狀態的方式。</p>
+      </div>
+      <button class="btn" data-go="1">開始快篩</button>
+      <p class="note">大約 3 分鐘，由巧敲親自看過後回覆妳</p>
+    </div>
+  </section>
+
+  <!-- 1 關係狀態 -->
+  <section id="s1" hidden>
+    <div class="wrap" style="padding:0">
+      <div class="progress"><span class="on"></span><span></span><span></span><span></span></div>
+      <h1 class="h-step">妳們目前的關係狀態是？</h1>
+      <div class="chips" data-group="status" data-single>
+        <button class="chip" aria-pressed="false">交往中</button>
+        <button class="chip" aria-pressed="false">同居中</button>
+        <button class="chip" aria-pressed="false">已婚</button>
+        <button class="chip" aria-pressed="false">其他穩定關係</button>
+        <button class="chip" aria-pressed="false">目前已分手</button>
+      </div>
+      <div class="nav">
+        <button class="btn" id="next1" disabled>下一步</button>
+        <button class="btn ghost" data-go="0">上一步</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 已分手 -->
+  <section id="sBreak" hidden>
+    <div class="wrap" style="padding:0">
+      <h1 class="h-step">謝謝妳願意來這裡 🤍</h1>
+      <p class="lead">這個工具目前主要服務還在關係裡、想繼續經營的人，所以妳現在的狀態可能不是最適合這份快篩的階段。</p>
+      <p class="lead">先好好照顧自己。等妳準備好了，隨時都可以回來。</p>
+      <button class="btn ghost" data-go="1">回上一步</button>
+    </div>
+  </section>
+
+  <!-- 2 最困擾的事 -->
+  <section id="s2" hidden>
+    <div class="wrap" style="padding:0">
+      <div class="progress"><span class="on"></span><span class="on"></span><span></span><span></span></div>
+      <h1 class="h-step">最近一次最困擾妳的事情是什麼？</h1>
+      <div class="field">
+        <textarea id="issue" maxlength="600" placeholder="不用寫得很漂亮，像跟朋友講話一樣就可以。&#10;例如：昨天我跟他說最近都沒有陪我，他回我「妳又來了」，後來我就不想講了。"></textarea>
+        <span class="hint" id="issueHint">至少寫一兩句，我才看得懂妳們發生了什麼</span>
+      </div>
+      <div class="nav">
+        <button class="btn" id="next2" disabled>下一步</button>
+        <button class="btn ghost" data-go="1">上一步</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 互動反應 -->
+  <section id="s3" hidden>
+    <div class="wrap" style="padding:0">
+      <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+      <h1 class="h-step">事情發生之後，妳們通常會怎麼做？</h1>
+      <p class="section-title">妳通常會（可複選）</p>
+      <div class="chips" data-group="me">
+        <button class="chip" aria-pressed="false">一直追問，希望現在就講清楚</button>
+        <button class="chip" aria-pressed="false">生悶氣，但嘴巴說沒事</button>
+        <button class="chip" aria-pressed="false">一直確認他還愛不愛我</button>
+        <button class="chip" aria-pressed="false">開始胡思亂想</button>
+        <button class="chip" aria-pressed="false">冷掉，不想再講</button>
+        <button class="chip" aria-pressed="false">酸他、講反話</button>
+        <button class="chip" aria-pressed="false">一直解釋，希望他懂我</button>
+        <button class="chip" aria-pressed="false">先忍下來，累積到最後一次爆炸</button>
+      </div>
+      <p class="section-title">他通常會（可複選）</p>
+      <div class="chips" data-group="him">
+        <button class="chip" aria-pressed="false">不說話</button>
+        <button class="chip" aria-pressed="false">逃避話題</button>
+        <button class="chip" aria-pressed="false">開始講道理</button>
+        <button class="chip" aria-pressed="false">覺得我想太多</button>
+        <button class="chip" aria-pressed="false">不耐煩</button>
+        <button class="chip" aria-pressed="false">反擊我</button>
+        <button class="chip" aria-pressed="false">道歉，但下次還是一樣</button>
+        <button class="chip" aria-pressed="false">哄一下，但問題沒有真的處理</button>
+        <button class="chip" aria-pressed="false">願意談，但最後還是講不通</button>
+      </div>
+      <div class="nav">
+        <button class="btn" id="next3" disabled>下一步</button>
+        <button class="btn ghost" data-go="2">上一步</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 出生資料 -->
+  <section id="s4" hidden>
+    <div class="wrap" style="padding:0">
+      <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+      <h1 class="h-step">最後，填一下你們兩個人的生日</h1>
+      <p class="lead">我會用你們的<strong>星盤合盤</strong>，看出妳和他在安全感、溝通方式、吵架反應上天生的差異，再跟妳剛剛寫的事情放在一起看。<br>所以兩個人的生日都需要喔 🤍</p>
+      <p class="hint" style="margin-top:0">出生時間知道的話更準，不知道也沒關係</p>
+      <p class="section-title">妳的資料</p>
+      <div class="field"><span class="label">名字或暱稱</span><input type="text" id="name" maxlength="20" autocomplete="nickname"></div>
+      <div class="field"><span class="label">出生年月日</span><input type="date" id="myDate" min="1940-01-01" max="2015-12-31"></div>
+      <div class="field"><span class="label">出生時間</span>
+        <div class="row"><input type="time" id="myTime"><label class="check"><input type="checkbox" id="myTimeUnknown">不知道</label></div>
+      </div>
+      <p class="section-title">他的資料</p>
+      <div class="field"><span class="label">出生年月日</span><input type="date" id="hisDate" min="1940-01-01" max="2015-12-31"></div>
+      <div class="field"><span class="label">出生時間</span>
+        <div class="row"><input type="time" id="hisTime"><label class="check"><input type="checkbox" id="hisTimeUnknown">不知道</label></div>
+      </div>
+      <p class="error" id="err4" hidden></p>
+      <div class="nav">
+        <button class="btn" id="submit">完成，送出給巧敲</button>
+        <button class="btn ghost" data-go="3">上一步</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 完成 -->
+  <section id="sDone" hidden>
+    <div class="wrap" style="padding:0">
+      <h1 class="h-step">只差最後一步 🤍</h1>
+      <div class="done-box">
+        <ol>
+          <li>按下面的綠色按鈕，會打開巧敲的 LINE</li>
+          <li>妳的快篩內容已經幫妳填好了，直接按「傳送」</li>
+          <li>我會親自看過，再把結果回覆給妳</li>
+        </ol>
+      </div>
+      <a class="btn line" id="lineBtn" href="#">打開 LINE 傳送給巧敲</a>
+      <button class="btn ghost" id="copyBtn">沒有自動帶入？複製內容</button>
+      <p class="note" id="copyNote" hidden>已複製！到巧敲的 LINE 貼上傳送就可以了</p>
+      <a class="small-link" href="https://lin.ee/OyVrggK" target="_blank" rel="noopener">還沒加巧敲的 LINE？先點這裡加好友</a>
+    </div>
+  </section>
+
+</main>
+<script>
+(function(){
+  // ★ 巧敲官方 LINE 的 ID（如果換帳號，只要改這一行）
+  var LINE_ID = '@550gvaox';
+
+  var state = { status:'', me:[], him:[] };
+  var sections = ['s0','s1','s2','s3','s4','sBreak','sDone'];
+  function show(id){
+    sections.forEach(function(s){ document.getElementById(s).hidden = (s !== id); });
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('[data-go]').forEach(function(b){
+    b.addEventListener('click', function(){ show('s' + b.getAttribute('data-go')); });
+  });
+
+  document.querySelectorAll('.chips').forEach(function(group){
+    var key = group.getAttribute('data-group');
+    var single = group.hasAttribute('data-single');
+    group.querySelectorAll('.chip').forEach(function(chip){
+      chip.addEventListener('click', function(){
+        var on = chip.getAttribute('aria-pressed') === 'true';
+        if (single) {
+          group.querySelectorAll('.chip').forEach(function(c){ c.setAttribute('aria-pressed','false'); });
+          chip.setAttribute('aria-pressed','true');
+          state[key] = chip.textContent;
+        } else {
+          chip.setAttribute('aria-pressed', on ? 'false' : 'true');
+          state[key] = Array.prototype.filter.call(group.querySelectorAll('.chip'), function(c){ return c.getAttribute('aria-pressed') === 'true'; }).map(function(c){ return c.textContent; });
+        }
+        refresh();
+      });
+    });
+  });
+
+  var issue = document.getElementById('issue');
+  issue.addEventListener('input', refresh);
+  function refresh(){
+    document.getElementById('next1').disabled = !state.status;
+    document.getElementById('next2').disabled = issue.value.trim().length < 8;
+    document.getElementById('next3').disabled = !(state.me.length && state.him.length);
+  }
+  document.getElementById('next1').addEventListener('click', function(){
+    show(state.status === '目前已分手' ? 'sBreak' : 's2');
+  });
+  document.getElementById('next2').addEventListener('click', function(){ show('s3'); });
+  document.getElementById('next3').addEventListener('click', function(){ show('s4'); });
+
+  [['myTime','myTimeUnknown'],['hisTime','hisTimeUnknown']].forEach(function(p){
+    var t = document.getElementById(p[0]), u = document.getElementById(p[1]);
+    u.addEventListener('change', function(){ t.disabled = u.checked; if (u.checked) t.value=''; });
+  });
+
+  function fmtDate(v){ return v ? v.replace(/-/g,'/') : ''; }
+  function fmtTime(id, unk){ var v = document.getElementById(id).value; return (document.getElementById(unk).checked || !v) ? '不知道' : v; }
+
+  var message = '';
+  document.getElementById('submit').addEventListener('click', function(){
+    var err = document.getElementById('err4');
+    var name = document.getElementById('name').value.trim();
+    var myDate = document.getElementById('myDate').value;
+    var hisDate = document.getElementById('hisDate').value;
+    if (!name || !myDate || !hisDate) {
+      err.textContent = '請填寫妳的名字、妳的出生年月日，和他的出生年月日';
+      err.hidden = false; return;
+    }
+    err.hidden = true;
+    message = [
+      '【關係卡點快篩】',
+      '關係狀態：' + state.status,
+      '最近最困擾妳的一件事：' + issue.value.trim(),
+      '事情發生後妳通常會：' + state.me.join('、'),
+      '他通常會：' + state.him.join('、'),
+      '',
+      '【妳的資料】',
+      '名字或暱稱：' + name,
+      '出生年月日：' + fmtDate(myDate),
+      '出生時間：' + fmtTime('myTime','myTimeUnknown'),
+      '',
+      '【他的資料】',
+      '出生年月日：' + fmtDate(hisDate),
+      '出生時間：' + fmtTime('hisTime','hisTimeUnknown')
+    ].join('\n');
+    document.getElementById('lineBtn').href = 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(message);
+    show('sDone');
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    var note = document.getElementById('copyNote');
+    function ok(){ note.hidden = false; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(message).then(ok, fallback);
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement('textarea'); ta.value = message; document.body.appendChild(ta);
+      ta.select(); try { document.execCommand('copy'); ok(); } catch(e) {} document.body.removeChild(ta);
+    }
+  });
+})();
+</script>
+</body>
+</html>
