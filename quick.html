@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>免費｜關係卡點快篩</title>
-<meta name="description" content="還在一起，卻總是卡在同一個地方？幫妳看懂你們最容易重複的互動模式。">
+<meta name="description" content="3分鐘先看懂：妳現在最容易卡在哪一種關係模式。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
 <style>
@@ -70,13 +70,13 @@
       <div class="en">Pink Forest</div>
       <h1 class="h-cover">免費｜關係卡點快篩</h1>
       <div class="heart">♡</div>
-      <p class="lead">還在一起，卻總是卡在同一個地方？<br>我會用你們兩個人的<strong>星盤合盤</strong>，<br>配上妳最近遇到的事，<br>幫妳看懂你們最容易重複的互動模式。</p>
+      <p class="lead">還在一起，卻總是卡在同一個地方？<br><strong>3分鐘先看懂：妳現在最容易卡在哪一種關係模式。</strong></p>
       <div class="card">
-        <h2>我會怎麼幫妳看</h2>
+        <h2>這份快篩會幫妳</h2>
         <ul class="steps">
-          <li><b>1　妳的故事</b>：妳最近最困擾的一件事，和你們吵架時各自的反應</li>
-          <li><b>2　你們的合盤</b>：從兩個人的出生年月日，看出你們在安全感、溝通、衝突反應上天生的差異</li>
-          <li><b>3　放在一起看</b>：找出你們為什麼一直卡在同一個地方</li>
+          <li><b>1　妳的回答</b>：妳最近的狀況，和吵架時妳們各自的反應</li>
+          <li><b>2　妳的星盤</b>：看出妳在關係裡天生比較敏感的地方</li>
+          <li><b>3　一個模式</b>：讓妳先看見，自己現在最容易卡在哪裡</li>
         </ul>
       </div>
       <div class="card fit">
@@ -187,19 +187,14 @@
   <section id="s4" hidden>
     <div class="wrap" style="padding:0">
       <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
-      <h1 class="h-step">最後，填一下你們兩個人的生日</h1>
-      <p class="lead">我會用你們的<strong>星盤合盤</strong>，看出妳和他在安全感、溝通方式、吵架反應上天生的差異，再跟妳剛剛寫的事情放在一起看。<br>所以兩個人的生日都需要喔 🤍</p>
+      <h1 class="h-step">最後，填一下妳的生日</h1>
+      <p class="lead">我會用妳的<strong>星盤</strong>，搭配妳剛剛的回答，看出妳在關係裡最容易卡在哪一種模式 🤍</p>
       <p class="hint" style="margin-top:0">出生時間知道的話更準，不知道也沒關係</p>
       <p class="section-title">妳的資料</p>
       <div class="field"><span class="label">名字或暱稱</span><input type="text" id="name" maxlength="20" autocomplete="nickname"></div>
       <div class="field"><span class="label">出生年月日</span><input type="date" id="myDate" min="1940-01-01" max="2015-12-31"></div>
       <div class="field"><span class="label">出生時間</span>
         <div class="row"><input type="time" id="myTime"><label class="check"><input type="checkbox" id="myTimeUnknown">不知道</label></div>
-      </div>
-      <p class="section-title">他的資料</p>
-      <div class="field"><span class="label">出生年月日</span><input type="date" id="hisDate" min="1940-01-01" max="2015-12-31"></div>
-      <div class="field"><span class="label">出生時間</span>
-        <div class="row"><input type="time" id="hisTime"><label class="check"><input type="checkbox" id="hisTimeUnknown">不知道</label></div>
       </div>
       <p class="error" id="err4" hidden></p>
       <div class="nav">
@@ -275,7 +270,7 @@
   document.getElementById('next2').addEventListener('click', function(){ show('s3'); });
   document.getElementById('next3').addEventListener('click', function(){ show('s4'); });
 
-  [['myTime','myTimeUnknown'],['hisTime','hisTimeUnknown']].forEach(function(p){
+  [['myTime','myTimeUnknown']].forEach(function(p){
     var t = document.getElementById(p[0]), u = document.getElementById(p[1]);
     u.addEventListener('change', function(){ t.disabled = u.checked; if (u.checked) t.value=''; });
   });
@@ -288,9 +283,8 @@
     var err = document.getElementById('err4');
     var name = document.getElementById('name').value.trim();
     var myDate = document.getElementById('myDate').value;
-    var hisDate = document.getElementById('hisDate').value;
-    if (!name || !myDate || !hisDate) {
-      err.textContent = '請填寫妳的名字、妳的出生年月日，和他的出生年月日';
+    if (!name || !myDate) {
+      err.textContent = '請填寫妳的名字和出生年月日';
       err.hidden = false; return;
     }
     err.hidden = true;
@@ -304,11 +298,7 @@
       '【妳的資料】',
       '名字或暱稱：' + name,
       '出生年月日：' + fmtDate(myDate),
-      '出生時間：' + fmtTime('myTime','myTimeUnknown'),
-      '',
-      '【他的資料】',
-      '出生年月日：' + fmtDate(hisDate),
-      '出生時間：' + fmtTime('hisTime','hisTimeUnknown')
+      '出生時間：' + fmtTime('myTime','myTimeUnknown')
     ].join('\n');
     document.getElementById('lineBtn').href = 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(message);
     show('sDone');
